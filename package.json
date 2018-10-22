@@ -12,18 +12,23 @@
   ],
   "activationEvents": [
     "onCommand:trello.sayHello",
-    "onCommand:trello.getCard"
+    "onCommand:trello.getCard",
+    "onCommand:trello.test"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
         "command": "trello.sayHello",
-        "title": "Hello World"
+        "title": "Hello Trello"
       },
       {
         "command": "trello.getCard",
         "title": "Gets Trello Card"
+      },
+      {
+        "command": "trello.test",
+        "title": "Testing trello extension"
       }
     ]
   },
