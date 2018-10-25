@@ -5,7 +5,7 @@ import * as vscode from "vscode";
 import * as Trello from "trello";
 // @ts-ignore
 import * as keys from "./config/keys";
-import { window } from "vscode";
+import * as trelloActions from "./trelloActions";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
@@ -14,12 +14,10 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(
       "Hello, this is the Trello extension!"
     );
-    window.showInformationMessage(`KEY: ${process.env.KEY}`);
   });
 
   let getCard = vscode.commands.registerCommand("trello.getCard", () => {
-    let trello = new Trello(keys.my_api_key, keys.my_api_token);
-
+    let trello = new Trello(keys.my_API_key, keys.my_API_token);
     let cardsPromise = trello.getCardsOnList("5bccf456adf6930b49d0c468");
     // @ts-ignore
     cardsPromise.then(cards => {
@@ -31,22 +29,47 @@ export function activate(context: vscode.ExtensionContext) {
     const input = showInputBox();
     input.then(res => {
       // @ts-ignore
-      process.env.KEY = res.toString();
-      console.log(process.env.KEY);
+      console.log(res.toString());
     });
   });
+
+  let login = vscode.commands.registerCommand(
+    "trello.login",
+    (request, response) => {
+      try {
+        console.log(`GET '/login' 🤠 ${Date()}`);
+        trelloActions.login(request, response);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
+
+  let callback = vscode.commands.registerCommand(
+    "trello.callback",
+    (request, response) => {
+      try {
+        console.log(`GET '/callback' 🤠 ${Date()}`);
+        trelloActions.callback(request, response);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  );
 
   context.subscriptions.push(disposable);
   context.subscriptions.push(getCard);
   context.subscriptions.push(test);
+  context.subscriptions.push(login);
+  context.subscriptions.push(callback);
 }
 
 export function deactivate() {}
 
 export async function showInputBox() {
-  const result = await window.showInputBox({
+  const result = await vscode.window.showInputBox({
     placeHolder: "Enter Trello API Token"
   });
-  window.showInformationMessage(`Got: ${result}`);
+  vscode.window.showInformationMessage(`Got: ${result}`);
   return result;
 }
