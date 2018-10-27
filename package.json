@@ -11,24 +11,39 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:trello.sayHello",
-    "onCommand:trello.getCard",
     "onCommand:trello.login",
+    "onCommand:trello.getCard",
+    "onCommand:trello.getBoards",
+    "onCommand:trello.getLists",
+    "onCommand:trello.getCards",
+    "onCommand:trello.sayHello"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
-        "command": "trello.sayHello",
-        "title": "Hello Trello"
+        "command": "trello.login",
+        "title": "Trello: login"
       },
       {
         "command": "trello.getCard",
-        "title": "Gets Trello Card"
+        "title": "Trello: get specific card"
       },
       {
-        "command": "trello.login",
-        "title": "Trello login"
+        "command": "trello.getBoards",
+        "title": "Trello: get boards"
+      },
+      {
+        "command": "trello.getLists",
+        "title": "Trello: get lists from board"
+      },
+      {
+        "command": "trello.getCards",
+        "title": "Trello: get cards from list"
+      },
+      {
+        "command": "trello.sayHello",
+        "title": "Hello Trello"
       }
     ]
   },
@@ -49,6 +64,7 @@
   "dependencies": {
     "@types/express": "^4.16.0",
     "@types/oauth": "^0.9.1",
+    "axios": "^0.18.0",
     "express": "^4.16.4",
     "http": "0.0.0",
     "oauth": "^0.9.15",
