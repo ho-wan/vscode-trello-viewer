@@ -5,10 +5,23 @@ import * as vscode from "vscode";
 import * as Trello from "trello";
 // @ts-ignore
 import * as keys from "./config/keys";
-import * as trelloActions from "./trelloActions";
+// import * as trelloActions from "./trelloActions";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
+  let trello: Trello;
+
+  function setTrelloToken() {
+    const API_KEY : string = keys.TRELLO_API_KEY;
+    const API_TOKEN : string = context.globalState.get("TRELLO_API_TOKEN") || "";
+    const trello = new Trello(API_KEY, API_TOKEN);
+    vscode.window.showInformationMessage(
+      `Token set: ${API_TOKEN.substr(0, 8)}...`
+    );
+    return trello;
+  }
+
+  trello = setTrelloToken();
 
   let disposable = vscode.commands.registerCommand("trello.sayHello", () => {
     vscode.window.showInformationMessage(
@@ -17,51 +30,25 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   let getCard = vscode.commands.registerCommand("trello.getCard", () => {
-    let trello = new Trello(keys.my_API_key, keys.my_API_token);
-    let cardsPromise = trello.getCardsOnList("5bccf456adf6930b49d0c468");
-    // @ts-ignore
-    cardsPromise.then(cards => {
-      console.log(cards);
-    });
+    const cardsPromise = trello.getCardsOnList("5bccf456adf6930b49d0c468");
+    cardsPromise
+      .then((cards: object) => {
+        console.log(cards);
+      })
   });
 
-  let test = vscode.commands.registerCommand("trello.test", () => {
-    const input = showInputBox();
-    input.then(res => {
-      // @ts-ignore
-      console.log(res.toString());
-    });
+  let login = vscode.commands.registerCommand("trello.login", () => {
+    const inputToken = showInputBox();
+    inputToken
+      .then(token => {
+        context.globalState.update("TRELLO_API_TOKEN", token);
+      })
+      .then(() => trello = setTrelloToken());
   });
-
-  let login = vscode.commands.registerCommand(
-    "trello.login",
-    (request, response) => {
-      try {
-        console.log(`GET '/login' 🤠 ${Date()}`);
-        trelloActions.login(request, response);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
-
-  let callback = vscode.commands.registerCommand(
-    "trello.callback",
-    (request, response) => {
-      try {
-        console.log(`GET '/callback' 🤠 ${Date()}`);
-        trelloActions.callback(request, response);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  );
 
   context.subscriptions.push(disposable);
-  context.subscriptions.push(getCard);
-  context.subscriptions.push(test);
   context.subscriptions.push(login);
-  context.subscriptions.push(callback);
+  context.subscriptions.push(getCard);
 }
 
 export function deactivate() {}
@@ -70,6 +57,5 @@ export async function showInputBox() {
   const result = await vscode.window.showInputBox({
     placeHolder: "Enter Trello API Token"
   });
-  vscode.window.showInformationMessage(`Got: ${result}`);
   return result;
 }
