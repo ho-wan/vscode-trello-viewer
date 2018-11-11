@@ -1,10 +1,8 @@
 @baseUrl = https://api.trello.com
 
 ### authorization keys
-@key =
+@key = 7d1e3a411a1bf02d2ec0afb851d8e517
 @token =
-@secret =
-@auth =
 
 @board1 = {{getBoards.response.body.$[1].id}}
 @board2 = {{getBoards.response.body.$[0].id}}
@@ -13,31 +11,29 @@
 @cardDoing = {{getLists.response.body.$[1].id}}
 
 ### get boards
-
-GET https://api.trello.com/1/members/me/boards
+# @name getBoards
+GET {{baseUrl}}/1/members/me/boards
     ?key={{key}}
     &token={{token}}
 
-### get boards 2
-# @name getBoards
-GET {{baseUrl}}/1/members/me/boards
-    ?{{auth}}
-
 ### search (Error: not logged in)
 GET {{baseUrl}}/1/search?query=test
-    ?{{auth}}
+    ?key={{key}}
+    &token={{token}}
 
 ### get lists
 # @name getLists
 GET {{baseUrl}}/1/boards/{{board1}}/lists
-    ?{{auth}}
+    ?key={{key}}
+    &token={{token}}
 
 ### get cards
-# @name getCards
 GET {{baseUrl}}/1/lists/{{list1}}/cards
-    ?{{auth}}
+    ?key={{key}}
+    &token={{token}}
 
 ### get card by id
 # @name getCard
 GET {{baseUrl}}/1/lists/{{cardDoing}}/cards
-    ?{{auth}}
+    ?key={{key}}
+    &token={{token}}
