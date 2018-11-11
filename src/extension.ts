@@ -2,33 +2,33 @@ import * as vscode from "vscode";
 import { workspace, window } from 'vscode';
 import axios from "axios";
 
+import {
+  getTrelloKeyToken,
+  setTrelloKey,
+  setTrelloToken,
+} from "./trelloUtils";
+
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
 
   let API_KEY: string;
   let API_TOKEN: string;
-  getTrelloToken();
+  [API_KEY, API_TOKEN] = getTrelloKeyToken(context.globalState);
 
-  function getTrelloToken() {
-    API_KEY = "7d1e3a411a1bf02d2ec0afb851d8e517";
-    API_TOKEN = context.globalState.get("TRELLO_API_TOKEN") || "";
-    console.log(`API token = ${API_TOKEN}`);
-  }
-
-  let setToken = vscode.commands.registerCommand("trello.setToken", () => {
-    showInputBox("Enter API token")
-      .then(token => {
-        API_TOKEN = token || '';
-        context.globalState.update("TRELLO_API_TOKEN", token);
-      })
+  let test = vscode.commands.registerCommand("trello.test", () => {
+    [API_KEY, API_TOKEN] = getTrelloKeyToken(context.globalState);
+    vscode.window.showInformationMessage(`KEY = ${API_KEY}, TOKEN = ${API_TOKEN}`);
   });
 
-  async function showInputBox(placeholderText : string) {
-    return await vscode.window.showInputBox({placeHolder: placeholderText});
-  }
+  let setKey = vscode.commands.registerCommand("trello.setKey", () => {
+    API_KEY = setTrelloKey(context.globalState);
+  });
+
+  let setToken = vscode.commands.registerCommand("trello.setToken", () => {
+    API_TOKEN = setTrelloToken(context.globalState);
+  });
 
   let getBoards = vscode.commands.registerCommand("trello.getBoards", () => {
-    getTrelloToken();
     axios
       .get(`https://api.trello.com/1/members/me/boards?key=${API_KEY}&token=${API_TOKEN}`)
       .then(res => console.log(res))
@@ -50,6 +50,8 @@ export function activate(context: vscode.ExtensionContext) {
       .then(doc => window.showTextDocument(doc, vscode.ViewColumn.Two, true));
 	});
 
+  context.subscriptions.push(test);
+  context.subscriptions.push(setKey);
   context.subscriptions.push(setToken);
   context.subscriptions.push(getBoards);
   context.subscriptions.push(getCard);

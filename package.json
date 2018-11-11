@@ -11,6 +11,8 @@
     "Other"
   ],
   "activationEvents": [
+    "onCommand:trello.test",
+    "onCommand:trello.setKey",
     "onCommand:trello.setToken",
     "onCommand:trello.getBoards",
     "onCommand:trello.getCard",
@@ -18,18 +20,18 @@
   ],
   "main": "./out/extension",
   "contributes": {
-    "menus": {
-      "editor/title": [
-        {
-          "command": "trello.setToken"
-        }
-      ]
-    },
     "commands": [
       {
+        "command": "trello.test",
+        "title": "Trello: test"
+      },
+      {
+        "command": "trello.setKey",
+        "title": "Trello: set Key"
+      },
+      {
         "command": "trello.setToken",
-        "title": "Trello: set token",
-        "icon": "images/T-D.png"
+        "title": "Trello: set token"
       },
       {
         "command": "trello.getBoards",
