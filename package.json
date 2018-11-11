@@ -11,41 +11,60 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:trello.login",
-    "onCommand:trello.getCard",
+    "onCommand:trello.setToken",
     "onCommand:trello.getBoards",
-    "onCommand:trello.getLists",
-    "onCommand:trello.getCards",
-    "onCommand:trello.sayHello"
+    "onCommand:trello.getCard",
+    "onCommand:trello.showCardText"
   ],
   "main": "./out/extension",
   "contributes": {
+    "menus": {
+      "editor/title": [
+        {
+          "command": "trello.setToken"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "trello.login",
-        "title": "Trello: login"
-      },
-      {
-        "command": "trello.getCard",
-        "title": "Trello: get specific card"
+        "command": "trello.setToken",
+        "title": "Trello: set token",
+        "icon": "images/T-D.png"
       },
       {
         "command": "trello.getBoards",
         "title": "Trello: get boards"
       },
       {
-        "command": "trello.getLists",
-        "title": "Trello: get lists from board"
+        "command": "trello.getCard",
+        "title": "Trello: get card"
       },
       {
-        "command": "trello.getCards",
-        "title": "Trello: get cards from list"
-      },
-      {
-        "command": "trello.sayHello",
-        "title": "Hello Trello"
+        "command": "trello.showCardText",
+        "title": "Trello: show card text"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "view-trello",
+          "title": "View Trello",
+          "icon": "images/T-D.png"
+        }
+      ]
+    },
+    "views": {
+      "view-trello": [
+        {
+          "id": "trello-cards",
+          "name": "Trello Cards"
+        },
+        {
+          "id": "trello-list",
+          "name": "Trello Lists"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
