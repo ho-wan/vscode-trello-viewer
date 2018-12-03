@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import { workspace, window } from 'vscode';
+import * as fs from "fs";
+import * as UserDataFolder from "./UserDataFolder";
 import axios from "axios";
 
 import {
@@ -17,7 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   let test = vscode.commands.registerCommand("trello.test", () => {
     [API_KEY, API_TOKEN] = getTrelloKeyToken(context.globalState);
-    vscode.window.showInformationMessage(`KEY = ${API_KEY}, TOKEN = ${API_TOKEN}`);
+    console.log(`KEY = ${API_KEY}, TOKEN = ${API_TOKEN}`);
+    vscode.window.showInformationMessage(`Getting Key and Token, KEY = ${API_KEY}`);
   });
 
   let setKey = vscode.commands.registerCommand("trello.setKey", () => {
@@ -46,7 +49,17 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   let showCardText = vscode.commands.registerTextEditorCommand('trello.showCardText', editor => {
-    return workspace.openTextDocument('/Users/howant/_misc/training/vscode-trello/training-theodo/README.md')
+    const fileContent = 'Testing Trello Extension \n\n# Heading 1 #\n\n### Heading 3 ###\n\n---';
+
+    const userDataFolder = new UserDataFolder.UserDataFolder();
+    const tempTrelloFile = userDataFolder.getPathCodeSettings() + 'tempTrelloFile.md';
+    fs.writeFile(tempTrelloFile, fileContent, (err) => {
+      if (err) {
+        vscode.window.showErrorMessage("Error: unable to write settings. " + err);
+      }
+    });
+    // return workspace.openTextDocument('/Users/howant/_misc/training/vscode-trello/training-theodo/README.md')
+    return workspace.openTextDocument(tempTrelloFile)
       .then(doc => window.showTextDocument(doc, vscode.ViewColumn.Two, true));
 	});
 
@@ -58,4 +71,12 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(showCardText);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  const userDataFolder = new UserDataFolder.UserDataFolder();
+  const tempTrelloFile = userDataFolder.getPathCodeSettings() + '~tempTrelloFile.md';
+
+  fs.unlink(tempTrelloFile, (err) => {
+    if (err) throw err;
+    console.log(`successfully deleted ${tempTrelloFile}`);
+  });
+}
