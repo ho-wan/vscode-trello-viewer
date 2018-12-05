@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
-import * as UserDataFolder from "./UserDataFolder";
+import { UserDataFolder } from "./UserDataFolder";
 import axios from "axios";
 
 import {
@@ -53,7 +53,7 @@ export function activate(context: vscode.ExtensionContext) {
     const fileContent = 'Testing Trello Extension \n\n# Heading 1 #\n\n### Heading 3 ###\n\n---';
 
     // Get location of user's vs code folder to save temp markdown file
-    const userDataFolder = new UserDataFolder.UserDataFolder();
+    const userDataFolder = new UserDataFolder();
     const tempTrelloFile = userDataFolder.getPathCodeSettings() + tempTrelloFileName;
 
     fs.writeFile(tempTrelloFile, fileContent, (err) => {
@@ -64,8 +64,8 @@ export function activate(context: vscode.ExtensionContext) {
     });
 
     return vscode.workspace.openTextDocument(tempTrelloFile)
-      .then(doc => vscode.window.showTextDocument(doc, vscode.ViewColumn.One, true))
-      .then(() => vscode.commands.executeCommand('markdown.showPreviewToSide'));
+      .then(doc => vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside, false))
+      .then(() => vscode.commands.executeCommand('markdown.showPreview'))
 	});
 
   context.subscriptions.push(test);
@@ -77,7 +77,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-  const userDataFolder = new UserDataFolder.UserDataFolder();
+  const userDataFolder = new UserDataFolder();
   const tempTrelloFile = userDataFolder.getPathCodeSettings() + tempTrelloFileName;
 
   fs.unlink(tempTrelloFile, (err) => {

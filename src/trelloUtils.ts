@@ -35,4 +35,3 @@ export function setTrelloToken(globalState: any) {
 
   return '-1';
 }
-
