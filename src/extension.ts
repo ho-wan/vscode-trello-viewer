@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { workspace, window } from 'vscode';
 import * as fs from "fs";
 import * as UserDataFolder from "./UserDataFolder";
 import axios from "axios";
@@ -9,6 +8,8 @@ import {
   setTrelloKey,
   setTrelloToken,
 } from "./trelloUtils";
+
+const tempTrelloFileName = '~vscodeTrello.md';
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
@@ -48,19 +49,23 @@ export function activate(context: vscode.ExtensionContext) {
       .catch(err => console.log(err.response));
   });
 
-  let showCardText = vscode.commands.registerTextEditorCommand('trello.showCardText', editor => {
+  let showCardText = vscode.commands.registerTextEditorCommand('trello.showCardText', () => {
     const fileContent = 'Testing Trello Extension \n\n# Heading 1 #\n\n### Heading 3 ###\n\n---';
 
+    // Get location of user's vs code folder to save temp markdown file
     const userDataFolder = new UserDataFolder.UserDataFolder();
-    const tempTrelloFile = userDataFolder.getPathCodeSettings() + 'tempTrelloFile.md';
+    const tempTrelloFile = userDataFolder.getPathCodeSettings() + tempTrelloFileName;
+
     fs.writeFile(tempTrelloFile, fileContent, (err) => {
       if (err) {
-        vscode.window.showErrorMessage("Error: unable to write settings. " + err);
+        vscode.window.showErrorMessage("Error: unable to write to markdown file " + err);
       }
+      console.log(`Writing to file: ${tempTrelloFile}`);
     });
-    // return workspace.openTextDocument('/Users/howant/_misc/training/vscode-trello/training-theodo/README.md')
-    return workspace.openTextDocument(tempTrelloFile)
-      .then(doc => window.showTextDocument(doc, vscode.ViewColumn.Two, true));
+
+    return vscode.workspace.openTextDocument(tempTrelloFile)
+      .then(doc => vscode.window.showTextDocument(doc, vscode.ViewColumn.One, true))
+      .then(() => vscode.commands.executeCommand('markdown.showPreviewToSide'));
 	});
 
   context.subscriptions.push(test);
@@ -73,10 +78,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
   const userDataFolder = new UserDataFolder.UserDataFolder();
-  const tempTrelloFile = userDataFolder.getPathCodeSettings() + '~tempTrelloFile.md';
+  const tempTrelloFile = userDataFolder.getPathCodeSettings() + tempTrelloFileName;
 
   fs.unlink(tempTrelloFile, (err) => {
     if (err) throw err;
-    console.log(`successfully deleted ${tempTrelloFile}`);
+    console.log(`Deleted file: ${tempTrelloFile}`);
   });
 }
