@@ -14,6 +14,9 @@ const tempTrelloFileName = '~vscodeTrello.md';
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
 
+  let selectedCardName: string | undefined;
+  let selectedCardDesc: string | undefined;
+
   let API_KEY: string;
   let API_TOKEN: string;
   [API_KEY, API_TOKEN] = getTrelloKeyToken(context.globalState);
@@ -44,13 +47,17 @@ export function activate(context: vscode.ExtensionContext) {
       .get(`https://api.trello.com/1/cards/5bd4c7061d87a7598e396abb?key=${API_KEY}&token=${API_TOKEN}`)
       .then(res => {
         console.log(res);
-        vscode.window.showInformationMessage(res.data.desc);
+        selectedCardName = res.data.name;
+        selectedCardDesc = res.data.desc;
+        vscode.window.showInformationMessage(`Got card: ${selectedCardName}`);
       })
       .catch(err => console.log(err.response));
   });
 
   let showCardText = vscode.commands.registerTextEditorCommand('trello.showCardText', () => {
-    const fileContent = 'Testing Trello Extension \n\n# Heading 1 #\n\n### Heading 3 ###\n\n---';
+    const fileHeader = selectedCardName || '## No card name found ##';
+    const fileBody = selectedCardDesc || '## No card description found ##';
+    const fileContent = `**TITLE**\n\n${fileHeader}\n\n-----\n\n**DESCRIPTION**\n\n${fileBody}`;
 
     // Get location of user's vs code folder to save temp markdown file
     const userDataFolder = new UserDataFolder();
