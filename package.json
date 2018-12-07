@@ -42,8 +42,8 @@
         "title": "Trello: get card"
       },
       {
-        "command": "trello.showCardText",
-        "title": "Trello: show card text"
+        "command": "trello.showCard",
+        "title": "Trello: show card"
       }
     ],
     "viewsContainers": {
@@ -64,6 +64,10 @@
         {
           "id": "trello-list",
           "name": "Trello Lists"
+        },
+        {
+          "id": "trello-boards",
+          "name": "Trello Boards"
         }
       ]
     }
