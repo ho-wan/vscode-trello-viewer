@@ -14,7 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("trello.test", () => trello.getTrelloKeyToken()));
   context.subscriptions.push(vscode.commands.registerCommand("trello.setKey", () => trello.setTrelloKey()));
   context.subscriptions.push(vscode.commands.registerCommand("trello.setToken", () => trello.setTrelloToken()));
-  context.subscriptions.push(vscode.commands.registerCommand("trello.getBoards", () => trello.getTrelloBoards()));
+  context.subscriptions.push(vscode.commands.registerCommand("trello.getBoards", () => trello.getStarredBoards()));
+  context.subscriptions.push(vscode.commands.registerCommand("trello.getLists", () => trello.getListsFromBoard('5bd4c6f140a87f6b4e8ef868')));
   context.subscriptions.push(vscode.commands.registerCommand("trello.getCard", () => trello.getTrelloCards()));
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand('trello.showCard', () => {trello.showTrelloCard(tempTrelloFileName)})

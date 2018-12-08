@@ -16,6 +16,7 @@
     "onCommand:trello.setKey",
     "onCommand:trello.setToken",
     "onCommand:trello.getBoards",
+    "onCommand:trello.getListsForBoard",
     "onCommand:trello.getCard",
     "onCommand:trello.showCardText"
   ],
@@ -37,6 +38,10 @@
       {
         "command": "trello.getBoards",
         "title": "Trello: get boards"
+      },
+      {
+        "command": "trello.getLists",
+        "title": "Trello: get lists for selected board"
       },
       {
         "command": "trello.getCard",
@@ -61,7 +66,11 @@
         {
 					"id": "testView",
 					"name": "Test View"
-				},
+        },
+        {
+          "id": "trello-boards",
+          "name": "Trello Boards"
+        },
         {
           "id": "trello-cards",
           "name": "Trello Cards"
@@ -69,10 +78,6 @@
         {
           "id": "trello-list",
           "name": "Trello Lists"
-        },
-        {
-          "id": "trello-boards",
-          "name": "Trello Boards"
         }
       ]
     }

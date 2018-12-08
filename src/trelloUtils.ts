@@ -11,6 +11,8 @@ export class TrelloComponent {
   private selectedCardName: string | undefined;
   private selectedCardDesc: string | undefined;
 
+  private selectedBoardId: string | undefined;
+
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
     this.API_KEY = this.getTrelloKey();
@@ -50,13 +52,26 @@ export class TrelloComponent {
         };
       });
   }
-
-  getTrelloBoards(): void {
+  // filter=starred&
+  getStarredBoards(): void {
     axios
-      .get(`https://api.trello.com/1/members/me/boards?key=${this.API_KEY}&token=${this.API_TOKEN}`)
+      .get(`https://api.trello.com/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
-        vscode.window.showInformationMessage('Boards', res.data.map((board: any) => board.name).join(", "));
-        console.log(res);
+        console.log(`⭐getting starred boards`);
+        // console.log(res);
+        vscode.window.showInformationMessage('Starred Boards: ' + res.data.map((board: any) => board.name).join(', '));
+      })
+      .catch(err => console.log(err.response));
+  }
+
+  getListsFromBoard(boardId: string): void {
+    this.selectedBoardId = boardId;
+    axios
+      .get(`https://api.trello.com/1/boards/${boardId}/lists/?key=${this.API_KEY}&token=${this.API_TOKEN}`)
+      .then(res => {
+        console.info(`📜Getting lists for selected board: ${boardId}`);
+        // console.log(res);
+        vscode.window.showInformationMessage('Lists: ' + res.data.map((list: any) => list.name).join(', '));
       })
       .catch(err => console.log(err.response));
   }
