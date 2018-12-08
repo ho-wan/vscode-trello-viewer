@@ -16,40 +16,40 @@
     "onCommand:trello.setKey",
     "onCommand:trello.setToken",
     "onCommand:trello.getBoards",
-    "onCommand:trello.getListsForBoard",
-    "onCommand:trello.getCard",
-    "onCommand:trello.showCardText"
+    "onCommand:trello.getLists",
+    "onCommand:trello.getCards",
+    "onCommand:trello.showCard"
   ],
   "main": "./out/extension",
   "contributes": {
     "commands": [
       {
         "command": "trello.test",
-        "title": "Trello: test"
+        "title": "Trello: Check Key and Token"
       },
       {
         "command": "trello.setKey",
-        "title": "Trello: set Key"
+        "title": "Trello: Set Key"
       },
       {
         "command": "trello.setToken",
-        "title": "Trello: set token"
+        "title": "Trello: Set Token"
       },
       {
         "command": "trello.getBoards",
-        "title": "Trello: get boards"
+        "title": "Trello: Get Starred Boards"
       },
       {
         "command": "trello.getLists",
-        "title": "Trello: get lists for selected board"
+        "title": "Trello: Get Lists For Selected Board"
       },
       {
-        "command": "trello.getCard",
-        "title": "Trello: get card"
+        "command": "trello.getCards",
+        "title": "Trello: Get Cards for Selected List"
       },
       {
         "command": "trello.showCard",
-        "title": "Trello: show card"
+        "title": "Trello: Show Card"
       }
     ],
     "viewsContainers": {

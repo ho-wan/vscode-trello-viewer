@@ -24,15 +24,19 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
 		console.log('👶getting children');
 		// console.log(element);
 		if (!element) {
-			const dep1 = new Dependency('item 1', vscode.TreeItemCollapsibleState.None, {
+			const dep1 = new Dependency('Test', vscode.TreeItemCollapsibleState.None, {
 				command: 'trello.test',
 				title: '',
 			});
-			const dep2 = new Dependency('item 2', vscode.TreeItemCollapsibleState.None, {
+			const dep2 = new Dependency('Get Lists', vscode.TreeItemCollapsibleState.None, {
 				command: 'trello.getLists',
 				title: '',
 			});
-			return Promise.resolve([dep1, dep2]);
+			const dep3 = new Dependency('Get Cards', vscode.TreeItemCollapsibleState.None, {
+				command: 'trello.getCards',
+				title: '',
+			});
+			return Promise.resolve([dep1, dep2, dep3]);
 		}
 		return Promise.resolve([]);
 	};

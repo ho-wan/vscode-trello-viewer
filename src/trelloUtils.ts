@@ -11,7 +11,8 @@ export class TrelloComponent {
   private selectedCardName: string | undefined;
   private selectedCardDesc: string | undefined;
 
-  private selectedBoardId: string | undefined;
+  // private selectedBoardId: string | undefined;
+  // private selectedListId: string | undefined;
 
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
@@ -52,7 +53,7 @@ export class TrelloComponent {
         };
       });
   }
-  // filter=starred&
+
   getStarredBoards(): void {
     axios
       .get(`https://api.trello.com/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
@@ -65,7 +66,7 @@ export class TrelloComponent {
   }
 
   getListsFromBoard(boardId: string): void {
-    this.selectedBoardId = boardId;
+    // this.selectedBoardId = boardId;
     axios
       .get(`https://api.trello.com/1/boards/${boardId}/lists/?key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
@@ -76,11 +77,13 @@ export class TrelloComponent {
       .catch(err => console.log(err.response));
   }
 
-  getTrelloCards(): void {
+  getCardsFromList(listId: string): void {
+    // this.selectedListId = listId;
     axios
-      .get(`https://api.trello.com/1/cards/5bd4c7061d87a7598e396abb?key=${this.API_KEY}&token=${this.API_TOKEN}`)
+      .get(`https://api.trello.com/1/cards/${listId}?key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
-        console.log(res);
+        console.info(`💳Getting cards for selected list: ${listId}`);
+        // console.log(res);
         this.selectedCardName = res.data.name;
         this.selectedCardDesc = res.data.desc;
         vscode.window.showInformationMessage(`Got card: ${this.selectedCardName}`);
@@ -101,7 +104,7 @@ export class TrelloComponent {
       if (err) {
         vscode.window.showErrorMessage("Error: unable to write to markdown file " + err);
       }
-      console.log(`Writing to file: ${tempTrelloFile}`);
+      console.log(`✍Writing to file: ${tempTrelloFile}`);
     });
 
     vscode.workspace.openTextDocument(tempTrelloFile)
@@ -115,6 +118,6 @@ export function removeTempTrelloFile(tempTrelloFileName: string) {
   const tempTrelloFile = userDataFolder.getPathCodeSettings() + tempTrelloFileName;
   fs.unlink(tempTrelloFile, (err) => {
     if (err) throw err;
-    console.log(`Deleted file: ${tempTrelloFile}`);
+    console.log(`❌Deleted file: ${tempTrelloFile}`);
   });
 }
