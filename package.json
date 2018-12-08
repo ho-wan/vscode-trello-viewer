@@ -11,6 +11,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onView:testView",
     "onCommand:trello.test",
     "onCommand:trello.setKey",
     "onCommand:trello.setToken",
@@ -57,6 +58,10 @@
     },
     "views": {
       "view-trello": [
+        {
+					"id": "testView",
+					"name": "Test View"
+				},
         {
           "id": "trello-cards",
           "name": "Trello Cards"
