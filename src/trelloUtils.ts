@@ -55,23 +55,42 @@ export class TrelloComponent {
       });
   }
 
-  getStarredBoards(): void {
+  async trelloApiRequest(url: string, key: string, token: string, filter?: string): Promise<any> {
+    try {
+      return await (axios.get(url, {
+        params: {
+          filter,
+          key,
+          token,
+        }
+      }))
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  async getStarredBoards(): Promise<any> {
     if (!this.checkCredentialsProvided()) {
       vscode.window.showWarningMessage('Credentials Missing: please provide API key and token to use.');
       return;
     }
 
-    axios.get(`/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
-      .then(res => {
-        console.log(`⭐getting starred boards`);
-        // console.log(res);
-        const boardNames = res.data.map((board: any) => board.name);
-        vscode.window.showInformationMessage('Starred Boards: ' + boardNames.join(', '));
-      })
-      .catch(err => {
-        console.log(err.response);
-        vscode.window.showErrorMessage('Error fetching from Trello API: please check credentials');
-      });
+    const boards = await this.trelloApiRequest('/1/members/me/boards', this.API_KEY, this.API_TOKEN, 'starred');
+    console.log('🅱 getting boards');
+    // console.log(boards.data);
+    return boards.data;
+
+    // axios.get(`/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
+    //   .then(res => {
+    //     console.log(`⭐getting starred boards`);
+    //     // console.log(res);
+    //     const boardNames = res.data.map((board: any) => board.name);
+    //     vscode.window.showInformationMessage('Starred Boards: ' + boardNames.join(', '));
+    //   })
+    //   .catch(err => {
+    //     console.log(err.response);
+    //     vscode.window.showErrorMessage('Error fetching from Trello API: please check credentials');
+    //   });
   }
 
   getListsFromBoard(boardId: string): void {
