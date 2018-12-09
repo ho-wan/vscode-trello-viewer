@@ -12,6 +12,7 @@
   ],
   "activationEvents": [
     "onView:testView",
+    "onView:trelloTreeView",
     "onCommand:trello.test",
     "onCommand:trello.setKey",
     "onCommand:trello.setToken",
@@ -44,19 +45,19 @@
         "title": "Trello: Get Lists For Selected Board"
       },
       {
-        "command": "trello.getCards",
-        "title": "Trello: Get Cards for Selected List"
+        "command": "trello.getCard",
+        "title": "Trello: Get Card"
       },
       {
         "command": "trello.showCard",
-        "title": "Trello: Show Card"
+        "title": "Trello: Show Selected Card"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "view-trello",
-          "title": "View Trello",
+          "title": "Trello",
           "icon": "images/T-D.png"
         }
       ]
@@ -68,16 +69,12 @@
 					"name": "Test View"
         },
         {
-          "id": "trello-boards",
-          "name": "Trello Boards"
+					"id": "trelloBoards",
+					"name": "Starred Boards"
         },
         {
-          "id": "trello-cards",
-          "name": "Trello Cards"
-        },
-        {
-          "id": "trello-list",
-          "name": "Trello Lists"
+          "id": "trelloCards",
+          "name": "Cards on Selected List"
         }
       ]
     }
