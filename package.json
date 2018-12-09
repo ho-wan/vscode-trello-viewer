@@ -69,8 +69,8 @@
 					"name": "Test View"
         },
         {
-					"id": "trelloBoards",
-					"name": "Starred Boards"
+					"id": "trelloTreeView",
+					"name": "Trello Tree View"
         },
         {
           "id": "trelloCards",

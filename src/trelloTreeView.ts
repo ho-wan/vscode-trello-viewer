@@ -1,9 +1,13 @@
 
 import * as vscode from 'vscode';
+import { TrelloComponent } from "./trelloUtils";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 
-	constructor() {
+	private trello: TrelloComponent;
+
+	constructor(trello: TrelloComponent) {
+		this.trello = trello;
 	}
 
 	getTreeItem(element: TrelloItem): vscode.TreeItem {

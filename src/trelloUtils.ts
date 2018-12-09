@@ -61,8 +61,7 @@ export class TrelloComponent {
       return;
     }
 
-    axios
-      .get(`/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
+    axios.get(`/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
         console.log(`⭐getting starred boards`);
         // console.log(res);
@@ -81,8 +80,7 @@ export class TrelloComponent {
       return;
     }
 
-    axios
-      .get(`/1/boards/${boardId}/lists/?key=${this.API_KEY}&token=${this.API_TOKEN}`)
+    axios.get(`/1/boards/${boardId}/lists/?key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
         console.info(`📜Getting lists for selected board: ${boardId}`);
         // console.log(res);
@@ -100,8 +98,7 @@ export class TrelloComponent {
       return;
     }
 
-    axios
-      .get(`/1/cards/${listId}?key=${this.API_KEY}&token=${this.API_TOKEN}`)
+    axios.get(`/1/cards/${listId}?key=${this.API_KEY}&token=${this.API_TOKEN}`)
       .then(res => {
         console.info(`💳Getting cards for selected list: ${listId}`);
         // console.log(res);
@@ -125,8 +122,8 @@ export class TrelloComponent {
     const cardBody = this.selectedCard.desc || '## No card description found ##';
     const cardContent =
       `${cardUrl}\n\n---\n` +
-      `## TITLE: \n${cardHeader}\n\n---\n` +
-      `## DESCRIPTION: \n${cardBody}\n\n---\n`;
+      `## TITLE:\n${cardHeader}\n\n---\n` +
+      `## DESCRIPTION:\n${cardBody}\n\n---\n`;
 
     // Get location of user's vs code folder to save temp markdown file
     const userDataFolder = new UserDataFolder();

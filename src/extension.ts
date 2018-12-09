@@ -6,10 +6,10 @@ import { TrelloTreeView } from "./trelloTreeView";
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
   // @ts-ignore
-  vscode.window.registerTreeDataProvider("testView", new TestView());
-  vscode.window.registerTreeDataProvider("trelloBoards", new TrelloTreeView());
-
   const trello = new TrelloComponent(context);
+  vscode.window.registerTreeDataProvider("testView", new TestView());
+  vscode.window.registerTreeDataProvider("trelloTreeView", new TrelloTreeView(trello));
+
   context.subscriptions.push(vscode.commands.registerCommand("trello.test", () => trello.getTrelloKeyToken()));
   context.subscriptions.push(vscode.commands.registerCommand("trello.setKey", () => trello.setTrelloKey()));
   context.subscriptions.push(vscode.commands.registerCommand("trello.setToken", () => trello.setTrelloToken()));

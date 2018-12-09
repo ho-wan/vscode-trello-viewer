@@ -14,14 +14,14 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
 	}
 
 	getTreeItem(element: Dependency): vscode.TreeItem {
-		console.log('🌲getting tree item');
+		// console.log('🌲getting tree item');
 		// console.log(element);
 		return element;
 	}
 	// vscode.window.showInformationMessage('Test', `Got API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
 
 	getChildren(element?: Dependency): Thenable<Dependency[]> {
-		console.log('👶getting children');
+		// console.log('👶getting children');
 		// console.log(element);
 		if (!element) {
 			const dep1 = new Dependency('Test', vscode.TreeItemCollapsibleState.None, {
