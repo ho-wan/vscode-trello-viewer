@@ -8,14 +8,20 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 	readonly onDidChangeTreeData: vscode.Event<TrelloItem | undefined> = this._onDidChangeTreeData.event;
 
 	private trello: TrelloComponent;
+	private trelloBoards: Array<object>;
 
 	constructor(trello: TrelloComponent) {
 		this.trello = trello;
+		this.trelloBoards = [];
+		this.refresh();
 	}
 
 	refresh(): void {
 		console.log('🕐 refreshing');
-		this._onDidChangeTreeData.fire();
+		this.trello.getStarredBoards().then(boards => {
+			this.trelloBoards = boards;
+			this._onDidChangeTreeData.fire();
+		});
 	}
 
 	getTreeItem(element: TrelloItem): vscode.TreeItem {
@@ -28,25 +34,21 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 		console.log('👶 getting children');
 		// console.log(element);
 		if (!element) {
-			const trelloBoards = this.trello.getStarredBoards();
-			trelloBoards.then((boards) => {
-				console.log('🅱 getting boards from TreeView');
-				console.log(boards);
-				const dep1 = new TrelloItem('Test', vscode.TreeItemCollapsibleState.None, {
+			if (this.trelloBoards === undefined || this.trelloBoards.length == 0) {
+				console.log('🤔 this.trelloBoards is null');
+				return Promise.resolve([]);
+			}
+			const boards = this.trelloBoards.map((board: any) => {
+				return new TrelloItem(board.name, vscode.TreeItemCollapsibleState.None, {
 					command: 'trello.test',
 					title: '',
 				});
-				return Promise.resolve([dep1]);
-			})
+			});
+			console.log('😃 getting boards for children');
+			// console.log(boards);
+			return Promise.resolve(boards);
 		}
-		// if (!element) {
-		// 	const dep1 = new TrelloItem('Test', vscode.TreeItemCollapsibleState.None, {
-		// 		command: 'trello.test',
-		// 		title: '',
-		// 	});
-		// 	return Promise.resolve([dep1]);
-		// }
-		console.log('🤔 return empty');
+		console.log('☹ no children');
 		return Promise.resolve([]);
 	};
 }

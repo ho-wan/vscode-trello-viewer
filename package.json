@@ -11,15 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:testView",
-    "onView:trelloTreeView",
-    "onCommand:trello.test",
-    "onCommand:trello.setKey",
-    "onCommand:trello.setToken",
-    "onCommand:trello.getBoards",
-    "onCommand:trello.getLists",
-    "onCommand:trello.getCards",
-    "onCommand:trello.showCard"
+    "*"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -51,30 +43,46 @@
       {
         "command": "trello.showCard",
         "title": "Trello: Show Selected Card"
+      },
+      {
+        "command": "trello.refresh",
+        "title": "Trello: Refresh",
+        "icon": {
+          "light": "images/light/refresh.svg",
+          "dark": "images/dark/refresh.svg"
+        }
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+            "command": "trello.refresh",
+            "group": "navigation"
+        }
+      ]
+    },
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "view-trello",
+          "id": "trello",
           "title": "Trello",
           "icon": "images/T-D.png"
         }
       ]
     },
     "views": {
-      "view-trello": [
+      "trello": [
         {
 					"id": "testView",
 					"name": "Test View"
         },
         {
 					"id": "trelloTreeView",
-					"name": "Trello Tree View"
+					"name": "Starred Boards"
         },
         {
           "id": "trelloCards",
-          "name": "Cards on Selected List"
+          "name": "Cards on Favourite List"
         }
       ]
     }

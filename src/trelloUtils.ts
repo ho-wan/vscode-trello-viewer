@@ -79,18 +79,6 @@ export class TrelloComponent {
     console.log('🅱 getting boards');
     // console.log(boards.data);
     return boards.data;
-
-    // axios.get(`/1/members/me/boards?filter=starred&key=${this.API_KEY}&token=${this.API_TOKEN}`)
-    //   .then(res => {
-    //     console.log(`⭐getting starred boards`);
-    //     // console.log(res);
-    //     const boardNames = res.data.map((board: any) => board.name);
-    //     vscode.window.showInformationMessage('Starred Boards: ' + boardNames.join(', '));
-    //   })
-    //   .catch(err => {
-    //     console.log(err.response);
-    //     vscode.window.showErrorMessage('Error fetching from Trello API: please check credentials');
-    //   });
   }
 
   getListsFromBoard(boardId: string): void {
