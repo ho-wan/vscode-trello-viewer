@@ -83,23 +83,21 @@ export class TrelloComponent {
     return boards.data;
   }
 
-  getListsFromBoard(boardId: string): void {
+  async getListsFromBoard(boardId: string): Promise<any> {
     if (!this.checkCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
 
-    axios
-      .get(`/1/boards/${boardId}/lists/?key=${this.API_KEY}&token=${this.API_TOKEN}`)
-      .then(res => {
-        console.info(`📜Getting lists for selected board: ${boardId}`);
-        // console.log(res);
-        vscode.window.showInformationMessage("Lists: " + res.data.map((list: any) => list.name).join(", "));
-      })
-      .catch(err => {
-        console.log(err.response);
-        vscode.window.showErrorMessage(`Error fetching lists from board: ${err.response.data}`);
-      });
+    if (boardId === '-1') {
+      vscode.window.showErrorMessage("Could not get Board ID");
+      return;
+    }
+
+    const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, this.API_KEY, this.API_TOKEN);
+    console.log("🅱 getting lists");
+    console.log(lists.data);
+    return lists.data;
   }
 
   getCardById(listId: string): void {
