@@ -3,15 +3,15 @@ export class UserDataFolder {
     let path: string;
     if (process.platform === "win32") {
       // windows
-      path = process.env.APPDATA || '';
+      path = process.env.APPDATA || "";
       return path;
     } else if (process.platform === "darwin" || process.platform === "linux") {
       // Mac or Linux
-      path = process.env.HOME || '';
+      path = process.env.HOME || "";
       return path;
     } else {
       console.log("Error: Platform not detected; only windows, mac and linux supported");
-      return '';
+      return "";
     }
   }
 
@@ -28,9 +28,9 @@ export class UserDataFolder {
       return codeSettingsPath;
     } else if (process.platform === "darwin" || process.platform === "linux") {
       if (process.platform === "darwin") {
-        codeSettingsPath += '/Library/Application Support';
+        codeSettingsPath += "/Library/Application Support";
       } else if (process.platform === "linux") {
-        codeSettingsPath += '/.config';
+        codeSettingsPath += "/.config";
       }
       if (process.execPath.match(/insiders/gi)) {
         codeSettingsPath += "/Code - Insiders/User/";
@@ -40,7 +40,7 @@ export class UserDataFolder {
       return codeSettingsPath;
     } else {
       console.log("Error: Platform not detected; only windows, mac and linux supported.");
-      return '';
+      return "";
     }
   }
 }
