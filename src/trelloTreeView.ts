@@ -62,24 +62,22 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
     const boardId : string = element.id;
     const boardLists = this.trelloBoards[boardId];
 
-    if (!this.trelloBoards[boardId]) {
+    if (!boardLists) {
 			// if no list, then get lists for selected board
 			console.log("🔷 getting lists");
 			this.trello.getListsFromBoard(element.id).then(lists => {
         this.trelloBoards[boardId] = lists;
-        console.log(this.trelloBoards);
+        // console.log(this.trelloBoards);
 				this._onDidChangeTreeData.fire();
 			});
 		} else {
       // show list
-      if (boardLists.length !== 0) {
-        const lists = boardLists.map((list: any) => {
-          // console.log(list);
-          return new TrelloItem(list.name, vscode.TreeItemCollapsibleState.Collapsed, list.id, TrelloItemType.LIST);
-        });
-        console.log("😃 got lists for children");
-        return Promise.resolve(lists);
-      }
+      const lists = boardLists.map((list: any) => {
+        // console.log(list);
+        return new TrelloItem(list.name, vscode.TreeItemCollapsibleState.Collapsed, list.id, TrelloItemType.LIST);
+      });
+      console.log("😃 got lists for children");
+      return Promise.resolve(lists);
 		}
     console.log("☹ no children");
     return Promise.resolve([]);
