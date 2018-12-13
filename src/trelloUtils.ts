@@ -96,7 +96,7 @@ export class TrelloComponent {
 
     const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, this.API_KEY, this.API_TOKEN);
     console.log("🅱 getting lists");
-    console.log(lists.data);
+    // console.log(lists.data);
     return lists.data;
   }
 
