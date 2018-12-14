@@ -113,39 +113,38 @@ export class TrelloComponent {
 
     const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, this.API_KEY, this.API_TOKEN);
     console.log("🎴 getting cards");
-    console.log(cards.data);
+    // console.log(cards.data);
     return cards.data;
   }
 
-  getCardById(listId: string): void {
+  async getCardById(cardId: string): Promise<any> {
     if (!this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
 
-    axios
-      .get(`/1/cards/${listId}?key=${this.API_KEY}&token=${this.API_TOKEN}`)
-      .then(res => {
-        console.info(`💳Getting cards for selected list: ${listId}`);
-        // console.log(res);
-        this.selectedCard = res.data;
-        vscode.window.showInformationMessage(`Got card: ${res.data.name}`);
-      })
-      .catch(err => {
-        console.log(err);
-        vscode.window.showErrorMessage(`Error fetching cards from list: ${err.response.data}`);
-      });
+    if (cardId === '-1') {
+      vscode.window.showErrorMessage("Could not get List ID");
+      return;
+    }
+
+    const card = await this.trelloApiRequest(`/1/cards/${cardId}`, this.API_KEY, this.API_TOKEN);
+    console.log("🎴 getting cards");
+    this.selectedCard = card;
+    console.log(card.data);
+    return card.data;
   }
 
-  showTrelloCard(): void {
-    if (!this.selectedCard) {
+  async showTrelloCard(card: any): Promise<any> {
+    // const card = await this.getCardById(cardId);
+    if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
     // Get content of card as markdown
-    const cardUrl = this.selectedCard.url || "## No url found ##";
-    const cardHeader = this.selectedCard.name || "## No card name found ##";
-    const cardBody = this.selectedCard.desc || "## No card description found ##";
+    const cardUrl = card.url || "## No url found ##";
+    const cardHeader = card.name || "## No card name found ##";
+    const cardBody = card.desc || "## No card description found ##";
     const cardContent =
       `${cardUrl}\n\n---\n` + `## TITLE:\n${cardHeader}\n\n---\n` + `## DESCRIPTION:\n${cardBody}\n\n---\n`;
 

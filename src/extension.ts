@@ -19,11 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("trello.getLists", () => trello.getListsFromBoard("5bd4c6f140a87f6b4e8ef868"))
   );
+  context.subscriptions.push(vscode.commands.registerCommand("trello.getCard", cardId => trello.getCardById(cardId)));
   context.subscriptions.push(
-    vscode.commands.registerCommand("trello.getCard", () => trello.getCardById("5bd4c7061d87a7598e396abb"))
-  );
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("trello.showCard", () => trello.showTrelloCard())
+    vscode.commands.registerTextEditorCommand("trello.showCard", (textEditor, textEditorEdit, card) =>
+      trello.showTrelloCard(card)
+    )
   );
 }
 
