@@ -7,7 +7,8 @@ import {
   TEMP_TRELLO_FILE_NAME,
   TRELLO_API_BASE_URL,
   SETTING_PREFIX,
-  SETTING_CONFIG
+  SETTING_CONFIG,
+  GLOBALSTATE_CONFIG,
 } from "./constants";
 
 export class TrelloComponent {
@@ -17,8 +18,7 @@ export class TrelloComponent {
 
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
-    this.API_KEY = this.globalState.get("trelloViewerApiKey");
-    this.API_TOKEN = this.globalState.get("trelloViewerApiToken");
+    this.getCredentials();
 
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
   }
@@ -27,19 +27,26 @@ export class TrelloComponent {
     return !!this.API_KEY && !!this.API_TOKEN;
   }
 
+  private getCredentials(): void {
+    this.API_KEY = this.globalState.get(GLOBALSTATE_CONFIG.API_KEY);
+    this.API_TOKEN = this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN);
+  }
+
   resetCredentials(): void {
-    this.globalState.update("trelloViewerApiKey", undefined);
-    this.globalState.update("trelloViewerApiToken", undefined);
+    this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, undefined);
+    this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, undefined);
   }
 
   async setCredentials(): Promise<void> {
-    this.API_KEY = await this.setTrelloCredential(false, "Your Trello API key");
-    this.API_TOKEN = await this.setTrelloCredential(true, "Your Trello API token");
-    this.globalState.update("trelloViewerApiKey", this.API_KEY);
-    this.globalState.update("trelloViewerApiToken", this.API_TOKEN);
+    const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
+    const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
+    if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
+    if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, apiToken);
+    this.getCredentials();
   }
 
-  getTrelloKeyToken(): void {
+  showTrelloKeyToken(): void {
+    this.getCredentials();
     vscode.window.showInformationMessage("Test", `API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
   }
 

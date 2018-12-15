@@ -25,7 +25,7 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
     if (!element) {
       const dep = [
         new Dependency("Check key and token", vscode.TreeItemCollapsibleState.None, {
-          command: "trelloViewer.test",
+          command: "trelloViewer.showTrelloKeyToken",
           title: ""
         }),
         new Dependency("Set credentials", vscode.TreeItemCollapsibleState.None, {

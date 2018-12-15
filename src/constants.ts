@@ -9,3 +9,8 @@ export const SETTING_PREFIX = "trelloViewer";
 export const SETTING_CONFIG = {
   VIEW_COLUMN: 'viewColumn',
 }
+
+export const GLOBALSTATE_CONFIG = {
+  API_KEY: 'trelloViewerApiKey',
+  API_TOKEN: 'trelloViewerApiToken',
+}
