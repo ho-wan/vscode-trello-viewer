@@ -29,18 +29,6 @@
         "title": "Trello: Set Token"
       },
       {
-        "command": "trello.getBoards",
-        "title": "Trello: Get Starred Boards"
-      },
-      {
-        "command": "trello.getLists",
-        "title": "Trello: Get Lists For Selected Board"
-      },
-      {
-        "command": "trello.getCard",
-        "title": "Trello: Get Card"
-      },
-      {
         "command": "trello.showCard",
         "title": "Trello: Show Selected Card"
       },
@@ -53,6 +41,17 @@
         }
       }
     ],
+    "configuration":{
+      "title": "Trello Viewer",
+      "properties": {
+        "trelloViewer.viewColumn" : {
+          "type": "integer",
+          "default": 2,
+          "description": "Specifies where markdown previewer opens at.\n -1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
+          "scope": "resource"
+        }
+      }
+    },
     "menus": {
       "view/title": [
         {

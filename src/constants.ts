@@ -1,0 +1,11 @@
+export const DEFAULT_VIEW_COLUMN = 2;
+
+export const TEMP_TRELLO_FILE_NAME = "~vscodeTrello.md";
+
+export const TRELLO_API_BASE_URL = "https://api.trello.com";
+
+export const SETTING_PREFIX = "trelloViewer";
+
+export const SETTING_CONFIG = {
+  VIEW_COLUMN: 'viewColumn',
+}

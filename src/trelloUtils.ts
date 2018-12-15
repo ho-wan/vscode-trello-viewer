@@ -2,9 +2,13 @@ import * as vscode from "vscode";
 import { writeFile, unlink } from "fs";
 import axios from "axios";
 import { UserDataFolder } from "./UserDataFolder";
-
-const TEMP_TRELLO_FILE_NAME = "~vscodeTrello.md";
-const TRELLO_API_BASE_URL = "https://api.trello.com";
+import {
+  DEFAULT_VIEW_COLUMN,
+  TEMP_TRELLO_FILE_NAME,
+  TRELLO_API_BASE_URL,
+  SETTING_PREFIX,
+  SETTING_CONFIG
+} from "./constants";
 
 export class TrelloComponent {
   private globalState: any;
@@ -124,7 +128,7 @@ export class TrelloComponent {
     }
 
     if (cardId === '-1') {
-      vscode.window.showErrorMessage("Could not get List ID");
+      vscode.window.showErrorMessage("Could not get Card ID");
       return;
     }
 
@@ -136,21 +140,20 @@ export class TrelloComponent {
   }
 
   async showTrelloCard(card: any): Promise<any> {
-    // const card = await this.getCardById(cardId);
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
+    console.log(card);
     // Get content of card as markdown
     const cardUrl = card.url || "## No url found ##";
     const cardHeader = card.name || "## No card name found ##";
     const cardBody = card.desc || "## No card description found ##";
     const cardContent =
-      `${cardUrl}\n\n---\n` + `## TITLE:\n${cardHeader}\n\n---\n` + `## DESCRIPTION:\n${cardBody}\n\n---\n`;
+      `${cardUrl}\n\n---\n## ===TITLE===\n${cardHeader}\n\n---\n## ===DESCRIPTION===\n${cardBody}\n\n---\n`;
 
     // Get location of user's vs code folder to save temp markdown file
-    const userDataFolder = new UserDataFolder();
-    const tempTrelloFile = userDataFolder.getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
+    const tempTrelloFile = (new UserDataFolder()).getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
     writeFile(tempTrelloFile, cardContent, err => {
       if (err) {
         vscode.window.showErrorMessage(`Error writing to temp file: ${err}`);
@@ -159,9 +162,16 @@ export class TrelloComponent {
     });
 
     // open markdown file and preview view
+    let viewColumn: vscode.ViewColumn = vscode.workspace
+        .getConfiguration(SETTING_PREFIX, null)
+        .get(SETTING_CONFIG.VIEW_COLUMN) || DEFAULT_VIEW_COLUMN;
+    if (!([-2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(viewColumn) > -1)) {
+      console.log(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${DEFAULT_VIEW_COLUMN}`);
+      viewColumn = DEFAULT_VIEW_COLUMN;
+    }
     vscode.workspace
       .openTextDocument(tempTrelloFile)
-      .then(doc => vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside, false))
+      .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
       .then(() => vscode.commands.executeCommand("markdown.showPreview"));
   }
 }
