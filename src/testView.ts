@@ -28,12 +28,12 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
           command: "trelloViewer.test",
           title: ""
         }),
-        new Dependency("Set key", vscode.TreeItemCollapsibleState.None, {
-          command: "trelloViewer.setKey",
+        new Dependency("Set credentials", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.setCredentials",
           title: ""
         }),
-        new Dependency("Set token", vscode.TreeItemCollapsibleState.None, {
-          command: "trelloViewer.setToken",
+        new Dependency("Reset credentials", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.resetCredentials",
           title: ""
         }),
       ];

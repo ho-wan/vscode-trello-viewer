@@ -12,60 +12,45 @@ import {
 
 export class TrelloComponent {
   private globalState: any;
-  private API_KEY: string;
-  private API_TOKEN: string;
+  private API_KEY: string | undefined;
+  private API_TOKEN: string | undefined;
 
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
-    this.API_KEY = this.getTrelloKey();
-    this.API_TOKEN = this.getTrelloToken();
+    this.API_KEY = this.globalState.get("trelloViewerApiKey");
+    this.API_TOKEN = this.globalState.get("trelloViewerApiToken");
 
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
   }
 
-  private getTrelloKey(): string {
-    return this.globalState.get("TRELLO_API_KEY") || "";
-  }
-
-  private getTrelloToken(): string {
-    return this.globalState.get("TRELLO_API_TOKEN") || "";
-  }
-
-  isCredentialsProvided(): boolean {
+  private isCredentialsProvided(): boolean {
     return !!this.API_KEY && !!this.API_TOKEN;
   }
 
+  resetCredentials(): void {
+    this.globalState.update("trelloViewerApiKey", undefined);
+    this.globalState.update("trelloViewerApiToken", undefined);
+  }
+
+  async setCredentials(): Promise<void> {
+    this.API_KEY = await this.setTrelloCredential(false, "Your Trello API key");
+    this.API_TOKEN = await this.setTrelloCredential(true, "Your Trello API token");
+    this.globalState.update("trelloViewerApiKey", this.API_KEY);
+    this.globalState.update("trelloViewerApiToken", this.API_TOKEN);
+  }
+
   getTrelloKeyToken(): void {
-    this.API_KEY = this.getTrelloKey();
-    this.API_TOKEN = this.getTrelloToken();
-    vscode.window.showInformationMessage("Test", `Got API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
+    vscode.window.showInformationMessage("Test", `API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
   }
 
-  setTrelloKey(): void {
-    vscode.window
-      .showInputBox({ ignoreFocusOut: true, password: false, placeHolder: "Your Trello API key" })
-      .then(res => {
-        if (res !== undefined) {
-          this.API_KEY = res;
-          this.globalState.update("TRELLO_API_KEY", res);
-        }
-      });
-  }
-
-  setTrelloToken(): void {
-    vscode.window
-      .showInputBox({ ignoreFocusOut: true, password: true, placeHolder: "Your Trello API token" })
-      .then(res => {
-        if (res !== undefined) {
-          this.API_TOKEN = res;
-          this.globalState.update("TRELLO_API_TOKEN", res);
-        }
-      });
+  setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
+    return vscode.window
+      .showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText })
   }
 
   trelloApiRequest(url: string, filter?: string): Promise<any> | undefined {
-    const key: string = this.API_KEY;
-    const token: string = this.API_TOKEN;
+    const key: string | undefined = this.API_KEY;
+    const token: string | undefined = this.API_TOKEN;
     return axios.get(url, {
       params: {
         filter,

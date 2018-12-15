@@ -12,8 +12,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.refresh", () => trelloTreeView.refresh()));
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.test", () => trelloViewer.getTrelloKeyToken()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setKey", () => trelloViewer.setTrelloKey()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setToken", () => trelloViewer.setTrelloToken()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.resetCredentials", () => trelloViewer.resetCredentials()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setCredentials", () => trelloViewer.setCredentials()));
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showCard", card => trelloViewer.showCard(card)));
 }
 
