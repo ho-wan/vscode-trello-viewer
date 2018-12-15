@@ -61,7 +61,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       const boardLists = this.trelloBoards[boardId];
 
       if (!boardLists) {
-
         console.log("🔷 getting lists");
         this.trello.getListsFromBoard(boardId).then(lists => {
           this.trelloBoards[boardId] = lists;

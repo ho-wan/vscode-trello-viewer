@@ -55,16 +55,8 @@ export class TrelloComponent {
       .showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText })
   }
 
-  trelloApiRequest(url: string, filter?: string): Promise<any> | undefined {
-    const key: string | undefined = this.API_KEY;
-    const token: string | undefined = this.API_TOKEN;
-    return axios.get(url, {
-      params: {
-        filter,
-        key,
-        token
-      }
-    });
+  trelloApiRequest(url: string, params: object): Promise<any> | undefined {
+    return axios.get(url, { params });
   }
 
   async getStarredBoards(): Promise<any> {
@@ -73,7 +65,11 @@ export class TrelloComponent {
       return;
     }
     try {
-      const boards = await this.trelloApiRequest("/1/members/me/boards", "starred");
+      const boards = await this.trelloApiRequest("/1/members/me/boards", {
+        filter: "starred",
+        key: this.API_KEY,
+        token: this.API_TOKEN
+      });
       console.log("🅱 getting boards");
       // console.log(boards.data);
       return boards.data;
@@ -94,7 +90,10 @@ export class TrelloComponent {
       return;
     }
     try {
-      const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`);
+      const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
+        key: this.API_KEY,
+        token: this.API_TOKEN
+      });
       console.log("🅱 getting lists");
       // console.log(lists.data);
       return lists.data;
@@ -116,7 +115,11 @@ export class TrelloComponent {
     }
 
     try {
-      const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`);
+      const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+        attachments: "cover"
+      });
       console.log("🎴 getting cards");
       // console.log(cards.data);
       return cards.data;
@@ -137,9 +140,12 @@ export class TrelloComponent {
       return;
     }
 
-    const card = await this.trelloApiRequest(`/1/cards/${cardId}`);
+    const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN
+    });
     console.log("🎴 getting cards");
-    console.log(card.data);
+    // console.log(card.data);
     return card.data;
   }
 
@@ -153,8 +159,10 @@ export class TrelloComponent {
     const cardUrl = card.url || "## No url found ##";
     const cardHeader = card.name || "## No card name found ##";
     const cardBody = card.desc || "## No card description found ##";
+    const cardCoverImageUrl = (card.attachments.length > 0) ?  card.attachments[0].url : "";
     const cardContent =
-      `${cardUrl}\n\n---\n## ===TITLE===\n${cardHeader}\n\n---\n## ===DESCRIPTION===\n${cardBody}\n\n---\n`;
+      `${cardUrl}\n\n---\n## ===TITLE===\n${cardHeader}\n\n---\n## ===DESCRIPTION===\n${cardBody}\n\n---\n` +
+      `<img src="${cardCoverImageUrl}" alt="no cover image" />`;
 
     // Get location of user's vs code folder to save temp markdown file
     const tempTrelloFile = (new UserDataFolder()).getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
@@ -176,7 +184,8 @@ export class TrelloComponent {
     vscode.workspace
       .openTextDocument(tempTrelloFile)
       .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
-      .then(() => vscode.commands.executeCommand("markdown.showPreview"));
+      .then(() => vscode.commands.executeCommand("markdown.showPreview"))
+      .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
   }
 }
 
