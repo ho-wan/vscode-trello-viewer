@@ -23,27 +23,21 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
     // console.log('👶getting children');
     // console.log(element);
     if (!element) {
-      const dep0 = new Dependency("Check key and token", vscode.TreeItemCollapsibleState.None, {
-        command: "trello.test",
-        title: ""
-      });
-      const dep1 = new Dependency("Get Boards", vscode.TreeItemCollapsibleState.None, {
-        command: "trello.getBoards",
-        title: ""
-      });
-      const dep2 = new Dependency("Get Lists", vscode.TreeItemCollapsibleState.None, {
-        command: "trello.getLists",
-        title: ""
-      });
-      const dep3 = new Dependency("Get Card", vscode.TreeItemCollapsibleState.None, {
-        command: "trello.getCard",
-        title: ""
-      });
-      const dep4 = new Dependency("Show Card", vscode.TreeItemCollapsibleState.None, {
-        command: "trello.showCard",
-        title: ""
-      });
-      return Promise.resolve([dep0, dep1, dep2, dep3, dep4]);
+      const dep = [
+        new Dependency("Check key and token", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.test",
+          title: ""
+        }),
+        new Dependency("Set key", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.setKey",
+          title: ""
+        }),
+        new Dependency("Set token", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.setToken",
+          title: ""
+        }),
+      ];
+      return Promise.resolve(dep);
     }
     return Promise.resolve([]);
   }

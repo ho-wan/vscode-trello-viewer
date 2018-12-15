@@ -15,8 +15,6 @@ export class TrelloComponent {
   private API_KEY: string;
   private API_TOKEN: string;
 
-  private selectedCard: any | undefined;
-
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
     this.API_KEY = this.getTrelloKey();
@@ -47,8 +45,10 @@ export class TrelloComponent {
     vscode.window
       .showInputBox({ ignoreFocusOut: true, password: false, placeHolder: "Your Trello API key" })
       .then(res => {
-        this.API_KEY = res || "";
-        this.globalState.update("TRELLO_API_KEY", res);
+        if (res !== undefined) {
+          this.API_KEY = res;
+          this.globalState.update("TRELLO_API_KEY", res);
+        }
       });
   }
 
@@ -56,23 +56,23 @@ export class TrelloComponent {
     vscode.window
       .showInputBox({ ignoreFocusOut: true, password: true, placeHolder: "Your Trello API token" })
       .then(res => {
-        this.API_TOKEN = res || "";
-        this.globalState.update("TRELLO_API_TOKEN", res);
+        if (res !== undefined) {
+          this.API_TOKEN = res;
+          this.globalState.update("TRELLO_API_TOKEN", res);
+        }
       });
   }
 
-  async trelloApiRequest(url: string, key: string, token: string, filter?: string): Promise<any> {
-    try {
-      return await axios.get(url, {
-        params: {
-          filter,
-          key,
-          token
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
+  trelloApiRequest(url: string, filter?: string): Promise<any> | undefined {
+    const key: string = this.API_KEY;
+    const token: string = this.API_TOKEN;
+    return axios.get(url, {
+      params: {
+        filter,
+        key,
+        token
+      }
+    });
   }
 
   async getStarredBoards(): Promise<any> {
@@ -80,11 +80,15 @@ export class TrelloComponent {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
-
-    const boards = await this.trelloApiRequest("/1/members/me/boards", this.API_KEY, this.API_TOKEN, "starred");
-    console.log("🅱 getting boards");
-    // console.log(boards.data);
-    return boards.data;
+    try {
+      const boards = await this.trelloApiRequest("/1/members/me/boards", "starred");
+      console.log("🅱 getting boards");
+      // console.log(boards.data);
+      return boards.data;
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      console.error(error);
+    }
   }
 
   async getListsFromBoard(boardId: string): Promise<any> {
@@ -97,11 +101,15 @@ export class TrelloComponent {
       vscode.window.showErrorMessage("Could not get Board ID");
       return;
     }
-
-    const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, this.API_KEY, this.API_TOKEN);
-    console.log("🅱 getting lists");
-    // console.log(lists.data);
-    return lists.data;
+    try {
+      const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`);
+      console.log("🅱 getting lists");
+      // console.log(lists.data);
+      return lists.data;
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      console.error(error);
+    }
   }
 
   async getCardsFromList(listId: string): Promise<any> {
@@ -115,10 +123,15 @@ export class TrelloComponent {
       return;
     }
 
-    const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, this.API_KEY, this.API_TOKEN);
-    console.log("🎴 getting cards");
-    // console.log(cards.data);
-    return cards.data;
+    try {
+      const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`);
+      console.log("🎴 getting cards");
+      // console.log(cards.data);
+      return cards.data;
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      console.error(error);
+    }
   }
 
   async getCardById(cardId: string): Promise<any> {
@@ -132,14 +145,13 @@ export class TrelloComponent {
       return;
     }
 
-    const card = await this.trelloApiRequest(`/1/cards/${cardId}`, this.API_KEY, this.API_TOKEN);
+    const card = await this.trelloApiRequest(`/1/cards/${cardId}`);
     console.log("🎴 getting cards");
-    this.selectedCard = card;
     console.log(card.data);
     return card.data;
   }
 
-  async showTrelloCard(card: any): Promise<any> {
+  async showCard(card: any): Promise<any> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;

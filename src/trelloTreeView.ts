@@ -92,7 +92,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         const cards = boardListCards.map((card: any) => {
           // console.log(card);
           return new TrelloItem(card.name, vscode.TreeItemCollapsibleState.None, card.id, TrelloItemType.CARD, listId, {
-            command: "trello.showCard",
+            command: "trelloViewer.showCard",
             title: "",
             arguments: [card]
           });

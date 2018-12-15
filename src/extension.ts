@@ -5,17 +5,16 @@ import { TrelloTreeView } from "./trelloTreeView";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
-  // @ts-ignore
-  const trello = new TrelloComponent(context);
-  const trelloTreeView = new TrelloTreeView(trello);
+  const trelloViewer = new TrelloComponent(context);
+  const trelloTreeView = new TrelloTreeView(trelloViewer);
   vscode.window.registerTreeDataProvider("testView", new TestView());
   vscode.window.registerTreeDataProvider("trelloTreeView", trelloTreeView);
 
-  context.subscriptions.push(vscode.commands.registerCommand("trello.refresh", () => trelloTreeView.refresh()));
-  context.subscriptions.push(vscode.commands.registerCommand("trello.test", () => trello.getTrelloKeyToken()));
-  context.subscriptions.push(vscode.commands.registerCommand("trello.setKey", () => trello.setTrelloKey()));
-  context.subscriptions.push(vscode.commands.registerCommand("trello.setToken", () => trello.setTrelloToken()));
-  context.subscriptions.push(vscode.commands.registerCommand("trello.showCard", card => trello.showTrelloCard(card)));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.refresh", () => trelloTreeView.refresh()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.test", () => trelloViewer.getTrelloKeyToken()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setKey", () => trelloViewer.setTrelloKey()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setToken", () => trelloViewer.setTrelloToken()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showCard", card => trelloViewer.showCard(card)));
 }
 
 export function deactivate() {
