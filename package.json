@@ -47,12 +47,16 @@
         "trelloViewer.viewColumn" : {
           "type": "integer",
           "default": 2,
-          "description": "Specifies where markdown previewer opens at.\n -1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
+          "description": "Specifies where markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
           "scope": "resource"
         }
       }
     },
     "menus": {
+      "commandPalette": [{
+        "command": "trelloViewer.showCard",
+        "when": "false"
+      }],
       "view/title": [
         {
           "command": "trelloViewer.refresh",
@@ -81,8 +85,8 @@
           "name": "Starred Boards"
         },
         {
-          "id": "trelloCards",
-          "name": "Cards on Favourite List"
+          "id": "trelloViewSelectedList",
+          "name": "Selected List"
         }
       ]
     }

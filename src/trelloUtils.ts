@@ -50,12 +50,12 @@ export class TrelloComponent {
     vscode.window.showInformationMessage("Test", `API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
   }
 
-  setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
+  private setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
     return vscode.window
       .showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText })
   }
 
-  trelloApiRequest(url: string, params: object): Promise<any> | undefined {
+  private trelloApiRequest(url: string, params: object): Promise<any> | undefined {
     return axios.get(url, { params });
   }
 

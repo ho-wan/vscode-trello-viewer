@@ -20,7 +20,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   refresh(): void {
     console.log("🕐 refreshing");
     this.trello.getStarredBoards().then(boards => {
-      this.trelloBoards = {};
       this.trelloBoards = { boards };
       // console.log(this.trelloBoards);
       this._onDidChangeTreeData.fire();
@@ -120,7 +119,7 @@ export class TrelloItem extends vscode.TreeItem {
   contextValue = "trelloItem";
 }
 
-enum TrelloItemType {
+export enum TrelloItemType {
 	BOARD,
 	LIST,
 	CARD

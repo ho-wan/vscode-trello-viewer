@@ -2,19 +2,22 @@ import * as vscode from "vscode";
 import { TrelloComponent, removeTempTrelloFile } from "./trelloUtils";
 import { TestView } from "./testView";
 import { TrelloTreeView } from "./trelloTreeView";
+import { TrelloViewSelectedList } from "./trelloViewSelectedList";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "trello" is now active!');
-  const trelloViewer = new TrelloComponent(context);
-  const trelloTreeView = new TrelloTreeView(trelloViewer);
+  const trello = new TrelloComponent(context);
+  const trelloTreeView = new TrelloTreeView(trello);
+  const trelloViewSelectedList = new TrelloViewSelectedList(trello);
   vscode.window.registerTreeDataProvider("testView", new TestView());
   vscode.window.registerTreeDataProvider("trelloTreeView", trelloTreeView);
+  vscode.window.registerTreeDataProvider("trelloViewSelectedList", trelloViewSelectedList);
 
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.refresh", () => trelloTreeView.refresh()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showTrelloKeyToken", () => trelloViewer.showTrelloKeyToken()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.resetCredentials", () => trelloViewer.resetCredentials()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setCredentials", () => trelloViewer.setCredentials()));
-  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showCard", card => trelloViewer.showCard(card)));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showTrelloKeyToken", () => trello.showTrelloKeyToken()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.resetCredentials", () => trello.resetCredentials()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setCredentials", () => trello.setCredentials()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showCard", card => trello.showCard(card)));
 }
 
 export function deactivate() {
