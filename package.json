@@ -37,7 +37,7 @@
         }
       },
       {
-        "command": "trelloViewer.setSelectedList",
+        "command": "trelloViewer.setSelectedListByClick",
         "title": "Trello: Set Selected List",
         "icon": {
           "light": "images/light/star.svg",
@@ -61,18 +61,19 @@
         {
           "command": "trelloViewer.refresh",
           "when": "view == trelloTreeView",
-          "group": "navigation"
+          "group": "navigation@5"
         },
         {
           "command": "trelloViewer.refreshSelectedList",
           "when": "view == trelloViewSelectedList",
-          "group": "navigation"
+          "group": "navigation@5"
         }
       ],
       "view/item/context": [
         {
-          "command": "trelloViewer.setSelectedList",
-          "when": "view == trelloTreeView"
+          "command": "trelloViewer.setSelectedListByClick",
+          "when": "view == trelloTreeView && viewItem == list",
+          "group": "inline@5"
         }
       ]
     },
@@ -98,6 +99,12 @@
         {
           "id": "trelloViewSelectedList",
           "name": "Selected List"
+        }
+      ],
+      "scm": [
+        {
+            "id": "trelloViewer.trelloTreeView:scm",
+            "name": "Trello Viewer: Tree View"
         }
       ]
     }

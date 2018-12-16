@@ -77,9 +77,19 @@ export class TrelloComponent {
   }
 
   async setSelectedListId(): Promise<void> {
-    const selectedListId = await this.setTrelloCredential(false, "Your Trello API key");
+    const selectedListId = await this.setTrelloCredential(false, "Set Selected List by ID");
     if (selectedListId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, selectedListId);
     this.getSelectedList();
+  }
+
+  setSelectedListByClick(trelloItem: any): void {
+    // console.log('clicked set select list');
+    // console.log(trelloItem);
+    if (!trelloItem.id) {
+      vscode.window.showErrorMessage("Could not get valid List ID");
+      return;
+    }
+    this.setSelectedList(trelloItem.id);
   }
 
   setSelectedList(listId: string): void {

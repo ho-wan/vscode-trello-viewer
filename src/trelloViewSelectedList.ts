@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { TrelloComponent } from "./trelloUtils";
-import { TrelloItem, TrelloItemType } from "./trelloTreeView";
+import { TrelloItem } from "./trelloTreeView";
+import { TRELLO_ITEM_TYPE } from "./constants";
 
 export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -42,13 +43,13 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
         return Promise.resolve([]);
       }
       // add boards to tree view
-      const list = new TrelloItem(this.selectedList.name, vscode.TreeItemCollapsibleState.Expanded, this.selectedList.id, TrelloItemType.LIST, `id: ${this.selectedList.id}`);
+      const list = new TrelloItem(this.selectedList.name, vscode.TreeItemCollapsibleState.Expanded, this.selectedList.id, TRELLO_ITEM_TYPE.LIST, `id: ${this.selectedList.id}`);
       console.log("😃 got list for children");
       // console.log(boards);
       return Promise.resolve([list]);
     }
 
-  if (element.type === TrelloItemType.LIST) {
+  if (element.type === TRELLO_ITEM_TYPE.LIST) {
     const listId: string = element.id;
     const selectedListCards = this.selectedList[listId];
 
@@ -61,7 +62,7 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
     } else {
       // console.log(selectedListCards);
       const cards = selectedListCards.map((card: any) => {
-        return new TrelloItem(card.name, vscode.TreeItemCollapsibleState.None, card.id, TrelloItemType.CARD, `id: ${card.id}`, listId, {
+        return new TrelloItem(card.name, vscode.TreeItemCollapsibleState.None, card.id, TRELLO_ITEM_TYPE.CARD, `id: ${card.id}`, listId, {
           command: "trelloViewer.showCard",
           title: "",
           arguments: [card]

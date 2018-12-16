@@ -20,6 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setCredentials", () => trello.setCredentials()));
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setSelectedList", listId => trello.setSelectedList(listId)));
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setSelectedListId", () => trello.setSelectedListId()));
+  context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.setSelectedListByClick", trelloItem => trello.setSelectedListByClick(trelloItem)));
   context.subscriptions.push(vscode.commands.registerCommand("trelloViewer.showCard", card => trello.showCard(card)));
 }
 
