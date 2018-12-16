@@ -25,7 +25,7 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
     if (!element) {
       const dep = [
         new Dependency("Check key and token", vscode.TreeItemCollapsibleState.None, {
-          command: "trelloViewer.showTrelloKeyToken",
+          command: "trelloViewer.showTrelloInfo",
           title: ""
         }),
         new Dependency("Set credentials", vscode.TreeItemCollapsibleState.None, {
@@ -34,6 +34,10 @@ export class TestView implements vscode.TreeDataProvider<Dependency> {
         }),
         new Dependency("Reset credentials", vscode.TreeItemCollapsibleState.None, {
           command: "trelloViewer.resetCredentials",
+          title: ""
+        }),
+        new Dependency("Set selected list id", vscode.TreeItemCollapsibleState.None, {
+          command: "trelloViewer.setSelectedListId",
           title: ""
         }),
       ];

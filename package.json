@@ -21,20 +21,16 @@
         "title": "Trello: Check Key and Token"
       },
       {
-        "command": "trelloViewer.setKey",
-        "title": "Trello: Set Key"
-      },
-      {
-        "command": "trelloViewer.setToken",
-        "title": "Trello: Set Token"
-      },
-      {
-        "command": "trelloViewer.showCard",
-        "title": "Trello: Show Selected Card"
-      },
-      {
         "command": "trelloViewer.refresh",
         "title": "Trello: Refresh",
+        "icon": {
+          "light": "images/light/refresh.svg",
+          "dark": "images/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.refreshSelectedList",
+        "title": "Trello: Refresh Selected List",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
@@ -53,14 +49,15 @@
       }
     },
     "menus": {
-      "commandPalette": [{
-        "command": "trelloViewer.showCard",
-        "when": "false"
-      }],
       "view/title": [
         {
           "command": "trelloViewer.refresh",
           "when": "view == trelloTreeView",
+          "group": "navigation"
+        },
+        {
+          "command": "trelloViewer.refreshSelectedList",
+          "when": "view == trelloViewSelectedList",
           "group": "navigation"
         }
       ]

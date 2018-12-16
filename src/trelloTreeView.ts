@@ -48,7 +48,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 			// add boards to tree view
       const boards = this.trelloBoards.boards.map((board: any) => {
 				// console.log(board);
-        return new TrelloItem(board.name, vscode.TreeItemCollapsibleState.Collapsed, board.id, TrelloItemType.BOARD);
+        return new TrelloItem(board.name, vscode.TreeItemCollapsibleState.Collapsed, board.id, TrelloItemType.BOARD, `id: ${board.id}`);
       });
       console.log("😃 got boards for children");
       // console.log(boards);
@@ -69,7 +69,11 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       } else {
         const lists = boardLists.map((list: any) => {
           // console.log(list);
-          return new TrelloItem(list.name, vscode.TreeItemCollapsibleState.Collapsed, list.id, TrelloItemType.LIST, boardId);
+          return new TrelloItem(list.name, vscode.TreeItemCollapsibleState.Collapsed, list.id, TrelloItemType.LIST, `id: ${list.id}`, boardId, {
+            command: "trelloViewer.setSelectedList",
+            title: "",
+            arguments: [list.id]
+          });
         });
         console.log(`😃 got lists from board ${boardId}`);
         return Promise.resolve(lists);
@@ -89,7 +93,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       } else {
         const cards = boardListCards.map((card: any) => {
           // console.log(card);
-          return new TrelloItem(card.name, vscode.TreeItemCollapsibleState.None, card.id, TrelloItemType.CARD, listId, {
+          return new TrelloItem(card.name, vscode.TreeItemCollapsibleState.None, card.id, TrelloItemType.CARD, `id: ${card.id}`, listId, {
             command: "trelloViewer.showCard",
             title: "",
             arguments: [card]
@@ -110,6 +114,7 @@ export class TrelloItem extends vscode.TreeItem {
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly id: string,
     public readonly type: TrelloItemType,
+		public readonly tooltip?: string,
 		public readonly parentId?: string,
 		public readonly command?: vscode.Command,
   ) {

@@ -15,12 +15,14 @@ export class TrelloComponent {
   private globalState: any;
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
+  private SELECTED_LIST_ID: string | undefined;
 
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
-    this.getCredentials();
-
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
+
+    this.getCredentials();
+    this.getSelectedList();
   }
 
   private isCredentialsProvided(): boolean {
@@ -33,8 +35,12 @@ export class TrelloComponent {
   }
 
   resetCredentials(): void {
-    this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, undefined);
-    this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, undefined);
+    Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
+      // @ts-ignore
+      const value: string = GLOBALSTATE_CONFIG[key];
+      this.globalState.update(value, undefined)
+    });
+    vscode.window.showInformationMessage("Credentials have been reset");
   }
 
   async setCredentials(): Promise<void> {
@@ -45,9 +51,16 @@ export class TrelloComponent {
     this.getCredentials();
   }
 
-  showTrelloKeyToken(): void {
+  showTrelloInfo(): void {
     this.getCredentials();
-    vscode.window.showInformationMessage("Test", `API key: ${this.API_KEY}`, `API token: ${this.API_TOKEN}`);
+    this.getSelectedList();
+    let info: string = '';
+    Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
+      // @ts-ignore#
+      const value: string = this.globalState.get(GLOBALSTATE_CONFIG[key]);
+      info += `${key}: ${value}, `;
+    });
+    vscode.window.showInformationMessage(info);
   }
 
   private setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
@@ -57,6 +70,55 @@ export class TrelloComponent {
 
   private trelloApiRequest(url: string, params: object): Promise<any> | undefined {
     return axios.get(url, { params });
+  }
+
+  getSelectedList(): void {
+    this.SELECTED_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.SELECTED_LIST_ID);
+  }
+
+  async setSelectedListId(): Promise<void> {
+    const selectedListId = await this.setTrelloCredential(false, "Your Trello API key");
+    if (selectedListId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, selectedListId);
+    this.getSelectedList();
+  }
+
+  setSelectedList(listId: string): void {
+    console.log(`Setting selected list: ${listId}`);
+    if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, listId);
+    this.getSelectedList();
+  }
+
+  async getInitialSelectedList(): Promise<any> {
+    if (!this.SELECTED_LIST_ID) {
+      console.log('no list selected');
+      return;
+    };
+    return this.getListById(this.SELECTED_LIST_ID);
+  }
+
+  async getListById(listId: string): Promise<any> {
+    if (!this.isCredentialsProvided()) {
+      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
+      return;
+    }
+
+    if (listId === '-1') {
+      vscode.window.showErrorMessage("Could not get List ID");
+      return;
+    }
+
+    try {
+      const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      });
+      console.log("📃 getting list by id");
+      console.log(list.data);
+      return list.data;
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      console.error(error);
+    }
   }
 
   async getStarredBoards(): Promise<any> {
@@ -154,7 +216,7 @@ export class TrelloComponent {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
-    console.log(card);
+    // console.log(card);
     // Get content of card as markdown
     const cardUrl = card.url || "## No url found ##";
     const cardHeader = card.name || "## No card name found ##";

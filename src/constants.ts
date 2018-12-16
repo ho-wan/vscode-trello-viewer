@@ -13,4 +13,5 @@ export const SETTING_CONFIG = {
 export const GLOBALSTATE_CONFIG = {
   API_KEY: 'trelloViewerApiKey',
   API_TOKEN: 'trelloViewerApiToken',
+  SELECTED_LIST_ID: 'trelloViewerSelectedListId',
 }
