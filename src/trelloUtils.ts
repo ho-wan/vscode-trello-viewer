@@ -107,6 +107,30 @@ export class TrelloComponent {
     return this.getListById(this.SELECTED_LIST_ID);
   }
 
+  async getBoardById(boardId: string): Promise<any> {
+    if (!this.isCredentialsProvided()) {
+      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
+      return;
+    }
+    if (boardId === '-1') {
+      vscode.window.showErrorMessage("Could not get List ID");
+      return;
+    }
+
+    try {
+      const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      });
+      console.log("⬜ getting board by id");
+      // console.log(board.data);
+      return board.data;
+    } catch (error) {
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      console.error(error);
+    }
+  }
+
   async getListById(listId: string): Promise<any> {
     if (!this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
