@@ -282,6 +282,10 @@ export class TrelloComponent {
       .then(() => vscode.commands.executeCommand("markdown.showPreview"))
       .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
   }
+
+  showInfoMessage(info: string) {
+    vscode.window.showInformationMessage(`${info}`);
+  }
 }
 
 export function removeTempTrelloFile() {

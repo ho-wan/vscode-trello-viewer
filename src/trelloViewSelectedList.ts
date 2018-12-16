@@ -53,34 +53,51 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
         return Promise.resolve([]);
       }
 
-      if (this.selectedListParentBoard) {
-        const board = new TrelloItem(
-          this.selectedListParentBoard.name,
+      const board = this.selectedListParentBoard;
+      if (board) {
+        // add board to tree view
+        const info = `URL: ${board.url}, Trello ${TRELLO_ITEM_TYPE.BOARD}, Name: ${board.name}, ID: ${board.id}`;
+        const trelloItemBoard = new TrelloItem(
+          board.name,
           vscode.TreeItemCollapsibleState.Expanded,
-          this.selectedListParentBoard.id,
+          board.id,
           TRELLO_ITEM_TYPE.BOARD,
-          `id: ${this.selectedListParentBoard.id}`
+          `id: ${board.id}`,
+          undefined,
+          {
+            command: "trelloViewer.showInfoMessage",
+            title: "",
+            arguments: [info],
+          }
         );
-        return Promise.resolve([board]);
+        return Promise.resolve([trelloItemBoard]);
       }
       console.log("🤔 unable to get parent board of selected list");
       return Promise.resolve([]);
     } else if (element.type === TRELLO_ITEM_TYPE.BOARD) {
       // add list to tree view
-      const list = new TrelloItem(
-        this.selectedList.name,
+      const list = this.selectedList;
+      const info = `Trello ${TRELLO_ITEM_TYPE.LIST}, Name: ${list.name}, ID: ${list.id}, Board ID: ${list.idBoard}`;
+      const trelloItemList = new TrelloItem(
+        list.name,
         vscode.TreeItemCollapsibleState.Expanded,
-        this.selectedList.id,
+        list.id,
         TRELLO_ITEM_TYPE.LIST,
-        `id: ${this.selectedList.id}`
+        `id: ${list.id}`,
+        list.idBoard,
+        {
+          command: "trelloViewer.showInfoMessage",
+          title: "",
+          arguments: [info],
+        }
       );
       console.log("😃 got list for children");
       // console.log(boards);
-      return Promise.resolve([list]);
+      return Promise.resolve([trelloItemList]);
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
+      // add cards to tree view
       const listId: string = element.id;
       const selectedListCards = this.selectedList[listId];
-
       this.getParent(element);
 
       if (!selectedListCards) {

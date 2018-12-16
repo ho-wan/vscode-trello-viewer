@@ -47,19 +47,26 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         return Promise.resolve([]);
       }
       // add boards to tree view
-      const boards = this.trelloBoards.boards.map((board: any) => {
+      const trelloItemBoards = this.trelloBoards.boards.map((board: any) => {
         // console.log(board);
+        const info = `URL: ${board.url}, Trello ${TRELLO_ITEM_TYPE.BOARD}, Name: ${board.name}, ID: ${board.id}`;
         return new TrelloItem(
           board.name,
           vscode.TreeItemCollapsibleState.Collapsed,
           board.id,
           TRELLO_ITEM_TYPE.BOARD,
-          `id: ${board.id}`
+          `id: ${board.id}`,
+          undefined,
+          {
+            command: "trelloViewer.showInfoMessage",
+            title: "",
+            arguments: [info],
+          }
         );
       });
       console.log("😃 got boards for children");
       // console.log(boards);
-      return Promise.resolve(boards);
+      return Promise.resolve(trelloItemBoards);
     } else if (element.type === TRELLO_ITEM_TYPE.BOARD) {
       const boardId: string = element.id;
       const boardLists = this.trelloBoards[boardId];
@@ -72,19 +79,25 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
           this._onDidChangeTreeData.fire();
         });
       } else {
-        const lists = boardLists.map((list: any) => {
+        const trelloItemLists = boardLists.map((list: any) => {
           // console.log(list);
+          const info = `Trello ${TRELLO_ITEM_TYPE.LIST}, Name: ${list.name}, ID: ${list.id}, Board ID: ${boardId}`;
           return new TrelloItem(
             list.name,
             vscode.TreeItemCollapsibleState.Collapsed,
             list.id,
             TRELLO_ITEM_TYPE.LIST,
             `id: ${list.id}`,
-            boardId
+            boardId,
+            {
+              command: "trelloViewer.showInfoMessage",
+              title: "",
+              arguments: [info],
+            }
           );
         });
         console.log(`😃 got lists from board ${boardId}`);
-        return Promise.resolve(lists);
+        return Promise.resolve(trelloItemLists);
       }
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
       const boardId: string = element.parentId || "-1";
@@ -99,7 +112,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
           this._onDidChangeTreeData.fire();
         });
       } else {
-        const cards = boardListCards.map((card: any) => {
+        const trelloItemCards = boardListCards.map((card: any) => {
           // console.log(card);
           return new TrelloItem(
             card.name,
@@ -116,7 +129,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
           );
         });
         console.log(`😃 got cards from list ${listId}`);
-        return Promise.resolve(cards);
+        return Promise.resolve(trelloItemCards);
       }
     }
     console.log("☹ no children");
