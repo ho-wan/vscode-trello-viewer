@@ -86,6 +86,7 @@ export class TrelloComponent {
     console.log(`Setting selected list: ${listId}`);
     if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, listId);
     this.getSelectedList();
+    vscode.commands.executeCommand("trelloViewer.refreshSelectedList");
   }
 
   async getInitialSelectedList(): Promise<any> {
@@ -101,7 +102,6 @@ export class TrelloComponent {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
-
     if (listId === '-1') {
       vscode.window.showErrorMessage("Could not get List ID");
       return;
@@ -113,7 +113,7 @@ export class TrelloComponent {
         token: this.API_TOKEN,
       });
       console.log("📃 getting list by id");
-      console.log(list.data);
+      // console.log(list.data);
       return list.data;
     } catch (error) {
       vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
@@ -146,11 +146,11 @@ export class TrelloComponent {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
-
     if (boardId === '-1') {
       vscode.window.showErrorMessage("Could not get Board ID");
       return;
     }
+
     try {
       const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
         key: this.API_KEY,
@@ -170,7 +170,6 @@ export class TrelloComponent {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return;
     }
-
     if (listId === '-1') {
       vscode.window.showErrorMessage("Could not get List ID");
       return;
