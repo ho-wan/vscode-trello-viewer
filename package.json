@@ -35,6 +35,14 @@
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
         }
+      },
+      {
+        "command": "trelloViewer.setSelectedList",
+        "title": "Trello: Set Selected List",
+        "icon": {
+          "light": "images/light/star.svg",
+          "dark": "images/dark/star.svg"
+        }
       }
     ],
     "configuration": {
@@ -59,6 +67,12 @@
           "command": "trelloViewer.refreshSelectedList",
           "when": "view == trelloViewSelectedList",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "trelloViewer.setSelectedList",
+          "when": "view == trelloTreeView"
         }
       ]
     },
