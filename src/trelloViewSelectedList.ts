@@ -42,7 +42,7 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
         return Promise.resolve([]);
       }
       // add boards to tree view
-      const list = new TrelloItem(this.selectedList.name, vscode.TreeItemCollapsibleState.Collapsed, this.selectedList.id, TrelloItemType.LIST, `id: ${this.selectedList.id}`);
+      const list = new TrelloItem(this.selectedList.name, vscode.TreeItemCollapsibleState.Expanded, this.selectedList.id, TrelloItemType.LIST, `id: ${this.selectedList.id}`);
       console.log("😃 got list for children");
       // console.log(boards);
       return Promise.resolve([list]);

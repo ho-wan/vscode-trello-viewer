@@ -37,10 +37,10 @@
         }
       }
     ],
-    "configuration":{
+    "configuration": {
       "title": "Trello Viewer",
       "properties": {
-        "trelloViewer.viewColumn" : {
+        "trelloViewer.viewColumn": {
           "type": "integer",
           "default": 2,
           "description": "Specifies where markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
