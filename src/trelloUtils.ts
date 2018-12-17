@@ -41,6 +41,7 @@ export class TrelloComponent {
       this.globalState.update(value, undefined)
     });
     vscode.window.showInformationMessage("Credentials have been reset");
+    this.getCredentials();
   }
 
   async setCredentials(): Promise<void> {
@@ -68,8 +69,17 @@ export class TrelloComponent {
       .showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText })
   }
 
-  private trelloApiRequest(url: string, params: object): Promise<any> | undefined {
-    return axios.get(url, { params });
+  private async trelloApiRequest(url: string, params: object): Promise<any> {
+    if (!this.isCredentialsProvided()) {
+      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
+      return Promise.reject(new Error('Credentials Missing'));
+    }
+
+    return axios.get(url, { params })
+      .catch(err => {
+        console.log(err);
+        vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      });
   }
 
   getSelectedList(): void {
@@ -108,133 +118,57 @@ export class TrelloComponent {
   }
 
   async getBoardById(boardId: string): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-    if (boardId === '-1') {
-      vscode.window.showErrorMessage("Could not get List ID");
-      return;
-    }
-
-    try {
-      const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      });
-      console.log("⬜ getting board by id");
-      // console.log(board.data);
-      return board.data;
-    } catch (error) {
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      console.error(error);
-    }
+    const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+    console.log("⬜ getting board by id");
+    // console.log(board.data);
+    return board.data;
   }
 
   async getListById(listId: string): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-    if (listId === '-1') {
-      vscode.window.showErrorMessage("Could not get List ID");
-      return;
-    }
-
-    try {
-      const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      });
-      console.log("📃 getting list by id");
-      // console.log(list.data);
-      return list.data;
-    } catch (error) {
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      console.error(error);
-    }
+    const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+    console.log("📃 getting list by id");
+    // console.log(list.data);
+    return list.data;
   }
 
   async getStarredBoards(): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-    try {
-      const boards = await this.trelloApiRequest("/1/members/me/boards", {
-        filter: "starred",
-        key: this.API_KEY,
-        token: this.API_TOKEN
-      });
-      console.log("🅱 getting boards");
-      // console.log(boards.data);
-      return boards.data;
-    } catch (error) {
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      console.error(error);
-    }
+    const boards = await this.trelloApiRequest("/1/members/me/boards", {
+      filter: "starred",
+      key: this.API_KEY,
+      token: this.API_TOKEN
+    });
+    console.log("🅱 getting boards");
+    return boards.data;
   }
 
   async getListsFromBoard(boardId: string): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-    if (boardId === '-1') {
-      vscode.window.showErrorMessage("Could not get Board ID");
-      return;
-    }
-
-    try {
-      const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
-        key: this.API_KEY,
-        token: this.API_TOKEN
-      });
-      console.log("🅱 getting lists");
-      // console.log(lists.data);
-      return lists.data;
-    } catch (error) {
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      console.error(error);
-    }
+    const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN
+    });
+    console.log("🅱 getting lists");
+    // console.log(lists.data);
+    return lists.data;
   }
 
   async getCardsFromList(listId: string): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-    if (listId === '-1') {
-      vscode.window.showErrorMessage("Could not get List ID");
-      return;
-    }
-
-    try {
-      const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-        attachments: "cover"
-      });
-      console.log("🎴 getting cards");
-      // console.log(cards.data);
-      return cards.data;
-    } catch (error) {
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      console.error(error);
-    }
+    const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      attachments: "cover"
+    });
+    console.log("🎴 getting cards");
+    // console.log(cards.data);
+    return cards.data;
   }
 
   async getCardById(cardId: string): Promise<any> {
-    if (!this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return;
-    }
-
-    if (cardId === '-1') {
-      vscode.window.showErrorMessage("Could not get Card ID");
-      return;
-    }
-
     const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN

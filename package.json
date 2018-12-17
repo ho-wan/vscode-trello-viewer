@@ -51,7 +51,7 @@
         "trelloViewer.viewColumn": {
           "type": "integer",
           "default": 2,
-          "description": "Specifies where markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
+          "description": "Specifies which editor column markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
           "scope": "resource"
         }
       }
