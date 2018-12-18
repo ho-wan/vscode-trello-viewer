@@ -21,6 +21,30 @@
         "title": "Trello: Check Key and Token"
       },
       {
+        "command": "trelloViewer.setCredentials",
+        "title": "Trello: Set Credentials",
+        "icon": {
+          "light": "images/light/key.svg",
+          "dark": "images/dark/key.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.resetCredentials",
+        "title": "Trello: Reset Credentials",
+        "icon": {
+          "light": "images/light/x.svg",
+          "dark": "images/dark/x.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.showTrelloInfo",
+        "title": "Trello: Show Saved Credentials",
+        "icon": {
+          "light": "images/light/eye.svg",
+          "dark": "images/dark/eye.svg"
+        }
+      },
+      {
         "command": "trelloViewer.refresh",
         "title": "Trello: Refresh",
         "icon": {
@@ -38,7 +62,7 @@
       },
       {
         "command": "trelloViewer.setSelectedListByClick",
-        "title": "Trello: Set Selected List",
+        "title": "Trello: Set Selected List By Click",
         "icon": {
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
@@ -57,11 +81,32 @@
       }
     },
     "menus": {
+      "commandPalette": [
+        {
+          "command": "trelloViewer.setSelectedListByClick",
+          "when": "false"
+        }
+      ],
       "view/title": [
+        {
+          "command": "trelloViewer.setCredentials",
+          "when": "view == trelloTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "trelloViewer.resetCredentials",
+          "when": "view == trelloTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "trelloViewer.showTrelloInfo",
+          "when": "view == trelloTreeView",
+          "group": "navigation@3"
+        },
         {
           "command": "trelloViewer.refresh",
           "when": "view == trelloTreeView",
-          "group": "navigation@5"
+          "group": "navigation@4"
         },
         {
           "command": "trelloViewer.refreshSelectedList",
@@ -82,7 +127,7 @@
         {
           "id": "trelloViewer",
           "title": "Trello Viewer",
-          "icon": "images/T-D.png"
+          "icon": "images/dark/browser.svg"
         }
       ]
     },
@@ -99,12 +144,6 @@
         {
           "id": "trelloViewSelectedList",
           "name": "Selected List"
-        }
-      ],
-      "scm": [
-        {
-            "id": "trelloViewer.trelloTreeView:scm",
-            "name": "Trello Viewer: Tree View"
         }
       ]
     }
