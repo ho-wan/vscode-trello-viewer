@@ -178,6 +178,16 @@ export class TrelloComponent {
     return card.data;
   }
 
+  async getChecklistById(checklistId: string): Promise<any> {
+    const checklist = await this.trelloApiRequest(`/1/checklists/${checklistId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN
+    });
+    console.log(`✅ getting checklist: ${checklist.data.name}`);
+    // console.log(checklist.data);
+    return checklist.data;
+  }
+
   async showCard(card: any): Promise<any> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");

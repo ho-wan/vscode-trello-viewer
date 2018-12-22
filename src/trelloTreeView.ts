@@ -109,11 +109,23 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         this.trello.getCardsFromList(listId).then(cards => {
           this.trelloBoards[boardId][listId] = cards;
           // console.log(this.trelloBoards);
+          cards.map((card: any) => {
+            // this.trelloBoards[boardId][listId][card.id] = card.idChecklists;
+            card.idChecklists.map((checklistId: any) => {
+              this.trello.getChecklistById(checklistId).then(checklist => {
+                this.trelloBoards[boardId][listId][checklistId] = checklist;
+                // console.log(this.trelloBoards[boardId][listId][checklistId]);
+              });
+            });
+          });
           this._onDidChangeTreeData.fire();
         });
       } else {
         const trelloItemCards = boardListCards.map((card: any) => {
-          // console.log(card);
+          card.idChecklists.map((checklistId: any) => {
+            const checklistItems = this.trelloBoards[boardId][listId][checklistId].checkItems;
+            console.log(checklistItems);
+          });
           return new TrelloItem(
             card.name,
             vscode.TreeItemCollapsibleState.None,
