@@ -133,9 +133,8 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
   }
 
   getParent(element?: TrelloItem): Thenable<any> {
-    console.log('getting parent');
     if (!element) {
-      console.log('no parent');
+      console.error('Error: cannot find parent of selected list');
       return Promise.resolve([]);
     };
     const board = new TrelloItem(

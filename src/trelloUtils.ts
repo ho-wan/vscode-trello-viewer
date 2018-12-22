@@ -10,7 +10,7 @@ import {
   SETTING_CONFIG,
   GLOBALSTATE_CONFIG,
 } from "./constants";
-import { TrelloChecklist, CheckItem } from "./trelloComponents";
+import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
 
 export class TrelloComponent {
   private globalState: any;
@@ -110,7 +110,7 @@ export class TrelloComponent {
     vscode.commands.executeCommand("trelloViewer.refreshSelectedList");
   }
 
-  async getInitialSelectedList(): Promise<any> {
+  async getInitialSelectedList(): Promise<TrelloList | void> {
     if (!this.SELECTED_LIST_ID) {
       console.log('no list selected');
       return;
@@ -118,7 +118,7 @@ export class TrelloComponent {
     return this.getListById(this.SELECTED_LIST_ID);
   }
 
-  async getBoardById(boardId: string): Promise<any> {
+  async getBoardById(boardId: string): Promise<TrelloBoard> {
     const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
@@ -128,7 +128,7 @@ export class TrelloComponent {
     return board.data;
   }
 
-  async getListById(listId: string): Promise<any> {
+  async getListById(listId: string): Promise<TrelloList> {
     const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
@@ -138,7 +138,7 @@ export class TrelloComponent {
     return list.data;
   }
 
-  async getStarredBoards(): Promise<any> {
+  async getStarredBoards(): Promise<TrelloBoard[]> {
     const boards = await this.trelloApiRequest("/1/members/me/boards", {
       filter: "starred",
       key: this.API_KEY,
@@ -148,7 +148,7 @@ export class TrelloComponent {
     return boards.data;
   }
 
-  async getListsFromBoard(boardId: string): Promise<any> {
+  async getListsFromBoard(boardId: string): Promise<TrelloList[]> {
     const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
       key: this.API_KEY,
       token: this.API_TOKEN
@@ -158,7 +158,7 @@ export class TrelloComponent {
     return lists.data;
   }
 
-  async getCardsFromList(listId: string): Promise<any> {
+  async getCardsFromList(listId: string): Promise<TrelloCard[]> {
     const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
@@ -169,7 +169,7 @@ export class TrelloComponent {
     return cards.data;
   }
 
-  async getCardById(cardId: string): Promise<any> {
+  async getCardById(cardId: string): Promise<TrelloCard> {
     const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN
@@ -179,7 +179,7 @@ export class TrelloComponent {
     return card.data;
   }
 
-  async getChecklistById(checklistId: string): Promise<any> {
+  async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
     const checklist = await this.trelloApiRequest(`/1/checklists/${checklistId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN
@@ -198,7 +198,7 @@ export class TrelloComponent {
     let checklistMarkdown: string = '';
     Object.keys(checklists).forEach(id => {
       const trelloChecklist: TrelloChecklist = checklists[id];
-      checklistMarkdown += `\nname: ${trelloChecklist.name}  \n`;
+      checklistMarkdown += `\n### ${trelloChecklist.name}  \n`;
       trelloChecklist.checkItems.map((checkItem: CheckItem) => {
         const isCheckedMD = (checkItem.state === 'complete') ? `✅ ~~${checkItem.name}~~` : `❌ ${checkItem.name}`;
         checklistMarkdown += `${isCheckedMD}  \n`;
@@ -208,7 +208,7 @@ export class TrelloComponent {
     return checklistMarkdown;
   }
 
-  async showCard(card: any, checklists: any): Promise<any> {
+  async showCard(card: any, checklists: any): Promise<void> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
