@@ -134,10 +134,6 @@
     "views": {
       "trelloViewer": [
         {
-          "id": "testView",
-          "name": "Test View"
-        },
-        {
           "id": "trelloTreeView",
           "name": "Starred Boards"
         },
