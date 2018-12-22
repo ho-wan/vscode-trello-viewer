@@ -10,6 +10,7 @@ import {
   SETTING_CONFIG,
   GLOBALSTATE_CONFIG,
 } from "./constants";
+import { TrelloChecklist, CheckItem } from "./trelloComponents";
 
 export class TrelloComponent {
   private globalState: any;
@@ -77,7 +78,7 @@ export class TrelloComponent {
 
     return axios.get(url, { params })
       .catch(err => {
-        console.log(err);
+        console.error(err);
         vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
       });
   }
@@ -188,20 +189,42 @@ export class TrelloComponent {
     return checklist.data;
   }
 
-  async showCard(card: any): Promise<any> {
+
+  showChecklistsAsMarkdown(checklists: any): string {
+    if (checklists === undefined || checklists.length == 0) {
+      return ''
+    }
+
+    let checklistMarkdown: string = '';
+    Object.keys(checklists).forEach(id => {
+      const trelloChecklist: TrelloChecklist = checklists[id];
+      checklistMarkdown += `\nname: ${trelloChecklist.name}  \n`;
+      trelloChecklist.checkItems.map((checkItem: CheckItem) => {
+        const isCheckedMD = (checkItem.state === 'complete') ? `✅ ~~${checkItem.name}~~` : `❌ ${checkItem.name}`;
+        checklistMarkdown += `${isCheckedMD}  \n`;
+      });
+    })
+
+    return checklistMarkdown;
+  }
+
+  async showCard(card: any, checklists: any): Promise<any> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
-    // console.log(card);
-    // Get content of card as markdown
-    const cardUrl = card.url || "## No url found ##";
-    const cardHeader = card.name || "## No card name found ##";
-    const cardBody = card.desc || "## No card description found ##";
+    // console.log(checklists);
+
+    let checklistItems: string = this.showChecklistsAsMarkdown(checklists);
+
     const cardCoverImageUrl = (card.attachments.length > 0) ?  card.attachments[0].url : "";
-    const cardContent =
-      `${cardUrl}\n\n---\n## ===TITLE===\n${cardHeader}\n\n---\n## ===DESCRIPTION===\n${cardBody}\n\n---\n` +
-      `<img src="${cardCoverImageUrl}" alt="no cover image" />`;
+
+    let cardContent: string = '';
+    cardContent += card.url ? `${card.url}\n\n---\n` : "";
+    cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : '';
+    cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : '';
+    cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : '';
+    cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />`: "";
 
     // Get location of user's vs code folder to save temp markdown file
     const tempTrelloFile = (new UserDataFolder()).getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;

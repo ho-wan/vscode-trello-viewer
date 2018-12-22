@@ -12,7 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider("trelloTreeView", trelloTreeView);
   vscode.window.registerTreeDataProvider("trelloViewSelectedList", trelloViewSelectedList);
 
-  const commandsToRegister: any = [
+  const commandsToRegister: Array<[string, Function]> = [
     ["trelloViewer.refresh", () => trelloTreeView.refresh()],
     ["trelloViewer.refreshSelectedList", () => trelloViewSelectedList.refresh()],
     ["trelloViewer.setCredentials", () => trello.setCredentials()],
@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
     ["trelloViewer.setSelectedList", (listId: string) => trello.setSelectedList(listId)],
     ["trelloViewer.setSelectedListId", () => trello.setSelectedListId()],
     ["trelloViewer.setSelectedListByClick", (trelloItem: object) => trello.setSelectedListByClick(trelloItem)],
-    ["trelloViewer.showCard", (card: object, checklists: object) => trello.showCard(card)],
+    ["trelloViewer.showCard", (card: object, checklists: object) => trello.showCard(card, checklists)],
   ];
   commandsToRegister.map((command: any) =>
     context.subscriptions.push(vscode.commands.registerCommand(command[0], command[1]))

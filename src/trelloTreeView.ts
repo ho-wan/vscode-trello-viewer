@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import { TrelloComponent } from "./trelloUtils";
 import { TRELLO_ITEM_TYPE } from "./constants";
+import { ChecklistObject } from "./trelloComponents";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -49,19 +50,12 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       // add boards to tree view
       const trelloItemBoards = this.trelloBoards.boards.map((board: any) => {
         // console.log(board);
-        const info = `URL: ${board.url}, Trello ${TRELLO_ITEM_TYPE.BOARD}, Name: ${board.name}, ID: ${board.id}`;
         return new TrelloItem(
           board.name,
           vscode.TreeItemCollapsibleState.Collapsed,
           board.id,
           TRELLO_ITEM_TYPE.BOARD,
           `id: ${board.id}`,
-          undefined,
-          {
-            command: "trelloViewer.showInfoMessage",
-            title: "",
-            arguments: [info],
-          }
         );
       });
       console.log("😃 got boards for children");
@@ -81,7 +75,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       } else {
         const trelloItemLists = boardLists.map((list: any) => {
           // console.log(list);
-          const info = `Trello ${TRELLO_ITEM_TYPE.LIST}, Name: ${list.name}, ID: ${list.id}, Board ID: ${boardId}`;
           return new TrelloItem(
             list.name,
             vscode.TreeItemCollapsibleState.Collapsed,
@@ -89,11 +82,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
             TRELLO_ITEM_TYPE.LIST,
             `id: ${list.id}`,
             boardId,
-            {
-              command: "trelloViewer.showInfoMessage",
-              title: "",
-              arguments: [info],
-            }
           );
         });
         console.log(`😃 got lists from board ${boardId}`);
@@ -122,10 +110,13 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         });
       } else {
         const trelloItemCards = boardListCards.map((card: any) => {
+          // let checklists: Array<object> = [];
+          let checklists: any = {};
           card.idChecklists.map((checklistId: any) => {
-            const checklistItems = this.trelloBoards[boardId][listId][checklistId].checkItems;
-            console.log(checklistItems);
+            checklists[checklistId] = this.trelloBoards[boardId][listId][checklistId];
+            // checklists.push(this.trelloBoards[boardId][listId][checklistId].checkItems);
           });
+          // console.log(checklists);
           return new TrelloItem(
             card.name,
             vscode.TreeItemCollapsibleState.None,
@@ -136,7 +127,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
             {
               command: "trelloViewer.showCard",
               title: "",
-              arguments: [card],
+              arguments: [card, checklists],
             }
           );
         });
