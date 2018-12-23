@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { TrelloItem } from "./trelloItem";
 import { TrelloComponent } from "./trelloUtils";
 import { TRELLO_ITEM_TYPE } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
@@ -34,11 +35,16 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 
   getChildren(element?: TrelloItem): Thenable<TrelloItem[]> {
     if (!element) {
-      if (this.trelloObject.trelloBoards === undefined || this.trelloObject.trelloBoards.length == 0) {
-        return this.refreshOnFirstLoad(this.onFirstLoad);
+      if (this.trelloObject.trelloBoards.length == 0) {
+        this.refreshOnFirstLoad();
       }
-      const trelloItemBoards = this.getTreeElements(TRELLO_ITEM_TYPE.BOARD, this.trelloObject.trelloBoards);
-      return Promise.resolve(trelloItemBoards);
+      return Promise.resolve(
+        this.getTreeElements(
+          TRELLO_ITEM_TYPE.BOARD,
+          this.trelloObject.trelloBoards,
+          vscode.TreeItemCollapsibleState.Collapsed
+        )
+      );
     } else if (element.type === TRELLO_ITEM_TYPE.BOARD) {
       const boardId: string = element.id;
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
@@ -49,8 +55,14 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       if (!trelloBoard.trelloLists) {
         this.fetchListsAndUpdate(boardId, trelloBoard);
       } else {
-        const trelloItemLists = this.getTreeElements(TRELLO_ITEM_TYPE.LIST, trelloBoard.trelloLists, boardId);
-        return Promise.resolve(trelloItemLists);
+        return Promise.resolve(
+          this.getTreeElements(
+            TRELLO_ITEM_TYPE.LIST,
+            trelloBoard.trelloLists,
+            vscode.TreeItemCollapsibleState.Collapsed,
+            boardId
+          )
+        );
       }
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
       const boardId: string = element.parentId || "-1";
@@ -69,20 +81,26 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       if (!trelloList.trelloCards) {
         this.fetchCardsAndUpdate(listId, trelloList);
       } else {
-        const trelloItemCards = this.getTreeElements(TRELLO_ITEM_TYPE.CARD, trelloList.trelloCards, listId, true);
-        return Promise.resolve(trelloItemCards);
+        return Promise.resolve(
+          this.getTreeElements(
+            TRELLO_ITEM_TYPE.CARD,
+            trelloList.trelloCards,
+            vscode.TreeItemCollapsibleState.None,
+            listId,
+            true
+          )
+        );
       }
     }
     return Promise.resolve([]);
   }
 
-  private refreshOnFirstLoad(onFirstLoad: boolean): Promise<TrelloItem[]> {
+  private refreshOnFirstLoad(): void {
     console.log("🤔 this.trelloBoards is null");
-    if (onFirstLoad) {
-      onFirstLoad = false;
+    if (this.onFirstLoad) {
+      this.onFirstLoad = false;
       this.refresh();
     }
-    return Promise.resolve([]);
   }
 
   private async fetchListsAndUpdate(boardId: string, trelloBoard: TrelloBoard): Promise<void> {
@@ -103,13 +121,14 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private getTreeElements(
     trelloItemType: string,
     trelloObjects: Array<TrelloBoard | TrelloList | TrelloCard>,
+    collapsed: vscode.TreeItemCollapsibleState = 1,
     parentId?: string,
     showCard?: boolean
-  ) {
+  ): TrelloItem[] {
     return trelloObjects.map(obj => {
       return new TrelloItem(
         obj.name,
-        vscode.TreeItemCollapsibleState.Collapsed,
+        collapsed,
         obj.id,
         trelloItemType,
         `id: ${obj.id}`,
@@ -117,7 +136,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         showCard
           ? {
               command: "trelloViewer.showCard",
-              title: "",
+              title: "Show Trello Card",
               // @ts-ignore#
               arguments: [obj, obj.trelloChecklists],
             }
@@ -125,20 +144,4 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       );
     });
   }
-}
-
-export class TrelloItem extends vscode.TreeItem {
-  constructor(
-    public readonly label: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    public readonly id: string,
-    public readonly type: string,
-    public readonly tooltip?: string,
-    public readonly parentId?: string,
-    public readonly command?: vscode.Command
-  ) {
-    super(label, collapsibleState);
-  }
-
-  contextValue = `${this.type}`;
 }

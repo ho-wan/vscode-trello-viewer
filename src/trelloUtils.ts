@@ -11,8 +11,8 @@ import {
   SETTING_CONFIG,
   GLOBALSTATE_CONFIG,
 } from "./constants";
+import { TrelloItem } from "./trelloItem";
 import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
-import { TrelloItem } from "./trelloTreeView";
 
 export class TrelloComponent {
   private globalState: any;
@@ -108,12 +108,8 @@ export class TrelloComponent {
     vscode.commands.executeCommand("trelloViewer.refreshSelectedList");
   }
 
-  async getInitialSelectedList(): Promise<TrelloList | void> {
-    if (!this.SELECTED_LIST_ID) {
-      console.log("no list selected");
-      return;
-    }
-    return this.getListById(this.SELECTED_LIST_ID);
+  getInitialSelectedList(): Promise<TrelloList> {
+    return this.getListById(this.SELECTED_LIST_ID || "-1");
   }
 
   async getBoardById(boardId: string): Promise<TrelloBoard> {

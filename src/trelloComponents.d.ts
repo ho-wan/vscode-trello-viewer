@@ -1,4 +1,3 @@
-// TODO move trelloBoards object to this structure
 export interface TrelloObject {
   trelloBoards: TrelloBoard[];
 }
@@ -12,13 +11,16 @@ export interface TrelloBoard {
 export interface TrelloList {
   id: string;
   name: string;
+  idBoard: string;
   trelloCards: TrelloCard[];
 }
 
 export interface TrelloCard {
   id: string;
   name: string;
-  attachments: Array<any>;
+  attachments: Array<{
+    url: string;
+  }>;
   url: string;
   desc: string;
   idChecklists: string[];
