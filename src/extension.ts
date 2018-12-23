@@ -1,10 +1,11 @@
 import * as vscode from "vscode";
 import { TrelloComponent, removeTempTrelloFile } from "./trelloUtils";
-import { TrelloTreeView } from "./trelloTreeView";
+import { TrelloTreeView, TrelloItem } from "./trelloTreeView";
 import { TrelloViewSelectedList } from "./trelloViewSelectedList";
+import { TrelloCard, TrelloChecklist } from "./trelloComponents";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('Congratulations, your extension "trello" is now active!');
+  console.log('The extension "Trello Viewer" is now active!');
   const trello = new TrelloComponent(context);
   const trelloTreeView = new TrelloTreeView(trello);
   const trelloViewSelectedList = new TrelloViewSelectedList(trello);
@@ -21,8 +22,8 @@ export function activate(context: vscode.ExtensionContext) {
     ["trelloViewer.showTrelloInfo", () => trello.showTrelloInfo()],
     ["trelloViewer.setSelectedList", (listId: string) => trello.setSelectedList(listId)],
     ["trelloViewer.setSelectedListId", () => trello.setSelectedListId()],
-    ["trelloViewer.setSelectedListByClick", (trelloItem: object) => trello.setSelectedListByClick(trelloItem)],
-    ["trelloViewer.showCard", (card: object, checklists: object) => trello.showCard(card, checklists)],
+    ["trelloViewer.setSelectedListByClick", (trelloItem: TrelloItem) => trello.setSelectedListByClick(trelloItem)],
+    ["trelloViewer.showCard", (card: TrelloCard, checklists: TrelloChecklist[]) => trello.showCard(card, checklists)],
   ];
   commandsToRegister.map((command: any) =>
     context.subscriptions.push(vscode.commands.registerCommand(command[0], command[1]))

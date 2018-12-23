@@ -4,6 +4,7 @@ import axios from "axios";
 import { UserDataFolder } from "./UserDataFolder";
 import {
   DEFAULT_VIEW_COLUMN,
+  VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
   TRELLO_API_BASE_URL,
   SETTING_PREFIX,
@@ -11,6 +12,7 @@ import {
   GLOBALSTATE_CONFIG,
 } from "./constants";
 import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
+import { TrelloItem } from "./trelloTreeView";
 
 export class TrelloComponent {
   private globalState: any;
@@ -39,7 +41,7 @@ export class TrelloComponent {
     Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
       // @ts-ignore
       const value: string = GLOBALSTATE_CONFIG[key];
-      this.globalState.update(value, undefined)
+      this.globalState.update(value, undefined);
     });
     vscode.window.showInformationMessage("Credentials have been reset");
     this.getCredentials();
@@ -56,7 +58,7 @@ export class TrelloComponent {
   showTrelloInfo(): void {
     this.getCredentials();
     this.getSelectedList();
-    let info: string = '';
+    let info: string = "";
     Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
       // @ts-ignore#
       const value: string = this.globalState.get(GLOBALSTATE_CONFIG[key]);
@@ -66,21 +68,19 @@ export class TrelloComponent {
   }
 
   private setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
-    return vscode.window
-      .showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText })
+    return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
   }
 
   private async trelloApiRequest(url: string, params: object): Promise<any> {
     if (!this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return Promise.reject(new Error('Credentials Missing'));
+      return Promise.reject(new Error("Credentials Missing"));
     }
 
-    return axios.get(url, { params })
-      .catch(err => {
-        console.error(err);
-        vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
-      });
+    return axios.get(url, { params }).catch(err => {
+      console.error(err);
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+    });
   }
 
   getSelectedList(): void {
@@ -93,9 +93,7 @@ export class TrelloComponent {
     this.getSelectedList();
   }
 
-  setSelectedListByClick(trelloItem: any): void {
-    // console.log('clicked set select list');
-    // console.log(trelloItem);
+  setSelectedListByClick(trelloItem: TrelloItem): void {
     if (!trelloItem.id) {
       vscode.window.showErrorMessage("Could not get valid List ID");
       return;
@@ -112,9 +110,9 @@ export class TrelloComponent {
 
   async getInitialSelectedList(): Promise<TrelloList | void> {
     if (!this.SELECTED_LIST_ID) {
-      console.log('no list selected');
+      console.log("no list selected");
       return;
-    };
+    }
     return this.getListById(this.SELECTED_LIST_ID);
   }
 
@@ -123,8 +121,6 @@ export class TrelloComponent {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    console.log("⬜ getting board by id");
-    // console.log(board.data);
     return board.data;
   }
 
@@ -133,8 +129,6 @@ export class TrelloComponent {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    console.log("📃 getting list by id");
-    // console.log(list.data);
     return list.data;
   }
 
@@ -142,19 +136,16 @@ export class TrelloComponent {
     const boards = await this.trelloApiRequest("/1/members/me/boards", {
       filter: "starred",
       key: this.API_KEY,
-      token: this.API_TOKEN
+      token: this.API_TOKEN,
     });
-    console.log("🅱 getting boards");
     return boards.data;
   }
 
   async getListsFromBoard(boardId: string): Promise<TrelloList[]> {
     const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
       key: this.API_KEY,
-      token: this.API_TOKEN
+      token: this.API_TOKEN,
     });
-    console.log("🅱 getting lists");
-    // console.log(lists.data);
     return lists.data;
   }
 
@@ -162,72 +153,64 @@ export class TrelloComponent {
     const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-      attachments: "cover"
+      attachments: "cover",
     });
-    console.log("🎴 getting cards");
-    // console.log(cards.data);
     return cards.data;
   }
 
   async getCardById(cardId: string): Promise<TrelloCard> {
     const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
-      token: this.API_TOKEN
+      token: this.API_TOKEN,
     });
-    console.log("🎴 getting cards");
-    // console.log(card.data);
     return card.data;
   }
 
   async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
     const checklist = await this.trelloApiRequest(`/1/checklists/${checklistId}`, {
       key: this.API_KEY,
-      token: this.API_TOKEN
+      token: this.API_TOKEN,
     });
-    console.log(`✅ getting checklist: ${checklist.data.name}`);
-    // console.log(checklist.data);
     return checklist.data;
   }
 
-
   showChecklistsAsMarkdown(checklists: any): string {
     if (checklists === undefined || checklists.length == 0) {
-      return ''
+      return "";
     }
 
-    let checklistMarkdown: string = '';
+    let checklistMarkdown: string = "";
     Object.keys(checklists).forEach(id => {
       const trelloChecklist: TrelloChecklist = checklists[id];
       checklistMarkdown += `\n### ${trelloChecklist.name}  \n`;
       trelloChecklist.checkItems.map((checkItem: CheckItem) => {
-        const isCheckedMD = (checkItem.state === 'complete') ? `✅ ~~${checkItem.name}~~` : `❌ ${checkItem.name}`;
-        checklistMarkdown += `${isCheckedMD}  \n`;
+        checklistMarkdown +=
+          checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `❌ ${checkItem.name}  \n`;
       });
-    })
+    });
 
     return checklistMarkdown;
   }
 
-  async showCard(card: any, checklists: any): Promise<void> {
+  async showCard(card: TrelloCard, checklists: TrelloChecklist[]): Promise<void> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
-    // console.log(checklists);
 
     let checklistItems: string = this.showChecklistsAsMarkdown(checklists);
 
-    const cardCoverImageUrl = (card.attachments.length > 0) ?  card.attachments[0].url : "";
+    const cardCoverImageUrl = card.attachments.length > 0 ? card.attachments[0].url : "";
 
-    let cardContent: string = '';
+    let cardContent: string = "";
     cardContent += card.url ? `${card.url}\n\n---\n` : "";
-    cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : '';
-    cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : '';
-    cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : '';
-    cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />`: "";
+    cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : "";
+    cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : "";
+    cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : "";
+    cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />` : "";
 
     // Get location of user's vs code folder to save temp markdown file
-    const tempTrelloFile = (new UserDataFolder()).getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
+    const tempTrelloFile = new UserDataFolder().getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
     writeFile(tempTrelloFile, cardContent, err => {
       if (err) {
         vscode.window.showErrorMessage(`Error writing to temp file: ${err}`);
@@ -236,10 +219,9 @@ export class TrelloComponent {
     });
 
     // open markdown file and preview view
-    let viewColumn: vscode.ViewColumn = vscode.workspace
-        .getConfiguration(SETTING_PREFIX, null)
-        .get(SETTING_CONFIG.VIEW_COLUMN) || DEFAULT_VIEW_COLUMN;
-    if (!([-2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9].indexOf(viewColumn) > -1)) {
+    let viewColumn: vscode.ViewColumn =
+      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) || DEFAULT_VIEW_COLUMN;
+    if (!(VSCODE_VIEW_COLUMN.indexOf(viewColumn) > -1)) {
       console.log(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${DEFAULT_VIEW_COLUMN}`);
       viewColumn = DEFAULT_VIEW_COLUMN;
     }

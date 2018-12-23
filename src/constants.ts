@@ -1,5 +1,7 @@
 export const DEFAULT_VIEW_COLUMN = 2;
 
+export const VSCODE_VIEW_COLUMN = [-2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
 export const TEMP_TRELLO_FILE_NAME = "~vscodeTrello.md";
 
 export const TRELLO_API_BASE_URL = "https://api.trello.com";

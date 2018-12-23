@@ -18,8 +18,11 @@ export interface TrelloList {
 export interface TrelloCard {
   id: string;
   name: string;
+  attachments: Array<any>;
+  url: string;
+  desc: string;
   idChecklists: string[];
-  trelloChecklist: TrelloChecklist[];
+  trelloChecklists: TrelloChecklist[];
 }
 
 export interface TrelloChecklist {
