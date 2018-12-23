@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { TrelloComponent } from "./trelloUtils";
 import { TRELLO_ITEM_TYPE } from "./constants";
-import { TrelloObject, TrelloBoard, TrelloList, TrelloCard, TrelloChecklist } from "./trelloComponents";
+import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -35,24 +35,9 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   getChildren(element?: TrelloItem): Thenable<TrelloItem[]> {
     if (!element) {
       if (this.trelloObject.trelloBoards === undefined || this.trelloObject.trelloBoards.length == 0) {
-        console.log("🤔 this.trelloBoards is null");
-        // fetch boards from trello api on first load
-        if (this.onFirstLoad) {
-          this.onFirstLoad = false;
-          this.refresh();
-        }
-        return Promise.resolve([]);
+        return this.refreshOnFirstLoad(this.onFirstLoad);
       }
-      // add boards to tree view
-      const trelloItemBoards = this.trelloObject.trelloBoards.map((board: TrelloBoard) => {
-        return new TrelloItem(
-          board.name,
-          vscode.TreeItemCollapsibleState.Collapsed,
-          board.id,
-          TRELLO_ITEM_TYPE.BOARD,
-          `id: ${board.id}`
-        );
-      });
+      const trelloItemBoards = this.getTreeElements(TRELLO_ITEM_TYPE.BOARD, this.trelloObject.trelloBoards);
       return Promise.resolve(trelloItemBoards);
     } else if (element.type === TRELLO_ITEM_TYPE.BOARD) {
       const boardId: string = element.id;
@@ -62,76 +47,83 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         return Promise.resolve([]);
       }
       if (!trelloBoard.trelloLists) {
-        console.log(`🔷 getting lists ${boardId}`);
-        this.trello.getListsFromBoard(boardId).then(lists => {
-          trelloBoard.trelloLists = lists;
-          this._onDidChangeTreeData.fire();
-        });
+        this.fetchListsAndUpdate(boardId, trelloBoard);
       } else {
-        const trelloItemLists = trelloBoard.trelloLists.map((list: TrelloList) => {
-          return new TrelloItem(
-            list.name,
-            vscode.TreeItemCollapsibleState.Collapsed,
-            list.id,
-            TRELLO_ITEM_TYPE.LIST,
-            `id: ${list.id}`,
-            boardId
-          );
-        });
-        console.log(`😃 got lists from board ${boardId}`);
-        // console.log(this.trelloObject);
+        const trelloItemLists = this.getTreeElements(TRELLO_ITEM_TYPE.LIST, trelloBoard.trelloLists, boardId);
         return Promise.resolve(trelloItemLists);
       }
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
       const boardId: string = element.parentId || "-1";
       const listId: string = element.id;
-      const trelloBoard: TrelloBoard | undefined= this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
+      const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
         console.log(`❌ Error: trelloBoard id ${boardId} not found`);
         return Promise.resolve([]);
       }
-      const trelloList: TrelloList | undefined = trelloBoard.trelloLists.find((item: TrelloList) => item.id === listId);
+      const trelloList = trelloBoard.trelloLists.find((item: TrelloList) => item.id === listId);
       if (!trelloList) {
         console.log(`❌ Error: trelloList id ${listId} not found`);
         return Promise.resolve([]);
       }
 
       if (!trelloList.trelloCards) {
-        console.log(`🃏 getting cards for list ${listId}`);
-        this.trello.getCardsFromList(listId).then(cards => {
-          trelloList.trelloCards = cards;
-          cards.map((card: TrelloCard) => {
-            Promise.all(card.idChecklists.map((checklistId: string) => this.trello.getChecklistById(checklistId))).then(
-              (checklists: TrelloChecklist[]) => {
-                card.trelloChecklists = checklists;
-              }
-            );
-          });
-          this._onDidChangeTreeData.fire();
-        });
+        this.fetchCardsAndUpdate(listId, trelloList);
       } else {
-        const trelloItemCards = trelloList.trelloCards.map((card: TrelloCard) => {
-          return new TrelloItem(
-            card.name,
-            vscode.TreeItemCollapsibleState.None,
-            card.id,
-            TRELLO_ITEM_TYPE.CARD,
-            `id: ${card.id}`,
-            listId,
-            {
-              command: "trelloViewer.showCard",
-              title: "",
-              arguments: [card, card.trelloChecklists],
-            }
-          );
-        });
-        console.log(`😃 got cards from list ${listId}`);
-        // console.log(this.trelloObject);
+        const trelloItemCards = this.getTreeElements(TRELLO_ITEM_TYPE.CARD, trelloList.trelloCards, listId, true);
         return Promise.resolve(trelloItemCards);
       }
     }
-    console.log("☹ no children");
     return Promise.resolve([]);
+  }
+
+  private refreshOnFirstLoad(onFirstLoad: boolean): Promise<TrelloItem[]> {
+    console.log("🤔 this.trelloBoards is null");
+    if (onFirstLoad) {
+      onFirstLoad = false;
+      this.refresh();
+    }
+    return Promise.resolve([]);
+  }
+
+  private async fetchListsAndUpdate(boardId: string, trelloBoard: TrelloBoard): Promise<void> {
+    trelloBoard.trelloLists = await this.trello.getListsFromBoard(boardId);
+    this._onDidChangeTreeData.fire();
+  }
+
+  private async fetchCardsAndUpdate(listId: string, trelloList: TrelloList): Promise<void> {
+    trelloList.trelloCards = await this.trello.getCardsFromList(listId);
+    trelloList.trelloCards.map(async (card: TrelloCard) => {
+      card.trelloChecklists = await Promise.all(
+        card.idChecklists.map((checklistId: string) => this.trello.getChecklistById(checklistId))
+      );
+    });
+    this._onDidChangeTreeData.fire();
+  }
+
+  private getTreeElements(
+    trelloItemType: string,
+    trelloObjects: Array<TrelloBoard | TrelloList | TrelloCard>,
+    parentId?: string,
+    showCard?: boolean
+  ) {
+    return trelloObjects.map(obj => {
+      return new TrelloItem(
+        obj.name,
+        vscode.TreeItemCollapsibleState.Collapsed,
+        obj.id,
+        trelloItemType,
+        `id: ${obj.id}`,
+        parentId,
+        showCard
+          ? {
+              command: "trelloViewer.showCard",
+              title: "",
+              // @ts-ignore#
+              arguments: [obj, obj.trelloChecklists],
+            }
+          : undefined
+      );
+    });
   }
 }
 
