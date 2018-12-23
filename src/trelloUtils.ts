@@ -170,9 +170,9 @@ export class TrelloComponent {
     return checklist.data;
   }
 
-  showChecklistsAsMarkdown(checklists: any): string {
+  showChecklistsAsMarkdown(checklists: any): string | undefined{
     if (checklists === undefined || checklists.length == 0) {
-      return "";
+      return;
     }
 
     let checklistMarkdown: string = "";
@@ -188,14 +188,13 @@ export class TrelloComponent {
     return checklistMarkdown;
   }
 
-  async showCard(card: TrelloCard, checklists: TrelloChecklist[]): Promise<void> {
+  async showCard(card: TrelloCard): Promise<void> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
 
-    let checklistItems: string = this.showChecklistsAsMarkdown(checklists);
-
+    let checklistItems: string | undefined = this.showChecklistsAsMarkdown(card.trelloChecklists);
     const cardCoverImageUrl = card.attachments.length > 0 ? card.attachments[0].url : "";
 
     let cardContent: string = "";

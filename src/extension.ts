@@ -3,7 +3,7 @@ import { TrelloComponent, removeTempTrelloFile } from "./trelloUtils";
 import { TrelloItem } from "./trelloItem";
 import { TrelloTreeView } from "./trelloTreeView";
 import { TrelloViewSelectedList } from "./trelloViewSelectedList";
-import { TrelloCard, TrelloChecklist } from "./trelloComponents";
+import { TrelloCard } from "./trelloComponents";
 
 export function activate(context: vscode.ExtensionContext) {
   console.info('👍 The extension "Trello Viewer" is now active!');
@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     ["trelloViewer.setSelectedList", (listId: string) => trello.setSelectedList(listId)],
     ["trelloViewer.setSelectedListId", () => trello.setSelectedListId()],
     ["trelloViewer.setSelectedListByClick", (trelloItem: TrelloItem) => trello.setSelectedListByClick(trelloItem)],
-    ["trelloViewer.showCard", (card: TrelloCard, checklists: TrelloChecklist[]) => trello.showCard(card, checklists)],
+    ["trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card)],
   ];
   commandsToRegister.map((command: any) =>
     context.subscriptions.push(vscode.commands.registerCommand(command[0], command[1]))

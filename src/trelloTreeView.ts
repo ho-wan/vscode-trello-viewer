@@ -137,8 +137,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
           ? {
               command: "trelloViewer.showCard",
               title: "Show Trello Card",
-              // @ts-ignore#
-              arguments: [obj, obj.trelloChecklists],
+              arguments: [obj],
             }
           : undefined
       );
