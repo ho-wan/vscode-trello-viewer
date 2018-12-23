@@ -22,8 +22,13 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
 
   refresh(): void {
     console.log("🕐 refreshing selected list");
+    if (!this.trello.getSelectedList()) {
+      if (!this.onFirstLoad) {
+        this.trello.showInfoMessage('Select a Favourite List ⭐ to view.');
+      }
+      return;
+    }
     this.trello.getInitialSelectedList().then((list: TrelloList) => {
-      console.log(list);
       this.trello.getBoardById(list.idBoard).then((board: any) => {
         this.selectedListObject = { trelloBoards: [board] };
         this.selectedListObject.trelloBoards[0].trelloLists = [list];
@@ -41,6 +46,7 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
       if (this.selectedListObject.trelloBoards.length == 0) {
         this.refreshOnFirstLoad();
       }
+
       return Promise.resolve(
         this.getTreeElements(
           TRELLO_ITEM_TYPE.BOARD,
@@ -79,8 +85,8 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
   private refreshOnFirstLoad(): void {
     console.log("🤔 selectedListObject is null");
     if (this.onFirstLoad) {
-      this.onFirstLoad = false;
       this.refresh();
+      this.onFirstLoad = false;
     }
   }
 

@@ -49,7 +49,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       const boardId: string = element.id;
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
-        console.log(`❌ Error: trelloBoard id ${boardId} not found`);
+        console.error(`❌ Error: trelloBoard id ${boardId} not found`);
         return Promise.resolve([]);
       }
       if (!trelloBoard.trelloLists) {
@@ -69,12 +69,12 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       const listId: string = element.id;
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
-        console.log(`❌ Error: trelloBoard id ${boardId} not found`);
+        console.error(`❌ Error: trelloBoard id ${boardId} not found`);
         return Promise.resolve([]);
       }
       const trelloList = trelloBoard.trelloLists.find((item: TrelloList) => item.id === listId);
       if (!trelloList) {
-        console.log(`❌ Error: trelloList id ${listId} not found`);
+        console.error(`❌ Error: trelloList id ${listId} not found`);
         return Promise.resolve([]);
       }
 
@@ -98,8 +98,8 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private refreshOnFirstLoad(): void {
     console.log("🤔 this.trelloBoards is null");
     if (this.onFirstLoad) {
-      this.onFirstLoad = false;
       this.refresh();
+      this.onFirstLoad = false;
     }
   }
 

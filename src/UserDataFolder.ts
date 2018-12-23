@@ -10,7 +10,7 @@ export class UserDataFolder {
       path = process.env.HOME || "";
       return path;
     } else {
-      console.log("Error: Platform not detected; only windows, mac and linux supported");
+      console.error("Error: Platform not detected; only windows, mac and linux supported");
       return "";
     }
   }
@@ -39,7 +39,7 @@ export class UserDataFolder {
       }
       return codeSettingsPath;
     } else {
-      console.log("Error: Platform not detected; only windows, mac and linux supported.");
+      console.error("Error: Platform not detected; only windows, mac and linux supported.");
       return "";
     }
   }

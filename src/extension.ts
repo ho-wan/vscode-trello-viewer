@@ -6,7 +6,7 @@ import { TrelloViewSelectedList } from "./trelloViewSelectedList";
 import { TrelloCard, TrelloChecklist } from "./trelloComponents";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('The extension "Trello Viewer" is now active!');
+  console.info('👍 The extension "Trello Viewer" is now active!');
   const trello = new TrelloComponent(context);
   const trelloTreeView = new TrelloTreeView(trello);
   const trelloViewSelectedList = new TrelloViewSelectedList(trello);

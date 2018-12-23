@@ -13,6 +13,7 @@ import {
 } from "./constants";
 import { TrelloItem } from "./trelloItem";
 import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
+import { encrypt, decrypt } from "./encrypt";
 
 export class TrelloComponent {
   private globalState: any;
@@ -34,12 +35,11 @@ export class TrelloComponent {
 
   private getCredentials(): void {
     this.API_KEY = this.globalState.get(GLOBALSTATE_CONFIG.API_KEY);
-    this.API_TOKEN = this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN);
+    this.API_TOKEN = decrypt(this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN));
   }
 
   resetCredentials(): void {
     Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
-      // @ts-ignore
       const value: string = GLOBALSTATE_CONFIG[key];
       this.globalState.update(value, undefined);
     });
@@ -51,7 +51,7 @@ export class TrelloComponent {
     const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
     const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
     if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
-    if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, apiToken);
+    if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
     this.getCredentials();
   }
 
@@ -60,7 +60,6 @@ export class TrelloComponent {
     this.getSelectedList();
     let info: string = "";
     Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
-      // @ts-ignore#
       const value: string = this.globalState.get(GLOBALSTATE_CONFIG[key]);
       info += `${key}: ${value}, `;
     });
@@ -79,12 +78,13 @@ export class TrelloComponent {
 
     return axios.get(url, { params }).catch(err => {
       console.error(err);
-      vscode.window.showErrorMessage("Unable to fetch from Trello Api. Please check crendentials provided.");
+      vscode.window.showErrorMessage("Unable to fetch from Trello Api: please check crendentials.");
     });
   }
 
-  getSelectedList(): void {
+  getSelectedList(): boolean {
     this.SELECTED_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.SELECTED_LIST_ID);
+    return (this.SELECTED_LIST_ID !== undefined);
   }
 
   async setSelectedListId(): Promise<void> {
@@ -218,7 +218,7 @@ export class TrelloComponent {
     let viewColumn: vscode.ViewColumn =
       vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) || DEFAULT_VIEW_COLUMN;
     if (!(VSCODE_VIEW_COLUMN.indexOf(viewColumn) > -1)) {
-      console.log(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${DEFAULT_VIEW_COLUMN}`);
+      console.error(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${DEFAULT_VIEW_COLUMN}`);
       viewColumn = DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace

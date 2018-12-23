@@ -38,3 +38,10 @@ export interface CheckItem {
   state: string;
   name: string;
 }
+
+export interface GlobalStateConfig {
+  API_KEY: string,
+  API_TOKEN: string,
+  SELECTED_LIST_ID: string,
+  [key: string]: string;
+}
