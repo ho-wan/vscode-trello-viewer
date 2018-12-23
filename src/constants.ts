@@ -26,7 +26,4 @@ export const TRELLO_ITEM_TYPE = {
   CARD: "card",
 };
 
-export const ENCRYPT = {
-  ENCRYPTION_KEY: 'jwkEfG4!n&UAv2jG!L$54uJfmTSUae8D', // Must be 32 characters
-  IV_LENGTH: 16, // For AES, this is always 16
-}
+export const ENCRYPTION_KEY = 'jwkEfG4!n&UAv2jG!L$54uJfmTSUae8D';
