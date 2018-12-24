@@ -34,8 +34,12 @@ export class TrelloComponent {
   }
 
   private getCredentials(): void {
-    this.API_KEY = this.globalState.get(GLOBALSTATE_CONFIG.API_KEY);
-    this.API_TOKEN = decrypt(this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN));
+    try {
+      this.API_KEY = this.globalState.get(GLOBALSTATE_CONFIG.API_KEY);
+      this.API_TOKEN = decrypt(this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN));
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   resetCredentials(): void {
@@ -48,10 +52,14 @@ export class TrelloComponent {
   }
 
   async setCredentials(): Promise<void> {
-    const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
-    const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
-    if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
-    if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
+    try {
+      const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
+      const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
+      if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
+      if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
+    } catch (error) {
+      console.error(error);
+    }
     this.getCredentials();
   }
 
