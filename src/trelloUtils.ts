@@ -89,9 +89,9 @@ export class TrelloComponent {
     });
   }
 
-  getFavoriteList(): boolean {
+  getFavoriteList(): string | undefined {
     this.FAVORITE_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID);
-    return (this.FAVORITE_LIST_ID !== undefined);
+    return this.FAVORITE_LIST_ID;
   }
 
   setFavoriteListByClick(trelloItem: TrelloItem): void {
@@ -105,6 +105,12 @@ export class TrelloComponent {
   setFavoriteList(listId: string): void {
     console.log(`Setting favorite list: ${listId}`);
     if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
+    this.getFavoriteList();
+    vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+  }
+
+  resetFavoriteList(): void {
+    this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, null);
     this.getFavoriteList();
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
@@ -171,7 +177,7 @@ export class TrelloComponent {
     return checklist.data;
   }
 
-  showChecklistsAsMarkdown(checklists: any): string | undefined{
+  showChecklistsAsMarkdown(checklists: any): string | undefined {
     if (checklists === undefined || checklists.length == 0) {
       return;
     }
@@ -216,9 +222,14 @@ export class TrelloComponent {
 
     // open markdown file and preview view
     let viewColumn: vscode.ViewColumn =
-      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) || SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
+      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) ||
+      SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     if (!(VSCODE_VIEW_COLUMN.indexOf(viewColumn) > -1)) {
-      console.error(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${SETTING_CONFIG.DEFAULT_VIEW_COLUMN}`);
+      console.error(
+        `Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${
+          SETTING_CONFIG.DEFAULT_VIEW_COLUMN
+        }`
+      );
       viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace

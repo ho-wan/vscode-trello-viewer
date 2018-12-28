@@ -61,6 +61,14 @@
         }
       },
       {
+        "command": "trelloViewer.resetFavoriteList",
+        "title": "Trello: Reset Favorite List",
+        "icon": {
+          "light": "images/light/x.svg",
+          "dark": "images/dark/x.svg"
+        }
+      },
+      {
         "command": "trelloViewer.setFavoriteListByClick",
         "title": "Trello: Set as favorite list",
         "icon": {
@@ -118,6 +126,11 @@
           "command": "trelloViewer.refreshFavoriteList",
           "when": "view == trelloViewFavoriteList",
           "group": "navigation@5"
+        },
+        {
+          "command": "trelloViewer.resetFavoriteList",
+          "when": "view == trelloViewFavoriteList",
+          "group": "navigation@4"
         }
       ],
       "view/item/context": [

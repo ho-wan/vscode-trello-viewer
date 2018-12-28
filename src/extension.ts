@@ -22,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
     ["trelloViewer.showInfoMessage", (info: string) => trello.showInfoMessage(info)],
     ["trelloViewer.showTrelloInfo", () => trello.showTrelloInfo()],
     ["trelloViewer.setFavoriteList", (listId: string) => trello.setFavoriteList(listId)],
+    ["trelloViewer.resetFavoriteList", () => trello.resetFavoriteList()],
     ["trelloViewer.setFavoriteListByClick", (trelloItem: TrelloItem) => trello.setFavoriteListByClick(trelloItem)],
     ["trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card)],
   ];

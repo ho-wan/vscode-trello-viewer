@@ -24,17 +24,21 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
     console.log("🕐 refreshing favorite list");
     if (!this.trello.getFavoriteList()) {
       if (!this.onFirstLoad) {
-        this.trello.showInfoMessage('Select a Favourite List ⭐ to view.');
+        this.trello.showInfoMessage("Select a Favorite List ⭐ to view.");
       }
+      this.favoriteListObject = { trelloBoards: [] };
+      this._onDidChangeTreeData.fire();
       return;
     }
-    this.trello.getInitialFavoriteList().then((list: TrelloList) => {
-      this.trello.getBoardById(list.idBoard).then((board: any) => {
-        this.favoriteListObject = { trelloBoards: [board] };
-        this.favoriteListObject.trelloBoards[0].trelloLists = [list];
-        this._onDidChangeTreeData.fire();
+    this.trello
+      .getInitialFavoriteList()
+      .then((list: TrelloList) => {
+        this.trello.getBoardById(list.idBoard).then((board: any) => {
+          this.favoriteListObject = { trelloBoards: [board] };
+          this.favoriteListObject.trelloBoards[0].trelloLists = [list];
+          this._onDidChangeTreeData.fire();
+        });
       });
-    });
   }
 
   getTreeItem(element: TrelloItem): vscode.TreeItem {
