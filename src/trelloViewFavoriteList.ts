@@ -4,34 +4,34 @@ import { TrelloItem } from "./trelloItem";
 import { TRELLO_ITEM_TYPE } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
-export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloItem> {
+export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
     TrelloItem | undefined
   >();
   readonly onDidChangeTreeData: vscode.Event<TrelloItem | undefined> = this._onDidChangeTreeData.event;
 
   private trello: TrelloComponent;
-  private selectedListObject: TrelloObject;
+  private favoriteListObject: TrelloObject;
   private onFirstLoad: boolean;
 
   constructor(trello: TrelloComponent) {
     this.trello = trello;
-    this.selectedListObject = { trelloBoards: [] };
+    this.favoriteListObject = { trelloBoards: [] };
     this.onFirstLoad = true;
   }
 
   refresh(): void {
-    console.log("🕐 refreshing selected list");
-    if (!this.trello.getSelectedList()) {
+    console.log("🕐 refreshing favorite list");
+    if (!this.trello.getFavoriteList()) {
       if (!this.onFirstLoad) {
         this.trello.showInfoMessage('Select a Favourite List ⭐ to view.');
       }
       return;
     }
-    this.trello.getInitialSelectedList().then((list: TrelloList) => {
+    this.trello.getInitialFavoriteList().then((list: TrelloList) => {
       this.trello.getBoardById(list.idBoard).then((board: any) => {
-        this.selectedListObject = { trelloBoards: [board] };
-        this.selectedListObject.trelloBoards[0].trelloLists = [list];
+        this.favoriteListObject = { trelloBoards: [board] };
+        this.favoriteListObject.trelloBoards[0].trelloLists = [list];
         this._onDidChangeTreeData.fire();
       });
     });
@@ -43,14 +43,14 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
 
   getChildren(element?: TrelloItem): Thenable<any> {
     if (!element) {
-      if (this.selectedListObject.trelloBoards.length == 0) {
+      if (this.favoriteListObject.trelloBoards.length == 0) {
         this.refreshOnFirstLoad();
       }
 
       return Promise.resolve(
         this.getTreeElements(
           TRELLO_ITEM_TYPE.BOARD,
-          this.selectedListObject.trelloBoards,
+          this.favoriteListObject.trelloBoards,
           vscode.TreeItemCollapsibleState.Expanded
         )
       );
@@ -58,13 +58,13 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
       return Promise.resolve(
         this.getTreeElements(
           TRELLO_ITEM_TYPE.LIST,
-          this.selectedListObject.trelloBoards[0].trelloLists,
+          this.favoriteListObject.trelloBoards[0].trelloLists,
           vscode.TreeItemCollapsibleState.Expanded,
           element.id
         )
       );
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
-      const trelloList = this.selectedListObject.trelloBoards[0].trelloLists[0];
+      const trelloList = this.favoriteListObject.trelloBoards[0].trelloLists[0];
       if (!trelloList.trelloCards) {
         this.fetchCardsAndUpdate(trelloList.id, trelloList);
       } else {
@@ -83,7 +83,7 @@ export class TrelloViewSelectedList implements vscode.TreeDataProvider<TrelloIte
   }
 
   private refreshOnFirstLoad(): void {
-    console.log("🤔 selectedListObject is null");
+    console.log("🤔 favoriteListObject is null");
     if (this.onFirstLoad) {
       this.refresh();
       this.onFirstLoad = false;

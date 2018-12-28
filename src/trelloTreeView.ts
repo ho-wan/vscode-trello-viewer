@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { TrelloItem } from "./trelloItem";
 import { TrelloComponent } from "./trelloUtils";
-import { TRELLO_ITEM_TYPE } from "./constants";
+import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
@@ -22,7 +22,9 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 
   refresh(): void {
     console.log("🕐 refreshing");
-    this.trello.getStarredBoards().then(boards => {
+    const starredBoard: boolean | undefined =
+      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.STARRED_BOARDS);
+    this.trello.getBoards(starredBoard).then(boards => {
       this.trelloObject = { trelloBoards: boards };
       // console.log(this.trelloObject);
       this._onDidChangeTreeData.fire();

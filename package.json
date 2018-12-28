@@ -53,16 +53,16 @@
         }
       },
       {
-        "command": "trelloViewer.refreshSelectedList",
-        "title": "Trello: Refresh Selected List",
+        "command": "trelloViewer.refreshFavoriteList",
+        "title": "Trello: Refresh Favorite List",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
         }
       },
       {
-        "command": "trelloViewer.setSelectedListByClick",
-        "title": "Trello: Set Selected List By Click",
+        "command": "trelloViewer.setFavoriteListByClick",
+        "title": "Trello: Set as favorite list",
         "icon": {
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
@@ -77,13 +77,19 @@
           "default": 2,
           "description": "Specifies which editor column markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
           "scope": "resource"
+        },
+        "trelloViewer.starredBoardsOnly": {
+          "type": "boolean",
+          "default": true,
+          "description": "Controls whether to display starred boards only or all boards.",
+          "scope": "resource"
         }
       }
     },
     "menus": {
       "commandPalette": [
         {
-          "command": "trelloViewer.setSelectedListByClick",
+          "command": "trelloViewer.setFavoriteListByClick",
           "when": "false"
         }
       ],
@@ -109,14 +115,14 @@
           "group": "navigation@4"
         },
         {
-          "command": "trelloViewer.refreshSelectedList",
-          "when": "view == trelloViewSelectedList",
+          "command": "trelloViewer.refreshFavoriteList",
+          "when": "view == trelloViewFavoriteList",
           "group": "navigation@5"
         }
       ],
       "view/item/context": [
         {
-          "command": "trelloViewer.setSelectedListByClick",
+          "command": "trelloViewer.setFavoriteListByClick",
           "when": "view == trelloTreeView && viewItem == list",
           "group": "inline@5"
         }
@@ -135,11 +141,11 @@
       "trelloViewer": [
         {
           "id": "trelloTreeView",
-          "name": "Starred Boards"
+          "name": "Trello Boards"
         },
         {
-          "id": "trelloViewSelectedList",
-          "name": "Selected List"
+          "id": "trelloViewFavoriteList",
+          "name": "Favorite List"
         }
       ]
     }

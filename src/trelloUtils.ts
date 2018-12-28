@@ -3,7 +3,6 @@ import { writeFile, unlink } from "fs";
 import axios from "axios";
 import { UserDataFolder } from "./UserDataFolder";
 import {
-  DEFAULT_VIEW_COLUMN,
   VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
   TRELLO_API_BASE_URL,
@@ -19,14 +18,14 @@ export class TrelloComponent {
   private globalState: any;
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
-  private SELECTED_LIST_ID: string | undefined;
+  private FAVORITE_LIST_ID: string | undefined;
 
   constructor(context: vscode.ExtensionContext) {
     this.globalState = context.globalState;
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
 
     this.getCredentials();
-    this.getSelectedList();
+    this.getFavoriteList();
   }
 
   private isCredentialsProvided(): boolean {
@@ -65,7 +64,7 @@ export class TrelloComponent {
 
   showTrelloInfo(): void {
     this.getCredentials();
-    this.getSelectedList();
+    this.getFavoriteList();
     let info: string = "";
     Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
       const value: string = this.globalState.get(GLOBALSTATE_CONFIG[key]);
@@ -90,34 +89,28 @@ export class TrelloComponent {
     });
   }
 
-  getSelectedList(): boolean {
-    this.SELECTED_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.SELECTED_LIST_ID);
-    return (this.SELECTED_LIST_ID !== undefined);
+  getFavoriteList(): boolean {
+    this.FAVORITE_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID);
+    return (this.FAVORITE_LIST_ID !== undefined);
   }
 
-  async setSelectedListId(): Promise<void> {
-    const selectedListId = await this.setTrelloCredential(false, "Set Selected List by ID");
-    if (selectedListId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, selectedListId);
-    this.getSelectedList();
-  }
-
-  setSelectedListByClick(trelloItem: TrelloItem): void {
+  setFavoriteListByClick(trelloItem: TrelloItem): void {
     if (!trelloItem.id) {
       vscode.window.showErrorMessage("Could not get valid List ID");
       return;
     }
-    this.setSelectedList(trelloItem.id);
+    this.setFavoriteList(trelloItem.id);
   }
 
-  setSelectedList(listId: string): void {
-    console.log(`Setting selected list: ${listId}`);
-    if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.SELECTED_LIST_ID, listId);
-    this.getSelectedList();
-    vscode.commands.executeCommand("trelloViewer.refreshSelectedList");
+  setFavoriteList(listId: string): void {
+    console.log(`Setting favorite list: ${listId}`);
+    if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
+    this.getFavoriteList();
+    vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  getInitialSelectedList(): Promise<TrelloList> {
-    return this.getListById(this.SELECTED_LIST_ID || "-1");
+  getInitialFavoriteList(): Promise<TrelloList> {
+    return this.getListById(this.FAVORITE_LIST_ID || "-1");
   }
 
   async getBoardById(boardId: string): Promise<TrelloBoard> {
@@ -136,9 +129,9 @@ export class TrelloComponent {
     return list.data;
   }
 
-  async getStarredBoards(): Promise<TrelloBoard[]> {
+  async getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
     const boards = await this.trelloApiRequest("/1/members/me/boards", {
-      filter: "starred",
+      filter: starredBoards ? "starred" : "all",
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
@@ -223,10 +216,10 @@ export class TrelloComponent {
 
     // open markdown file and preview view
     let viewColumn: vscode.ViewColumn =
-      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) || DEFAULT_VIEW_COLUMN;
+      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) || SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     if (!(VSCODE_VIEW_COLUMN.indexOf(viewColumn) > -1)) {
-      console.error(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${DEFAULT_VIEW_COLUMN}`);
-      viewColumn = DEFAULT_VIEW_COLUMN;
+      console.error(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${SETTING_CONFIG.DEFAULT_VIEW_COLUMN}`);
+      viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace
       .openTextDocument(tempTrelloFile)
