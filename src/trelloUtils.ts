@@ -50,18 +50,57 @@ export class TrelloComponent {
     this.getCredentials();
   }
 
+  // Opens browser links for user to get Trello API Key and then Token
+  async authenticate(): Promise<void> {
+    try {
+      const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
+      if (apiKey !== undefined) {
+        this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
+        await this.fetchApiToken(apiKey);
+        this.getCredentials();
+      } else {
+        const string = await vscode.window.showInformationMessage(
+          "Get your Trello API key here:",
+          "https://trello.com/app-key"
+        );
+        if (string !== undefined) {
+          vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(string));
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      vscode.window.showErrorMessage("Error during authentication");
+    }
+  }
+
+  // Generates a Trello API token and opens link in external browser
+  async fetchApiToken(apiKey: string): Promise<void> {
+    const apiTokenUrl = `https://trello.com/1/authorize?expiration=never&name=VS%20Code%20Trello%20Viewer&scope=read&response_type=token&key=${apiKey}`;
+    try {
+      vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(apiTokenUrl));
+      const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
+      if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
+    } catch (error) {
+      console.error(error);
+      vscode.window.showErrorMessage("Error fetching API token");
+    }
+  }
+
+  // Allows user to set api key and token directly using the vscode input box
   async setCredentials(): Promise<void> {
     try {
       const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
       const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
       if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
       if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
+      this.getCredentials();
     } catch (error) {
       console.error(error);
+      vscode.window.showErrorMessage("Error while setting credentials");
     }
-    this.getCredentials();
   }
 
+  // shows saved user info in vscode info message, API token is hashed
   showTrelloInfo(): void {
     this.getCredentials();
     this.getFavoriteList();
@@ -103,7 +142,7 @@ export class TrelloComponent {
   }
 
   setFavoriteList(listId: string): void {
-    console.log(`Setting favorite list: ${listId}`);
+    console.info(`📄 Setting favorite list: ${listId}`);
     if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
     this.getFavoriteList();
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
@@ -217,7 +256,7 @@ export class TrelloComponent {
       if (err) {
         vscode.window.showErrorMessage(`Error writing to temp file: ${err}`);
       }
-      console.log(`✍Writing to file: ${tempTrelloFile}`);
+      console.info(`✍ Writing to file: ${tempTrelloFile}`);
     });
 
     // open markdown file and preview view
@@ -249,6 +288,6 @@ export function removeTempTrelloFile() {
   const tempTrelloFile = userDataFolder.getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
   unlink(tempTrelloFile, err => {
     if (err) throw err;
-    console.log(`❌Deleted file: ${tempTrelloFile}`);
+    console.info(`❌Deleted file: ${tempTrelloFile}`);
   });
 }

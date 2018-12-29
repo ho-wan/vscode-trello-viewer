@@ -21,12 +21,16 @@
         "title": "Trello: Check Key and Token"
       },
       {
-        "command": "trelloViewer.setCredentials",
-        "title": "Trello: Set Credentials",
+        "command": "trelloViewer.authenticate",
+        "title": "Trello: Authenticate",
         "icon": {
           "light": "images/light/key.svg",
           "dark": "images/dark/key.svg"
         }
+      },
+      {
+        "command": "trelloViewer.setCredentials",
+        "title": "Trello: Set Credentials"
       },
       {
         "command": "trelloViewer.resetCredentials",
@@ -103,7 +107,7 @@
       ],
       "view/title": [
         {
-          "command": "trelloViewer.setCredentials",
+          "command": "trelloViewer.authenticate",
           "when": "view == trelloTreeView",
           "group": "navigation@1"
         },
