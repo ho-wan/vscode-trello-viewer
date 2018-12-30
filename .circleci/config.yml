@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:7.10
+      - image: circleci/node:8.12
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -26,7 +26,10 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - run: |
+          npm install
+          sudo apt-get update
+          sudo apt-get install libgtk-3-0 libxtst6 libxss1 libgconf-2-4 libnss3 libasound2
 
       - save_cache:
           paths:
