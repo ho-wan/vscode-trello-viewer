@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { TrelloItem } from "./trelloItem";
-import { TrelloComponent } from "./trelloUtils";
+import { TrelloItem } from "./TrelloItem";
+import { TrelloUtils } from "./trelloUtils";
 import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
@@ -10,11 +10,11 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   >();
   readonly onDidChangeTreeData: vscode.Event<TrelloItem | undefined> = this._onDidChangeTreeData.event;
 
-  private trello: TrelloComponent;
+  private trello: TrelloUtils;
   private trelloObject: TrelloObject;
   private onFirstLoad: boolean;
 
-  constructor(trello: TrelloComponent) {
+  constructor(trello: TrelloUtils) {
     this.trello = trello;
     this.trelloObject = { trelloBoards: [] };
     this.onFirstLoad = true;

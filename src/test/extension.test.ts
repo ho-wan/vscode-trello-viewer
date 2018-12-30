@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import * as UserDataFolder from "../UserDataFolder";
+import * as UserDataFolder from "../common/UserDataFolder";
 // import * as extension from '../extension';
 
 suite("settingsLocator", () => {

@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
-import { TrelloComponent } from "./trelloUtils";
-import { TrelloItem } from "./trelloItem";
+import { TrelloUtils } from "./TrelloUtils";
+import { TrelloItem } from "./TrelloItem";
 import { TRELLO_ITEM_TYPE } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
@@ -10,11 +10,11 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
   >();
   readonly onDidChangeTreeData: vscode.Event<TrelloItem | undefined> = this._onDidChangeTreeData.event;
 
-  private trello: TrelloComponent;
+  private trello: TrelloUtils;
   private favoriteListObject: TrelloObject;
   private onFirstLoad: boolean;
 
-  constructor(trello: TrelloComponent) {
+  constructor(trello: TrelloUtils) {
     this.trello = trello;
     this.favoriteListObject = { trelloBoards: [] };
     this.onFirstLoad = true;

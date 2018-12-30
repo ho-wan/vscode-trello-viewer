@@ -1,6 +1,6 @@
 // Credit to https://gist.github.com/vlucas/2bd40f62d20c1d49237a109d491974eb
 import * as crypto from "crypto";
-import { ENCRYPTION_KEY } from "./constants";
+import { ENCRYPTION_KEY } from "../trello/constants";
 
 export function encrypt(text: any) {
   if (!text) return undefined;

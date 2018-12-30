@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { writeFile, unlink } from "fs";
 import axios from "axios";
-import { UserDataFolder } from "./UserDataFolder";
+import { UserDataFolder } from "../common/UserDataFolder";
 import {
   VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
@@ -10,11 +10,11 @@ import {
   SETTING_CONFIG,
   GLOBALSTATE_CONFIG,
 } from "./constants";
-import { TrelloItem } from "./trelloItem";
+import { TrelloItem } from "./TrelloItem";
 import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
-import { encrypt, decrypt } from "./encrypt";
+import { encrypt, decrypt } from "../common/encrypt";
 
-export class TrelloComponent {
+export class TrelloUtils {
   private globalState: any;
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
