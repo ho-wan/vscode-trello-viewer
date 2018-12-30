@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { TrelloItem } from "./TrelloItem";
-import { TrelloUtils } from "./trelloUtils";
+import { TrelloUtils } from "./TrelloUtils";
 import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
 
