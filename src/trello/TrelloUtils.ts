@@ -20,8 +20,8 @@ export class TrelloUtils {
   private API_TOKEN: string | undefined;
   private FAVORITE_LIST_ID: string | undefined;
 
-  constructor(context: vscode.ExtensionContext) {
-    this.globalState = context.globalState;
+  constructor(context?: vscode.ExtensionContext) {
+    this.globalState = context ? context.globalState : {};
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
 
     this.getCredentials();
@@ -112,7 +112,7 @@ export class TrelloUtils {
     vscode.window.showInformationMessage(info);
   }
 
-  private setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
+  setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
     return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
   }
 
@@ -129,8 +129,12 @@ export class TrelloUtils {
   }
 
   getFavoriteList(): string | undefined {
-    this.FAVORITE_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID);
-    return this.FAVORITE_LIST_ID;
+    try {
+      this.FAVORITE_LIST_ID = this.globalState.get(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID);
+      return this.FAVORITE_LIST_ID;
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   setFavoriteListByClick(trelloItem: TrelloItem): void {
