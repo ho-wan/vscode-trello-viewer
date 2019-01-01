@@ -11,7 +11,7 @@ export const SETTING_PREFIX = "trelloViewer";
 export const SETTING_CONFIG = {
   VIEW_COLUMN: "viewColumn",
   DEFAULT_VIEW_COLUMN: 2,
-  STARRED_BOARDS:   "starredBoardsOnly",
+  STARRED_BOARDS: "starredBoardsOnly",
   DEFAULT_STARRED_BOARDS: true,
 };
 
@@ -27,4 +27,4 @@ export const TRELLO_ITEM_TYPE = {
   CARD: "card",
 };
 
-export const ENCRYPTION_KEY = 'jwkEfG4!n&UAv2jG!L$54uJfmTSUae8D';
+export const ENCRYPTION_KEY = "jwkEfG4!n&UAv2jG!L$54uJfmTSUae8D";

@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
-import { TrelloItem } from "./TrelloItem";
+
 import { TrelloUtils } from "./TrelloUtils";
-import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
+import { TrelloItem } from "./TrelloItem";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
+import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -60,7 +61,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       const boardId: string = element.id;
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
-        console.error(`❌ Error: trelloBoard id ${boardId} not found`);
+        console.error(`Error: trelloBoard id ${boardId} not found`);
         return Promise.resolve([]);
       }
       if (!trelloBoard.trelloLists) {
@@ -80,12 +81,12 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       const listId: string = element.id;
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
-        console.error(`❌ Error: trelloBoard id ${boardId} not found`);
+        console.error(`Error: trelloBoard id ${boardId} not found`);
         return Promise.resolve([]);
       }
       const trelloList = trelloBoard.trelloLists.find((item: TrelloList) => item.id === listId);
       if (!trelloList) {
-        console.error(`❌ Error: trelloList id ${listId} not found`);
+        console.error(`Error: trelloList id ${listId} not found`);
         return Promise.resolve([]);
       }
 
@@ -104,11 +105,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
       }
     }
     return Promise.resolve([]);
-  }
-
-  async authenticate(): Promise<void> {
-    await this.trello.authenticate();
-    this.refresh();
   }
 
   private refreshOnFirstLoad(): void {

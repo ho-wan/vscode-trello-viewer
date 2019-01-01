@@ -40,8 +40,8 @@ export interface CheckItem {
 }
 
 export interface GlobalStateConfig {
-  API_KEY: string,
-  API_TOKEN: string,
-  FAVORITE_LIST_ID: string,
+  API_KEY: string;
+  API_TOKEN: string;
+  FAVORITE_LIST_ID: string;
   [key: string]: string;
 }

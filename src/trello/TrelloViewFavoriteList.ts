@@ -1,8 +1,9 @@
 import * as vscode from "vscode";
+
 import { TrelloUtils } from "./TrelloUtils";
 import { TrelloItem } from "./TrelloItem";
-import { TRELLO_ITEM_TYPE } from "./constants";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
+import { TRELLO_ITEM_TYPE } from "./constants";
 
 export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -23,7 +24,7 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
   refresh(): void {
     if (!this.trello.getFavoriteList()) {
       if (!this.onFirstLoad) {
-        this.trello.showInfoMessage("Select a Favorite List ⭐ to view.");
+        vscode.window.showInformationMessage("Set a Favorite List ⭐ to view.");
       }
       this.favoriteListObject = { trelloBoards: [] };
       this._onDidChangeTreeData.fire();

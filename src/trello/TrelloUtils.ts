@@ -1,7 +1,11 @@
 import * as vscode from "vscode";
-import { writeFile, unlink } from "fs";
 import axios from "axios";
+import { writeFile, unlink } from "fs";
+
 import { UserDataFolder } from "../common/UserDataFolder";
+import { encrypt, decrypt } from "../common/encrypt";
+import { TrelloItem } from "./TrelloItem";
+import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
 import {
   VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
@@ -10,9 +14,6 @@ import {
   SETTING_CONFIG,
   GLOBALSTATE_CONFIG,
 } from "./constants";
-import { TrelloItem } from "./TrelloItem";
-import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
-import { encrypt, decrypt } from "../common/encrypt";
 
 export class TrelloUtils {
   private globalState: any;
@@ -38,16 +39,26 @@ export class TrelloUtils {
       this.API_TOKEN = decrypt(this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN));
     } catch (error) {
       console.error(error);
+      vscode.window.showErrorMessage("Error getting credentials");
     }
   }
 
-  resetCredentials(): void {
-    Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
-      const value: string = GLOBALSTATE_CONFIG[key];
-      this.globalState.update(value, undefined);
-    });
-    vscode.window.showInformationMessage("Credentials have been reset");
-    this.getCredentials();
+  setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
+    return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
+  }
+
+  // Allows user to set api key and token directly using the vscode input box
+  async setCredentials(): Promise<void> {
+    try {
+      const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
+      const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
+      if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
+      if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
+      this.getCredentials();
+    } catch (error) {
+      console.error(error);
+      vscode.window.showErrorMessage("Error while setting credentials");
+    }
   }
 
   // Opens browser links for user to get Trello API Key and then Token
@@ -67,6 +78,8 @@ export class TrelloUtils {
           vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(string));
         }
       }
+
+      vscode.commands.executeCommand("trelloViewer.refresh");
     } catch (error) {
       console.error(error);
       vscode.window.showErrorMessage("Error during authentication");
@@ -86,18 +99,16 @@ export class TrelloUtils {
     }
   }
 
-  // Allows user to set api key and token directly using the vscode input box
-  async setCredentials(): Promise<void> {
-    try {
-      const apiKey = await this.setTrelloCredential(false, "Your Trello API key");
-      const apiToken = await this.setTrelloCredential(true, "Your Trello API token");
-      if (apiKey !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_KEY, apiKey);
-      if (apiToken !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.API_TOKEN, encrypt(apiToken));
-      this.getCredentials();
-    } catch (error) {
-      console.error(error);
-      vscode.window.showErrorMessage("Error while setting credentials");
-    }
+  // Deletes all saved info in globalstate (key, token, favouriteList)
+  resetCredentials(): void {
+    Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
+      const value: string = GLOBALSTATE_CONFIG[key];
+      this.globalState.update(value, undefined);
+    });
+    vscode.window.showInformationMessage("Credentials have been reset");
+    this.getCredentials();
+
+    vscode.commands.executeCommand("trelloViewer.refresh");
   }
 
   // shows saved user info in vscode info message, API token is hashed
@@ -112,21 +123,95 @@ export class TrelloUtils {
     vscode.window.showInformationMessage(info);
   }
 
-  setTrelloCredential(isPassword: boolean, placeHolderText: string): Thenable<string | undefined> {
-    return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
-  }
-
   private async trelloApiRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
     if (credentialsRequired && !this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return null;
     }
-    const res = await axios.get(url, { params }).catch(err => {
-      console.error(err);
+    const res = await axios.get(url, { params }).catch(error => {
+      console.error(error);
       vscode.window.showErrorMessage("Unable to fetch from Trello Api: please check crendentials.");
       return null;
     });
     return res ? res.data : null;
+  }
+
+  async getBoardById(boardId: string, credentialsRequired: boolean = true): Promise<TrelloBoard> {
+    const board = await this.trelloApiRequest(
+      `/1/boards/${boardId}`,
+      {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      },
+      credentialsRequired
+    );
+    return board;
+  }
+
+  async getListById(listId: string, credentialsRequired: boolean = true): Promise<TrelloList> {
+    const list = await this.trelloApiRequest(
+      `/1/lists/${listId}`,
+      {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      },
+      credentialsRequired
+    );
+    return list;
+  }
+
+  async getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
+    const boards = await this.trelloApiRequest("/1/members/me/boards", {
+      filter: starredBoards ? "starred" : "all",
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+    return boards;
+  }
+
+  async getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
+    const lists = await this.trelloApiRequest(
+      `/1/boards/${boardId}/lists`,
+      {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      },
+      credentialsRequired
+    );
+    return lists;
+  }
+
+  async getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
+    const cards = await this.trelloApiRequest(
+      `/1/lists/${listId}/cards`,
+      {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+        attachments: "cover",
+      },
+      credentialsRequired
+    );
+    return cards;
+  }
+
+  async getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
+    const card = await this.trelloApiRequest(
+      `/1/cards/${cardId}`,
+      {
+        key: this.API_KEY,
+        token: this.API_TOKEN,
+      },
+      credentialsRequired
+    );
+    return card;
+  }
+
+  async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
+    const checklist = await this.trelloApiRequest(`/1/checklists/${checklistId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+    return checklist;
   }
 
   getFavoriteList(): string | undefined {
@@ -135,7 +220,13 @@ export class TrelloUtils {
       return this.FAVORITE_LIST_ID;
     } catch (error) {
       console.error(error);
+      vscode.window.showErrorMessage("Error getting favorite list");
     }
+  }
+
+  getInitialFavoriteList(): Promise<TrelloList> {
+    if (!this.FAVORITE_LIST_ID) return Promise.reject("No favorite list");
+    return this.getListById(this.FAVORITE_LIST_ID);
   }
 
   setFavoriteListByClick(trelloItem: TrelloItem): void {
@@ -157,68 +248,6 @@ export class TrelloUtils {
     this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, null);
     this.getFavoriteList();
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
-  }
-
-  getInitialFavoriteList(): Promise<TrelloList> {
-    return this.getListById(this.FAVORITE_LIST_ID || "-1");
-  }
-
-  async getBoardById(boardId: string, credentialsRequired: boolean = true): Promise<TrelloBoard> {
-    const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    }, credentialsRequired);
-    return board;
-  }
-
-  async getListById(listId: string, credentialsRequired: boolean = true): Promise<TrelloList> {
-    const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    }, credentialsRequired);
-    return list;
-  }
-
-  async getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
-    const boards = await this.trelloApiRequest("/1/members/me/boards", {
-      filter: starredBoards ? "starred" : "all",
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    });
-    return boards;
-  }
-
-  async getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
-    const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    }, credentialsRequired);
-    return lists;
-  }
-
-  async getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
-    const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-      attachments: "cover",
-    }, credentialsRequired);
-    return cards;
-  }
-
-  async getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
-    const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    }, credentialsRequired);
-    return card;
-  }
-
-  async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
-    const checklist = await this.trelloApiRequest(`/1/checklists/${checklistId}`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    });
-    return checklist;
   }
 
   showChecklistsAsMarkdown(checklists: any): string | undefined {
@@ -279,10 +308,6 @@ export class TrelloUtils {
       .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
       .then(() => vscode.commands.executeCommand("markdown.showPreview"))
       .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
-  }
-
-  showInfoMessage(info: string) {
-    vscode.window.showInformationMessage(`${info}`);
   }
 }
 
