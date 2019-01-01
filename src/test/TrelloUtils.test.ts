@@ -54,15 +54,6 @@ suite("TrelloUtils", () => {
       assert.equal(trelloCard.idChecklists.length >= 0, true);
     });
 
-    test("getBoards returns null if credentials not provided", async () => {
-      // Avoid console error from no credentials
-      const consoleErrorSandbox = sinon.createSandbox();
-      consoleErrorSandbox.stub(console, "error");
-      const trelloBoards = await trello.getBoards(false);
-      consoleErrorSandbox.restore();
-      assert.equal(trelloBoards, null);
-    })
-
     test("getListsFromBoard returns list as array", async () => {
       const trelloLists = await trello.getListsFromBoard(BOARD_ID, false);
       assert.equal(trelloLists[0].id, LIST_ID);
@@ -71,6 +62,11 @@ suite("TrelloUtils", () => {
     test("getCardsFromList returns card as array", async () => {
       const trelloCards = await trello.getCardsFromList(LIST_ID, false);
       assert.equal(trelloCards[0].id, CARD_ID);
+    });
+
+    test("getBoards returns null if credentials not provided", async () => {
+      const trelloBoards = await trello.getBoards(false);
+      assert.equal(trelloBoards, null);
     });
   });
 });

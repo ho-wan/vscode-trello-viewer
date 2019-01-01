@@ -119,9 +119,8 @@ export class TrelloUtils {
   private async trelloApiRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
     if (credentialsRequired && !this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return Promise.reject(new Error("Credentials Missing"));
+      return null;
     }
-
     const res = await axios.get(url, { params }).catch(err => {
       console.error(err);
       vscode.window.showErrorMessage("Unable to fetch from Trello Api: please check crendentials.");
