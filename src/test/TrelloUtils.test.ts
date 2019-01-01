@@ -4,8 +4,10 @@ import * as sinon from "sinon";
 
 suite("TrelloUtils", () => {
   // Avoid console error from globalState.get()
-  sinon.stub(console, "error");
+  const consoleErrorSandbox = sinon.createSandbox();
+  consoleErrorSandbox.stub(console, "error");
   let trello: TrelloUtils = new TrelloUtils();
+  consoleErrorSandbox.restore();
 
   suite("VS Code", () => {
     const API_KEY = "SomeApiKey123";
@@ -53,7 +55,11 @@ suite("TrelloUtils", () => {
     });
 
     test("getBoards returns null if credentials not provided", async () => {
+      // Avoid console error from no credentials
+      const consoleErrorSandbox = sinon.createSandbox();
+      consoleErrorSandbox.stub(console, "error");
       const trelloBoards = await trello.getBoards(false);
+      consoleErrorSandbox.restore();
       assert.equal(trelloBoards, null);
     })
 
