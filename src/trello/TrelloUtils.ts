@@ -116,16 +116,17 @@ export class TrelloUtils {
     return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
   }
 
-  private async trelloApiRequest(url: string, params: object): Promise<any> {
-    if (!this.isCredentialsProvided()) {
+  private async trelloApiRequest(url: string, params: object, credentialsRequired?: boolean): Promise<any> {
+    if (credentialsRequired && !this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return Promise.reject(new Error("Credentials Missing"));
     }
 
-    return axios.get(url, { params }).catch(err => {
+    const res = await axios.get(url, { params }).catch(err => {
       console.error(err);
       vscode.window.showErrorMessage("Unable to fetch from Trello Api: please check crendentials.");
     });
+    return res ? res.data : null;
   }
 
   getFavoriteList(): string | undefined {
@@ -162,20 +163,20 @@ export class TrelloUtils {
     return this.getListById(this.FAVORITE_LIST_ID || "-1");
   }
 
-  async getBoardById(boardId: string): Promise<TrelloBoard> {
+  async getBoardById(boardId: string, credentialsRequired: boolean = true): Promise<TrelloBoard> {
     const board = await this.trelloApiRequest(`/1/boards/${boardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-    });
-    return board.data;
+    }, credentialsRequired);
+    return board;
   }
 
-  async getListById(listId: string): Promise<TrelloList> {
+  async getListById(listId: string, credentialsRequired: boolean = true): Promise<TrelloList> {
     const list = await this.trelloApiRequest(`/1/lists/${listId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-    });
-    return list.data;
+    }, credentialsRequired);
+    return list;
   }
 
   async getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
@@ -184,32 +185,32 @@ export class TrelloUtils {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    return boards.data;
+    return boards;
   }
 
-  async getListsFromBoard(boardId: string): Promise<TrelloList[]> {
+  async getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
     const lists = await this.trelloApiRequest(`/1/boards/${boardId}/lists`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-    });
-    return lists.data;
+    }, credentialsRequired);
+    return lists;
   }
 
-  async getCardsFromList(listId: string): Promise<TrelloCard[]> {
+  async getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
     const cards = await this.trelloApiRequest(`/1/lists/${listId}/cards`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
       attachments: "cover",
-    });
-    return cards.data;
+    }, credentialsRequired);
+    return cards;
   }
 
-  async getCardById(cardId: string): Promise<TrelloCard> {
+  async getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
     const card = await this.trelloApiRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-    });
-    return card.data;
+    }, credentialsRequired);
+    return card;
   }
 
   async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
@@ -217,7 +218,7 @@ export class TrelloUtils {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    return checklist.data;
+    return checklist;
   }
 
   showChecklistsAsMarkdown(checklists: any): string | undefined {
@@ -292,6 +293,6 @@ export function removeTempTrelloFile() {
   const tempTrelloFile = userDataFolder.getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
   unlink(tempTrelloFile, err => {
     if (err) throw err;
-    console.info(`❌Deleted file: ${tempTrelloFile}`);
+    console.info(`❌ Deleted file: ${tempTrelloFile}`);
   });
 }
