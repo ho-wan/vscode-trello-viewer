@@ -21,7 +21,6 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
   }
 
   refresh(): void {
-    console.log("🕐 refreshing favorite list");
     if (!this.trello.getFavoriteList()) {
       if (!this.onFirstLoad) {
         this.trello.showInfoMessage("Select a Favorite List ⭐ to view.");
@@ -30,15 +29,13 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
       this._onDidChangeTreeData.fire();
       return;
     }
-    this.trello
-      .getInitialFavoriteList()
-      .then((list: TrelloList) => {
-        this.trello.getBoardById(list.idBoard).then((board: any) => {
-          this.favoriteListObject = { trelloBoards: [board] };
-          this.favoriteListObject.trelloBoards[0].trelloLists = [list];
-          this._onDidChangeTreeData.fire();
-        });
+    this.trello.getInitialFavoriteList().then((list: TrelloList) => {
+      this.trello.getBoardById(list.idBoard).then((board: any) => {
+        this.favoriteListObject = { trelloBoards: [board] };
+        this.favoriteListObject.trelloBoards[0].trelloLists = [list];
+        this._onDidChangeTreeData.fire();
       });
+    });
   }
 
   getTreeItem(element: TrelloItem): vscode.TreeItem {
@@ -47,6 +44,9 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
 
   getChildren(element?: TrelloItem): Thenable<any> {
     if (!element) {
+      if (!this.favoriteListObject.trelloBoards) {
+        return Promise.resolve([]);
+      }
       if (this.favoriteListObject.trelloBoards.length == 0) {
         this.refreshOnFirstLoad();
       }
@@ -87,7 +87,6 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
   }
 
   private refreshOnFirstLoad(): void {
-    console.log("🤔 favoriteListObject is null");
     if (this.onFirstLoad) {
       this.refresh();
       this.onFirstLoad = false;

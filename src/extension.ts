@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
   const commandsToRegister: [string, Function][] = [
     ["trelloViewer.refresh", () => trelloTreeView.refresh()],
     ["trelloViewer.refreshFavoriteList", () => trelloViewFavoriteList.refresh()],
-    ["trelloViewer.authenticate", () => trello.authenticate()],
+    ["trelloViewer.authenticate", () => trelloTreeView.authenticate()],
     ["trelloViewer.setCredentials", () => trello.setCredentials()],
     ["trelloViewer.resetCredentials", () => trello.resetCredentials()],
     ["trelloViewer.showInfoMessage", (info: string) => trello.showInfoMessage(info)],

@@ -21,12 +21,18 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   }
 
   refresh(): void {
-    console.log("🕐 refreshing");
-    const starredBoard: boolean | undefined =
-      vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.STARRED_BOARDS);
+    console.info("🕐 refreshing");
+    if (!this.trello.isCredentialsProvided()) {
+      vscode.window.showWarningMessage("Missing Credentials: please provide API key and token to use.");
+      this.trelloObject = { trelloBoards: [] };
+      this._onDidChangeTreeData.fire();
+      return;
+    }
+    const starredBoard: boolean | undefined = vscode.workspace
+      .getConfiguration(SETTING_PREFIX, null)
+      .get(SETTING_CONFIG.STARRED_BOARDS);
     this.trello.getBoards(starredBoard).then(boards => {
       this.trelloObject = { trelloBoards: boards };
-      // console.log(this.trelloObject);
       this._onDidChangeTreeData.fire();
     });
   }
@@ -37,6 +43,9 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
 
   getChildren(element?: TrelloItem): Thenable<TrelloItem[]> {
     if (!element) {
+      if (!this.trelloObject.trelloBoards) {
+        return Promise.resolve([]);
+      }
       if (this.trelloObject.trelloBoards.length == 0) {
         this.refreshOnFirstLoad();
       }
@@ -97,8 +106,12 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
     return Promise.resolve([]);
   }
 
+  async authenticate(): Promise<void> {
+    await this.trello.authenticate();
+    this.refresh();
+  }
+
   private refreshOnFirstLoad(): void {
-    console.log("🤔 this.trelloBoards is null");
     if (this.onFirstLoad) {
       this.refresh();
       this.onFirstLoad = false;

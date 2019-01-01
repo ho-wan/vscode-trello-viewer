@@ -28,7 +28,7 @@ export class TrelloUtils {
     this.getFavoriteList();
   }
 
-  private isCredentialsProvided(): boolean {
+  isCredentialsProvided(): boolean {
     return !!this.API_KEY && !!this.API_TOKEN;
   }
 
@@ -116,7 +116,7 @@ export class TrelloUtils {
     return vscode.window.showInputBox({ ignoreFocusOut: true, password: isPassword, placeHolder: placeHolderText });
   }
 
-  private async trelloApiRequest(url: string, params: object, credentialsRequired?: boolean): Promise<any> {
+  private async trelloApiRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
     if (credentialsRequired && !this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return Promise.reject(new Error("Credentials Missing"));
@@ -125,6 +125,7 @@ export class TrelloUtils {
     const res = await axios.get(url, { params }).catch(err => {
       console.error(err);
       vscode.window.showErrorMessage("Unable to fetch from Trello Api: please check crendentials.");
+      return null;
     });
     return res ? res.data : null;
   }
@@ -222,7 +223,9 @@ export class TrelloUtils {
   }
 
   showChecklistsAsMarkdown(checklists: any): string | undefined {
-    if (checklists === undefined || checklists.length == 0) {
+    if (!checklists) {
+      return;
+    } else if (checklists.length == 0) {
       return;
     }
 
@@ -269,11 +272,7 @@ export class TrelloUtils {
       vscode.workspace.getConfiguration(SETTING_PREFIX, null).get(SETTING_CONFIG.VIEW_COLUMN) ||
       SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     if (!(VSCODE_VIEW_COLUMN.indexOf(viewColumn) > -1)) {
-      console.error(
-        `Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified; using column ${
-          SETTING_CONFIG.DEFAULT_VIEW_COLUMN
-        }`
-      );
+      vscode.window.showInformationMessage(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified`);
       viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace
