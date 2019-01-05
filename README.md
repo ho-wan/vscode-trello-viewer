@@ -1,65 +1,51 @@
-# trello README
+# Trello Viewer
 
-This is the README for your extension "trello". After writing up a brief description, we recommend including the following sections.
+Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
-## Features
+- Browse Trello boards, lists and cards.
+- View selected card using the markdown previewer and open to the side.
+- See formatted checklists and cover image for the card.
+- Assign a favourite list to easily access cards.
+- Saves credentials to use between sessions.
+- Shows only starred boards as default.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Authenication
 
-For example if there is an image subfolder under your extension project workspace:
+- Activate extension by clicking on the icon in the left Activity Bar.
+- Login to trello at https://trello.com/login
+- Set credentials by clicking the key icon in the left Side Bar or running command "Trello Viewer: Authenticate".
+- Get API key at https://trello.com/app-key
+- A new page should open in browser to get a readonly API token.
+- Alternatively, use the command "Trello Viewer: Set Credentials" and
+ follow instructions from Trello to manually generate a token.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Usage
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- Trello boards, lists, and cards appears in left Side Bar.
+- Clicking a board or list expands or collapses object.
+- Clicking a card opens the markdown file as well as the previewer, opening this to the right side (editor column 2 by default).
+- Clicking on the star to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
+- Clicking on the icons in the side bar runs various commands, such as setting credentials, removing credentials, showing saved info, and refreshing views.
 
-## Requirements
+## Useful Commands
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+Main functionality is provided using the VS code interface in the left Side Bar. Running commands to use this extension is optional.
 
-## Extension Settings
+Command | Description
+--- | ---
+```Trello Viewer: Authenticate``` | Set user Trello API key and token.
+```Trello Viewer: Refresh``` | Refresh the main Trello tree view.
+```Trello Viewer: Reset Credentials``` | Removes saved credentials.
+---
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## Advanced
 
-For example:
+- This extension creates a temporary file named `~vscodeTrello.md` in the user's [VS code folder](https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations).
+- The markdown file contains parsed content of the Trello card and can be saved locally.
+- Hover over any board, list or card to see the Trello ID.
 
-This extension contributes the following settings:
+## Unsupported features
 
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
+- Adding or editing Trello items.
 
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+If you wish to see additional functionality such as being able to create cards or add comments, leave a feature request in the repository!

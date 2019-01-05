@@ -1,14 +1,33 @@
 {
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
-  "description": "Show Trello cards inside of VS Code, and browse boards and lists in tree view.",
+  "description": "Show Trello cards inside of VS Code, and browse boards and lists.",
   "version": "0.0.1",
   "publisher": "Ho-Wan",
+  "author": {
+    "name": "Ho-Wan To"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Ho-Wan/vscode-trello-viewer/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ho-Wan/vscode-trello-viewer"
+  },
+  "bugs": {
+    "url": "https://github.com/Ho-Wan/vscode-trello-viewer/issues"
+  },
   "engines": {
     "vscode": "^1.28.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "trello",
+    "markdown",
+    "kanban",
+    "TODO",
+    "card"
   ],
   "activationEvents": [
     "*"
@@ -18,11 +37,11 @@
     "commands": [
       {
         "command": "trelloViewer.test",
-        "title": "Trello: Check Key and Token"
+        "title": "Trello Viewer: Check Key and Token"
       },
       {
         "command": "trelloViewer.authenticate",
-        "title": "Trello: Authenticate",
+        "title": "Trello Viewer: Authenticate",
         "icon": {
           "light": "images/light/key.svg",
           "dark": "images/dark/key.svg"
@@ -30,11 +49,11 @@
       },
       {
         "command": "trelloViewer.setCredentials",
-        "title": "Trello: Set Credentials"
+        "title": "Trello Viewer: Set Credentials"
       },
       {
         "command": "trelloViewer.resetCredentials",
-        "title": "Trello: Reset Credentials",
+        "title": "Trello Viewer: Reset Credentials",
         "icon": {
           "light": "images/light/x.svg",
           "dark": "images/dark/x.svg"
@@ -42,7 +61,7 @@
       },
       {
         "command": "trelloViewer.showTrelloInfo",
-        "title": "Trello: Show Saved Credentials",
+        "title": "Trello Viewer: Show Saved Credentials",
         "icon": {
           "light": "images/light/eye.svg",
           "dark": "images/dark/eye.svg"
@@ -50,7 +69,7 @@
       },
       {
         "command": "trelloViewer.refresh",
-        "title": "Trello: Refresh",
+        "title": "Trello Viewer: Refresh",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
@@ -58,7 +77,7 @@
       },
       {
         "command": "trelloViewer.refreshFavoriteList",
-        "title": "Trello: Refresh Favorite List",
+        "title": "Trello Viewer: Refresh Favorite List",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
@@ -66,7 +85,7 @@
       },
       {
         "command": "trelloViewer.resetFavoriteList",
-        "title": "Trello: Reset Favorite List",
+        "title": "Trello Viewer: Reset Favorite List",
         "icon": {
           "light": "images/light/x.svg",
           "dark": "images/dark/x.svg"
@@ -74,7 +93,7 @@
       },
       {
         "command": "trelloViewer.setFavoriteListByClick",
-        "title": "Trello: Set as favorite list",
+        "title": "Trello Viewer: Set as favorite list",
         "icon": {
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
@@ -174,17 +193,16 @@
     "postinstall": "node ./node_modules/vscode/bin/install",
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
   "devDependencies": {
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
+    "@types/sinon": "^7.0.2",
     "sinon": "^7.2.2",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
     "vscode": "^1.1.21"
-  },
-  "dependencies": {
-    "@types/sinon": "^7.0.2",
-    "axios": "^0.18.0",
-    "event-stream": "^3.3.4"
   }
 }
