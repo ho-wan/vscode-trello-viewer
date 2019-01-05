@@ -170,7 +170,7 @@
         {
           "id": "trelloViewer",
           "title": "Trello Viewer",
-          "icon": "images/dark/browser.svg"
+          "icon": "images/trello-viewer-activity-bar.svg"
         }
       ]
     },
