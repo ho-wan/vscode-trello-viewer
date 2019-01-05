@@ -33,6 +33,7 @@
     "*"
   ],
   "main": "./out/extension",
+  "icon": "images/trello-viewer-icon.png",
   "contributes": {
     "commands": [
       {
