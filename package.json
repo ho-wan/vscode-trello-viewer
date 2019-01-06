@@ -5,7 +5,9 @@
   "version": "0.0.1",
   "publisher": "Ho-Wan",
   "author": {
-    "name": "Ho-Wan To"
+    "name": "Ho-Wan To",
+    "url": "https://github.com/Ho-Wan",
+    "email": "howan.eng@gmail.com"
   },
   "license": "MIT",
   "homepage": "https://github.com/Ho-Wan/vscode-trello-viewer/blob/master/README.md",

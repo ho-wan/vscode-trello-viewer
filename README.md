@@ -19,6 +19,10 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - Alternatively, use the command "Trello Viewer: Set Credentials" and
  follow instructions from Trello to manually generate a token.
 
+## Tree View
+
+<img src="images\readme\main-tree-view-markup.png" alt="Trello Viewer tree view markup">
+
 ## Usage
 
 - Trello boards, lists, and cards appears in left Side Bar.
@@ -26,6 +30,10 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - Clicking a card opens the markdown file as well as the previewer, opening this to the right side (editor column 2 by default).
 - Clicking on the star to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
 - Clicking on the icons in the side bar runs various commands, such as setting credentials, removing credentials, showing saved info, and refreshing views.
+
+## Trello Card Markdown Preview
+
+<img src="images\readme\screenshot1-markdown-preview.png" alt="Trello Viewer markdown preview">
 
 ## Useful Commands
 
@@ -38,13 +46,21 @@ Command | Description
 ```Trello Viewer: Reset Credentials``` | Removes saved credentials.
 ---
 
+## Extension Settings
+
+Name of Setting | Default | Description
+--- | --- | ---
+```trelloViewer.starredBoardsOnly``` | ```true``` | Controls whether to display starred boards only or all boards.
+```trelloViewer.viewColumn``` | ```2``` | Specifies which editor column markdown previewer opens at.
+---
+
 ## Advanced
 
-- This extension creates a temporary file named `~vscodeTrello.md` in the user's [VS code folder](https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations).
+- This extension creates a temporary file named `~vscodeTrello.md` in the user's [VS Code Settings folder](https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations).
 - The markdown file contains parsed content of the Trello card and can be saved locally.
 - Hover over any board, list or card to see the Trello ID.
 
-## Unsupported features
+## Unsupported Features
 
 - Adding or editing Trello items.
 
