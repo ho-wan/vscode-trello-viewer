@@ -1,7 +1,7 @@
 {
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
-  "description": "Show Trello cards inside of VS Code, and browse boards and lists.",
+  "description": "View Trello cards in VS Code, browse user's boards and lists.",
   "version": "0.0.1",
   "publisher": "Ho-Wan",
   "author": {

@@ -1,4 +1,5 @@
-# Trello Viewer
+# VS Code - Trello Viewer
+[![](https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg)](https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer)
 
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
@@ -20,7 +21,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 ## Tree View
 
-<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/main-tree-view.png" alt="Trello Viewer tree view markup">
+<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/main-tree-view-markup.png" alt="Trello Viewer tree view markup">
 
 ## Usage
 
@@ -43,7 +44,6 @@ Command | Description
 ```Trello Viewer: Authenticate``` | Set user Trello API key and token.
 ```Trello Viewer: Refresh``` | Refresh the main Trello tree view.
 ```Trello Viewer: Reset Credentials``` | Removes saved credentials.
----
 
 ## Extension Settings
 
@@ -51,7 +51,6 @@ Name of Setting | Default | Description
 --- | --- | ---
 ```trelloViewer.starredBoardsOnly``` | ```true``` | Controls whether to display starred boards only or all boards.
 ```trelloViewer.viewColumn``` | ```2``` | Specifies which editor column markdown previewer opens at.
----
 
 ## Advanced
 
