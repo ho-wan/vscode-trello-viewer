@@ -237,7 +237,7 @@ export class TrelloUtils {
     this.setFavoriteList(trelloItem.id);
   }
 
-  setFavoriteList(listId: string): void {
+  private setFavoriteList(listId: string): void {
     console.info(`📄 Setting favorite list: ${listId}`);
     if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
     this.getFavoriteList();

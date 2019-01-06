@@ -13,15 +13,14 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 - Activate extension by clicking on the icon in the left Activity Bar.
 - Login to trello at https://trello.com/login
-- Set credentials by clicking the key icon in the left Side Bar or running command "Trello Viewer: Authenticate".
 - Get API key at https://trello.com/app-key
-- A new page should open in browser to get a readonly API token.
-- Alternatively, use the command "Trello Viewer: Set Credentials" and
- follow instructions from Trello to manually generate a token.
+- Set credentials by clicking the key icon in the left Side Bar or running command "Trello Viewer: Authenticate".
+- After entering API key, a new page should open in browser to get a readonly API token.
+- Alternatively, use the command "Trello Viewer: Set Credentials" and follow instructions from Trello to manually generate a token.
 
 ## Tree View
 
-<img src="images\readme\main-tree-view-markup.png" alt="Trello Viewer tree view markup">
+<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/main-tree-view.png" alt="Trello Viewer tree view markup">
 
 ## Usage
 
@@ -33,7 +32,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 ## Trello Card Markdown Preview
 
-<img src="images\readme\screenshot1-markdown-preview.png" alt="Trello Viewer markdown preview">
+<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/screenshot1-markdown-preview.png" alt="Trello Viewer markdown preview">
 
 ## Useful Commands
 
@@ -59,6 +58,7 @@ Name of Setting | Default | Description
 - This extension creates a temporary file named `~vscodeTrello.md` in the user's [VS Code Settings folder](https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations).
 - The markdown file contains parsed content of the Trello card and can be saved locally.
 - Hover over any board, list or card to see the Trello ID.
+- The API token is stored using AES 256 encryption with IV.
 
 ## Unsupported Features
 
