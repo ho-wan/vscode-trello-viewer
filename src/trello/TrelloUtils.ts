@@ -123,7 +123,7 @@ export class TrelloUtils {
     vscode.window.showInformationMessage(info);
   }
 
-  private async trelloApiRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
+  async trelloApiRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
     if (credentialsRequired && !this.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
       return null;
