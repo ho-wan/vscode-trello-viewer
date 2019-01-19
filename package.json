@@ -1,0 +1,211 @@
+{
+  "name": "vscode-trello-viewer",
+  "displayName": "Trello Viewer",
+  "description": "View Trello cards in VS Code, browse user's boards and lists.",
+  "version": "0.1.0",
+  "publisher": "Ho-Wan",
+  "author": {
+    "name": "Ho-Wan To",
+    "url": "https://github.com/Ho-Wan",
+    "email": "howan.eng@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Ho-Wan/vscode-trello-viewer/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ho-Wan/vscode-trello-viewer"
+  },
+  "bugs": {
+    "url": "https://github.com/Ho-Wan/vscode-trello-viewer/issues"
+  },
+  "engines": {
+    "vscode": "^1.28.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "trello",
+    "markdown",
+    "kanban",
+    "todo",
+    "card"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension",
+  "icon": "images/trello-viewer-icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "trelloViewer.test",
+        "title": "Trello Viewer: Check Key and Token"
+      },
+      {
+        "command": "trelloViewer.authenticate",
+        "title": "Trello Viewer: Authenticate",
+        "icon": {
+          "light": "images/light/key.svg",
+          "dark": "images/dark/key.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.setCredentials",
+        "title": "Trello Viewer: Set Credentials"
+      },
+      {
+        "command": "trelloViewer.resetCredentials",
+        "title": "Trello Viewer: Reset Credentials",
+        "icon": {
+          "light": "images/light/x.svg",
+          "dark": "images/dark/x.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.showTrelloInfo",
+        "title": "Trello Viewer: Show Saved Credentials",
+        "icon": {
+          "light": "images/light/eye.svg",
+          "dark": "images/dark/eye.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.refresh",
+        "title": "Trello Viewer: Refresh",
+        "icon": {
+          "light": "images/light/refresh.svg",
+          "dark": "images/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.refreshFavoriteList",
+        "title": "Trello Viewer: Refresh Favorite List",
+        "icon": {
+          "light": "images/light/refresh.svg",
+          "dark": "images/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.resetFavoriteList",
+        "title": "Trello Viewer: Reset Favorite List",
+        "icon": {
+          "light": "images/light/x.svg",
+          "dark": "images/dark/x.svg"
+        }
+      },
+      {
+        "command": "trelloViewer.setFavoriteListByClick",
+        "title": "Trello Viewer: Set as favorite list",
+        "icon": {
+          "light": "images/light/star.svg",
+          "dark": "images/dark/star.svg"
+        }
+      }
+    ],
+    "configuration": {
+      "title": "Trello Viewer",
+      "properties": {
+        "trelloViewer.viewColumn": {
+          "type": "integer",
+          "default": 2,
+          "description": "Specifies which editor column markdown previewer opens at.\n-1 = Active, -2 = Beside, 1 = One, 2 = Two, etc.",
+          "scope": "resource"
+        },
+        "trelloViewer.starredBoardsOnly": {
+          "type": "boolean",
+          "default": true,
+          "description": "Controls whether to display starred boards only or all boards.",
+          "scope": "resource"
+        }
+      }
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "trelloViewer.setFavoriteListByClick",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "trelloViewer.authenticate",
+          "when": "view == trelloTreeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "trelloViewer.resetCredentials",
+          "when": "view == trelloTreeView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "trelloViewer.showTrelloInfo",
+          "when": "view == trelloTreeView",
+          "group": "navigation@3"
+        },
+        {
+          "command": "trelloViewer.refresh",
+          "when": "view == trelloTreeView",
+          "group": "navigation@4"
+        },
+        {
+          "command": "trelloViewer.refreshFavoriteList",
+          "when": "view == trelloViewFavoriteList",
+          "group": "navigation@5"
+        },
+        {
+          "command": "trelloViewer.resetFavoriteList",
+          "when": "view == trelloViewFavoriteList",
+          "group": "navigation@4"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "trelloViewer.setFavoriteListByClick",
+          "when": "view == trelloTreeView && viewItem == list",
+          "group": "inline@5"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "trelloViewer",
+          "title": "Trello Viewer",
+          "icon": "images/trello-viewer-activity-bar.svg"
+        }
+      ]
+    },
+    "views": {
+      "trelloViewer": [
+        {
+          "id": "trelloTreeView",
+          "name": "Trello Boards"
+        },
+        {
+          "id": "trelloViewFavoriteList",
+          "name": "Favorite List"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.42",
+    "@types/node": "^8.10.25",
+    "@types/sinon": "^7.0.2",
+    "sinon": "^7.2.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.21"
+  }
+}

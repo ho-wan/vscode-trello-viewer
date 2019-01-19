@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24"
+   height="24"
+   viewBox="0 0 8 8"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="trello-viewer-activitiy-bar.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   inkscape:export-filename="C:\Users\Ho-Wan\_github\vscode-trello-viewer\images\trello-viewer-icon.png"
+   inkscape:export-xdpi="511.87015"
+   inkscape:export-ydpi="511.87015">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="27.812867"
+     inkscape:cx="2.6862988"
+     inkscape:cy="9.4565376"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4" />
+  <path
+     d="M 0.34065076,0.0020286 A 0.49995752,0.49987321 0 0 0 6.7964231e-4,0.50190181 V 7.5001268 A 0.49995752,0.49987321 0 0 0 0.50063716,8 H 7.5000425 A 0.49995752,0.49987321 0 0 0 8,7.5001268 V 0.50190181 A 0.49995752,0.49987321 0 0 0 7.5000425,0.0020286 H 0.50063716 a 0.49995752,0.49987321 0 0 0 -0.0899924,0 0.49995752,0.49987321 0 0 0 -0.0599949,0 z M 1.5005522,1.001775 c 0.2799762,0 0.4999575,0.2199442 0.4999575,0.4998732 0,0.279929 -0.2199813,0.4998733 -0.4999575,0.4998733 -0.2799762,0 -0.4999575,-0.2199443 -0.4999575,-0.4998733 0,-0.279929 0.2199813,-0.4998732 0.4999575,-0.4998732 z m 1.9998301,0 h 2.9997451 c 0.2799762,0 0.4999576,0.2199442 0.4999576,0.4998732 0,0.279929 -0.2199814,0.4998733 -0.4999576,0.4998733 H 3.5003823 c -0.2799762,0 -0.4999575,-0.2199443 -0.4999575,-0.4998733 0,-0.279929 0.2199813,-0.4998732 0.4999575,-0.4998732 z M 1.0005947,3.0012679 H 7.000085 V 7.0002536 H 1.0005947 Z"
+     preserveAspectRatio="xMidYMid meet"
+     id="path2"
+     style="fill:#c5c5c5;fill-opacity:1;stroke-width:0.99983072"
+     inkscape:connector-curvature="0" />
+  <path
+     inkscape:connector-curvature="0"
+     d="M 4.0187502,3.5 C 2.4375,3.5 1.5,5.0000001 1.5,5.0000001 1.5,5.0000001 2.4375,6.5 4.0187502,6.5 5.5624997,6.5 6.5,5.0000001 6.5,5.0000001 6.5,5.0000001 5.5624997,3.5 4.0187502,3.5 Z m -0.018748,0.5000002 c 0.6937495,0 1.2499992,0.45 1.2499992,0.9999999 0,0.5549999 -0.5562497,1 -1.2499992,1 -0.6875002,0 -1.2500002,-0.4450001 -1.2500002,-1 0,-0.5499999 0.5625,-0.9999999 1.2500002,-0.9999999 z m 0,0.4999998 C 3.6562519,4.5 3.3750021,4.725 3.3750021,5.0000001 3.3750021,5.2749999 3.6562519,5.5 4.0000022,5.5 c 0.3437496,0 0.6249997,-0.2250001 0.6249997,-0.4999999 0,-0.05 -0.025001,-0.095 -0.037495,-0.1399996 -0.05,0.08 -0.15,0.1399996 -0.2750005,0.1399996 -0.1749992,0 -0.3124999,-0.1099991 -0.3124999,-0.25 0,-0.1000001 0.075,-0.18 0.175,-0.2200001 C 4.1187535,4.515001 4.0625055,4.5 4.000007,4.5 Z"
+     id="path2-0"
+     style="fill:#c5c5c5;fill-opacity:1;stroke-width:0.55901706"
+     inkscape:export-xdpi="511.87015"
+     inkscape:export-ydpi="511.87015" />
+</svg>
