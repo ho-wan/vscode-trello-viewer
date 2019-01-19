@@ -1,5 +1,8 @@
 # VS Code - Trello Viewer
-[![](https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg)](https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer)
+<a href="https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer" style="text-decoration : none" title="Go to VS marketplace">
+  <img src="https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg">
+  <img src="https://vsmarketplacebadge.apphb.com/installs/ho-wan.vscode-trello-viewer.svg">
+</a>
 
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
@@ -7,7 +10,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - View selected card using the markdown previewer and open to the side.
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
-- Saves credentials to use between sessions.
+- Saves credentials to use between sessions.>>>
 - Shows only starred boards as default.
 
 ## Authenication
