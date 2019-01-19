@@ -10,7 +10,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - View selected card using the markdown previewer and open to the side.
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
-- Saves credentials to use between sessions.>>>
+- Saves credentials to use between sessions.
 - Shows only starred boards as default.
 
 ## Authenication
