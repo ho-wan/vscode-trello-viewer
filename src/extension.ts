@@ -15,20 +15,17 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider("trelloTreeView", trelloTreeView);
   vscode.window.registerTreeDataProvider("trelloViewFavoriteList", trelloViewFavoriteList);
 
-  const commandsToRegister: [string, Function][] = [
-    ["trelloViewer.refresh", () => trelloTreeView.refresh()],
-    ["trelloViewer.refreshFavoriteList", () => trelloViewFavoriteList.refresh()],
-    ["trelloViewer.authenticate", () => trello.authenticate()],
-    ["trelloViewer.setCredentials", () => trello.setCredentials()],
-    ["trelloViewer.resetCredentials", () => trello.resetCredentials()],
-    ["trelloViewer.showTrelloInfo", () => trello.showTrelloInfo()],
-    ["trelloViewer.resetFavoriteList", () => trello.resetFavoriteList()],
-    ["trelloViewer.setFavoriteListByClick", (trelloItem: TrelloItem) => trello.setFavoriteListByClick(trelloItem)],
-    ["trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card)],
-  ];
-  commandsToRegister.map((command: [string, any]) =>
-    context.subscriptions.push(vscode.commands.registerCommand(command[0], command[1]))
+  vscode.commands.registerCommand("trelloViewer.refresh", () => trelloTreeView.refresh());
+  vscode.commands.registerCommand("trelloViewer.refreshFavoriteList", () => trelloViewFavoriteList.refresh());
+  vscode.commands.registerCommand("trelloViewer.authenticate", () => trello.authenticate());
+  vscode.commands.registerCommand("trelloViewer.setCredentials", () => trello.setCredentials());
+  vscode.commands.registerCommand("trelloViewer.resetCredentials", () => trello.resetCredentials());
+  vscode.commands.registerCommand("trelloViewer.showTrelloInfo", () => trello.showTrelloInfo());
+  vscode.commands.registerCommand("trelloViewer.resetFavoriteList", () => trello.resetFavoriteList());
+  vscode.commands.registerCommand("trelloViewer.setFavoriteListByClick", (trelloItem: TrelloItem) =>
+    trello.setFavoriteListByClick(trelloItem)
   );
+  vscode.commands.registerCommand("trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card));
 }
 
 export function deactivate() {
