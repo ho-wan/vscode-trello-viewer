@@ -28,6 +28,20 @@ export interface TrelloCard {
   desc: string;
   idChecklists: string[];
   trelloChecklists: TrelloChecklist[];
+  actions: TrelloActionComment[];
+  [key: string]: any;
+}
+
+export interface TrelloActionComment {
+  id: string;
+  date: string;
+  data: {
+    text: string;
+    dateLastEdited: string;
+  };
+  memberCreator: {
+    fullName: string;
+  };
   [key: string]: any;
 }
 
