@@ -5,7 +5,14 @@ import { writeFile, unlink } from "fs";
 import { UserDataFolder } from "../common/UserDataFolder";
 import { encrypt, decrypt } from "../common/encrypt";
 import { TrelloItem } from "./TrelloItem";
-import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
+import {
+  TrelloBoard,
+  TrelloList,
+  TrelloCard,
+  TrelloChecklist,
+  TrelloActionComment,
+  CheckItem,
+} from "./trelloComponents";
 import {
   VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
@@ -188,6 +195,8 @@ export class TrelloUtils {
         key: this.API_KEY,
         token: this.API_TOKEN,
         attachments: "cover",
+        actions: "commentCard",
+        actions_limit: 20,
       },
       credentialsRequired
     );
@@ -250,24 +259,44 @@ export class TrelloUtils {
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  showChecklistsAsMarkdown(checklists: any): string | undefined {
+  showChecklistsAsMarkdown(checklists: TrelloChecklist[]): string | undefined {
     if (!checklists || checklists.length == 0) {
       return;
     }
 
     let checklistMarkdown: string = "";
-    Object.keys(checklists).forEach(id => {
-      const trelloChecklist: TrelloChecklist = checklists[id];
-      checklistMarkdown += `\n### ${trelloChecklist.name}  \n`;
-      trelloChecklist.checkItems
+    checklists.map(checklist => {
+      checklistMarkdown += `\n> ${checklist.name}  \n`;
+      checklist.checkItems
         .sort((checkItem1: CheckItem, checkItem2: CheckItem) => checkItem1.pos - checkItem2.pos)
         .map((checkItem: CheckItem) => {
           checklistMarkdown +=
             checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `🔳 ${checkItem.name}  \n`;
         });
     });
-
     return checklistMarkdown;
+  }
+
+  showCommentsAsMarkdown(comments: any): string | undefined {
+    if (!comments || comments.length == 0) {
+      return;
+    }
+
+    let commentsMarkdown: string = "";
+    comments.map((comment: TrelloActionComment) => {
+      const date = new Date(comment.date);
+      const dateString = `${date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`;
+      const timeString = `${date.toLocaleString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}`;
+      commentsMarkdown += `\n> ${comment.memberCreator.fullName} - ${dateString} at ${timeString} ${
+        comment.data.dateLastEdited ? "(edited)" : ""
+      } \n`;
+      commentsMarkdown += `\n~~~ \n${comment.data.text} \n~~~ \n`;
+    });
+    return commentsMarkdown;
   }
 
   async showCard(card: TrelloCard): Promise<void> {
@@ -277,6 +306,8 @@ export class TrelloUtils {
     }
 
     let checklistItems: string | undefined = this.showChecklistsAsMarkdown(card.trelloChecklists);
+    let commentItems: string | undefined = this.showCommentsAsMarkdown(card.actions);
+
     const cardCoverImageUrl = card.attachments.length > 0 ? card.attachments[0].url : "";
 
     let cardContent: string = "";
@@ -284,6 +315,7 @@ export class TrelloUtils {
     cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : "";
     cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : "";
     cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : "";
+    cardContent += commentItems ? `## ===COMMENTS===\n${commentItems}\n\n---\n` : "";
     cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />` : "";
 
     // Get location of user's vs code folder to save temp markdown file
