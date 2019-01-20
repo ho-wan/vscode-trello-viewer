@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.2.0 (20 Jan 2019)
+- Prefix card number to card names.
+- Show comments on card.
+- Show initials of users assigned to card.
+- Enable auto line breaks for markdown new lines.
+- Fixed checklist ordering.
+- Improve visual format of card.
+
 ## 0.1.1 (19 Jan 2019)
 - Minor documentation update. Improved api tests.
 

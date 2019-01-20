@@ -61,6 +61,7 @@ Name of Setting | Default | Description
 - The markdown file contains parsed content of the Trello card and can be saved locally.
 - Hover over any board, list or card to see the Trello ID.
 - The API token is stored using AES 256 encryption with IV.
+- The setting "markdown.preview.breaks" is automatically set to true in only to see new lines correctly formatted.
 
 ## Unsupported Features
 
