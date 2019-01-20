@@ -80,6 +80,7 @@ suite("TrelloUtils", () => {
         const data = new Promise(r =>
           r({
             id: CARD_ID,
+            idShort: 1,
             name: "test_card",
             attachments: [
               {
@@ -95,6 +96,7 @@ suite("TrelloUtils", () => {
         const trelloCard: TrelloCard = await trello.getCardById(CARD_ID, false);
 
         assert.equal(trelloCard.id, CARD_ID);
+        assert.equal(trelloCard.idShort, '1');
         assert.equal(trelloCard.attachments[0].url, "test_attachment_url");
         assert.equal(trelloCard.name, "test_card");
         assert.equal(trelloCard.url, "test_url");
