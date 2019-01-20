@@ -42,7 +42,8 @@ export interface CheckItem {
   id: string;
   state: string;
   name: string;
-  [key: string]: string;
+  pos: number;
+  [key: string]: any;
 }
 
 export interface GlobalStateConfig {
