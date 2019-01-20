@@ -251,9 +251,7 @@ export class TrelloUtils {
   }
 
   showChecklistsAsMarkdown(checklists: any): string | undefined {
-    if (!checklists) {
-      return;
-    } else if (checklists.length == 0) {
+    if (!checklists || checklists.length == 0) {
       return;
     }
 
@@ -261,10 +259,12 @@ export class TrelloUtils {
     Object.keys(checklists).forEach(id => {
       const trelloChecklist: TrelloChecklist = checklists[id];
       checklistMarkdown += `\n### ${trelloChecklist.name}  \n`;
-      trelloChecklist.checkItems.map((checkItem: CheckItem) => {
-        checklistMarkdown +=
-          checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `❌ ${checkItem.name}  \n`;
-      });
+      trelloChecklist.checkItems
+        .sort((checkItem1: CheckItem, checkItem2: CheckItem) => checkItem1.pos - checkItem2.pos)
+        .map((checkItem: CheckItem) => {
+          checklistMarkdown +=
+            checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `🔳 ${checkItem.name}  \n`;
+        });
     });
 
     return checklistMarkdown;
