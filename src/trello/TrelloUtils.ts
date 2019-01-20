@@ -37,6 +37,16 @@ export class TrelloUtils {
 
     this.getCredentials();
     this.getFavoriteList();
+    this.setMarkdownPreviewBreaks();
+  }
+
+  setMarkdownPreviewBreaks(): void {
+    try {
+      const config = vscode.workspace.getConfiguration();
+      config.update("markdown.preview.breaks", true, true);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   isCredentialsProvided(): boolean {
