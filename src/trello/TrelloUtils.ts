@@ -5,7 +5,15 @@ import { writeFile, unlink } from "fs";
 import { UserDataFolder } from "../common/UserDataFolder";
 import { encrypt, decrypt } from "../common/encrypt";
 import { TrelloItem } from "./TrelloItem";
-import { TrelloBoard, TrelloList, TrelloCard, TrelloChecklist, CheckItem } from "./trelloComponents";
+import {
+  TrelloBoard,
+  TrelloList,
+  TrelloCard,
+  TrelloChecklist,
+  TrelloActionComment,
+  CheckItem,
+  TrelloMember,
+} from "./trelloComponents";
 import {
   VSCODE_VIEW_COLUMN,
   TEMP_TRELLO_FILE_NAME,
@@ -20,13 +28,25 @@ export class TrelloUtils {
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
   private FAVORITE_LIST_ID: string | undefined;
+  private tempTrelloFile: string;
 
   constructor(context?: vscode.ExtensionContext) {
     this.globalState = context ? context.globalState : {};
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
+    this.tempTrelloFile = new UserDataFolder().getPathCodeSettings() + TEMP_TRELLO_FILE_NAME || "";
 
     this.getCredentials();
     this.getFavoriteList();
+    this.setMarkdownPreviewBreaks();
+  }
+
+  setMarkdownPreviewBreaks(): void {
+    try {
+      const config = vscode.workspace.getConfiguration();
+      config.update("markdown.preview.breaks", true, true);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   isCredentialsProvided(): boolean {
@@ -188,6 +208,9 @@ export class TrelloUtils {
         key: this.API_KEY,
         token: this.API_TOKEN,
         attachments: "cover",
+        actions: "commentCard",
+        actions_limit: 20,
+        members: true,
       },
       credentialsRequired
     );
@@ -250,25 +273,59 @@ export class TrelloUtils {
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  showChecklistsAsMarkdown(checklists: any): string | undefined {
-    if (!checklists) {
-      return;
-    } else if (checklists.length == 0) {
-      return;
+  showCardMembersAsString(members: TrelloMember[]): string {
+    if (!members || members.length == 0) {
+      return "";
+    }
+    return members.map(member => member.initials).join(', ');
+  };
+
+  showChecklistsAsMarkdown(checklists: TrelloChecklist[]): string {
+    if (!checklists || checklists.length == 0) {
+      return "";
     }
 
     let checklistMarkdown: string = "";
-    Object.keys(checklists).forEach(id => {
-      const trelloChecklist: TrelloChecklist = checklists[id];
-      checklistMarkdown += `\n### ${trelloChecklist.name}  \n`;
-      trelloChecklist.checkItems.map((checkItem: CheckItem) => {
-        checklistMarkdown +=
-          checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `❌ ${checkItem.name}  \n`;
-      });
+    checklists.map(checklist => {
+      checklistMarkdown += `\n> ${checklist.name}  \n`;
+      checklist.checkItems
+        .sort((checkItem1: CheckItem, checkItem2: CheckItem) => checkItem1.pos - checkItem2.pos)
+        .map((checkItem: CheckItem) => {
+          checklistMarkdown +=
+            checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `🔳 ${checkItem.name}  \n`;
+        });
     });
-
     return checklistMarkdown;
   }
+
+  showCommentsAsMarkdown(comments: TrelloActionComment[]): string {
+    if (!comments || comments.length == 0) {
+      return "";
+    }
+
+    let commentsMarkdown: string = "";
+    comments.map((comment: TrelloActionComment) => {
+      const date = new Date(comment.date);
+      const dateString = `${date.toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}`;
+      const timeString = `${date.toLocaleString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}`;
+      commentsMarkdown += `\n> ${comment.memberCreator.fullName} - ${dateString} at ${timeString} ${
+        comment.data.dateLastEdited ? "(edited)" : ""
+      } \n`;
+      commentsMarkdown += `\n~~~ \n${comment.data.text} \n~~~ \n`;
+    });
+    return commentsMarkdown;
+  }
+
+  showMarkdownDecorated(header: string, content: string | undefined): string {
+    if (!content) {
+      return "";
+    }
+    return `## **\`${header}\`** \n${content}\n\n--- \n`;
+  };
 
   async showCard(card: TrelloCard): Promise<void> {
     if (!card) {
@@ -276,23 +333,32 @@ export class TrelloUtils {
       return;
     }
 
-    let checklistItems: string | undefined = this.showChecklistsAsMarkdown(card.trelloChecklists);
-    const cardCoverImageUrl = card.attachments.length > 0 ? card.attachments[0].url : "";
+    const cardMembers: string = this.showCardMembersAsString(card.members);
+    const checklistItems: string = this.showChecklistsAsMarkdown(card.trelloChecklists);
+    const commentItems: string = this.showCommentsAsMarkdown(card.actions);
+    const cardCoverImageUrl = (!!card.attachments && card.attachments.length > 0) ? card.attachments[0].url : "";
+
+    const cardContentAndHeaders = [
+      { header: "URL", content: card.url },
+      { header: "Title", content: card.name },
+      { header: "Members", content: cardMembers },
+      { header: "Description", content: card.desc },
+      { header: "Checklists", content: checklistItems },
+      { header: "Comments", content: commentItems },
+    ];
 
     let cardContent: string = "";
-    cardContent += card.url ? `${card.url}\n\n---\n` : "";
-    cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : "";
-    cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : "";
-    cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : "";
+    cardContentAndHeaders.map(({header, content}) => {
+      cardContent += this.showMarkdownDecorated(header, content);
+    });
     cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />` : "";
 
-    // Get location of user's vs code folder to save temp markdown file
-    const tempTrelloFile = new UserDataFolder().getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
-    writeFile(tempTrelloFile, cardContent, err => {
+    // Write temp markdown file at user's vs code default settings directory
+    writeFile(this.tempTrelloFile, cardContent, err => {
       if (err) {
         vscode.window.showErrorMessage(`Error writing to temp file: ${err}`);
       }
-      console.info(`✍ Writing to file: ${tempTrelloFile}`);
+      console.info(`✍ Writing to file: ${this.tempTrelloFile}`);
     });
 
     // open markdown file and preview view
@@ -304,7 +370,7 @@ export class TrelloUtils {
       viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace
-      .openTextDocument(tempTrelloFile)
+      .openTextDocument(this.tempTrelloFile)
       .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
       .then(() => vscode.commands.executeCommand("markdown.showPreview"))
       .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
