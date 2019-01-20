@@ -6,6 +6,7 @@ export interface TrelloBoard {
   id: string;
   name: string;
   trelloLists: TrelloList[];
+  [key: string]: any;
 }
 
 export interface TrelloList {
@@ -13,10 +14,12 @@ export interface TrelloList {
   name: string;
   idBoard: string;
   trelloCards: TrelloCard[];
+  [key: string]: any;
 }
 
 export interface TrelloCard {
   id: string;
+  idShort: string;
   name: string;
   attachments: Array<{
     url: string;
@@ -25,18 +28,21 @@ export interface TrelloCard {
   desc: string;
   idChecklists: string[];
   trelloChecklists: TrelloChecklist[];
+  [key: string]: any;
 }
 
 export interface TrelloChecklist {
   id: string;
   name: string;
   checkItems: CheckItem[];
+  [key: string]: any;
 }
 
 export interface CheckItem {
   id: string;
   state: string;
   name: string;
+  [key: string]: string;
 }
 
 export interface GlobalStateConfig {

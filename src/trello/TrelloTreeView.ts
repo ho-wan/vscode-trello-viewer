@@ -3,7 +3,9 @@ import * as vscode from "vscode";
 import { TrelloUtils } from "./TrelloUtils";
 import { TrelloItem } from "./TrelloItem";
 import { TrelloObject, TrelloBoard, TrelloList, TrelloCard } from "./trelloComponents";
+
 import { TRELLO_ITEM_TYPE, SETTING_PREFIX, SETTING_CONFIG } from "./constants";
+import { prependToLabel } from "../common/utils";
 
 export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   private _onDidChangeTreeData: vscode.EventEmitter<TrelloItem | undefined> = new vscode.EventEmitter<
@@ -138,7 +140,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   ): TrelloItem[] {
     return trelloObjects.map(obj => {
       return new TrelloItem(
-        obj.name,
+        prependToLabel(obj.name, obj.idShort),
         collapsed,
         obj.id,
         trelloItemType,
