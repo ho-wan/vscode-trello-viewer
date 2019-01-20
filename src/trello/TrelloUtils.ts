@@ -12,6 +12,7 @@ import {
   TrelloChecklist,
   TrelloActionComment,
   CheckItem,
+  TrelloMember,
 } from "./trelloComponents";
 import {
   VSCODE_VIEW_COLUMN,
@@ -197,6 +198,7 @@ export class TrelloUtils {
         attachments: "cover",
         actions: "commentCard",
         actions_limit: 20,
+        members: true,
       },
       credentialsRequired
     );
@@ -259,9 +261,16 @@ export class TrelloUtils {
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  showChecklistsAsMarkdown(checklists: TrelloChecklist[]): string | undefined {
+  showCardMembersAsString(members: TrelloMember[]): string {
+    if (!members || members.length == 0) {
+      return "";
+    }
+    return members.map(member => member.initials).join(', ');
+  };
+
+  showChecklistsAsMarkdown(checklists: TrelloChecklist[]): string {
     if (!checklists || checklists.length == 0) {
-      return;
+      return "";
     }
 
     let checklistMarkdown: string = "";
@@ -277,9 +286,9 @@ export class TrelloUtils {
     return checklistMarkdown;
   }
 
-  showCommentsAsMarkdown(comments: any): string | undefined {
+  showCommentsAsMarkdown(comments: TrelloActionComment[]): string {
     if (!comments || comments.length == 0) {
-      return;
+      return "";
     }
 
     let commentsMarkdown: string = "";
@@ -299,23 +308,37 @@ export class TrelloUtils {
     return commentsMarkdown;
   }
 
+  showMarkdownDecorated(header: string, content: string | undefined): string {
+    if (!content) {
+      return "";
+    }
+    return `## **\`${header}\`** \n${content}\n\n--- \n`;
+  };
+
   async showCard(card: TrelloCard): Promise<void> {
     if (!card) {
       vscode.window.showErrorMessage("No card selected or invalid card.");
       return;
     }
 
-    let checklistItems: string | undefined = this.showChecklistsAsMarkdown(card.trelloChecklists);
-    let commentItems: string | undefined = this.showCommentsAsMarkdown(card.actions);
+    const cardMembers: string = this.showCardMembersAsString(card.members);
+    const checklistItems: string = this.showChecklistsAsMarkdown(card.trelloChecklists);
+    const commentItems: string = this.showCommentsAsMarkdown(card.actions);
+    const cardCoverImageUrl = (!!card.attachments && card.attachments.length > 0) ? card.attachments[0].url : "";
 
-    const cardCoverImageUrl = card.attachments.length > 0 ? card.attachments[0].url : "";
+    const cardContentAndHeaders = [
+      { header: "URL", content: card.url },
+      { header: "Title", content: card.name },
+      { header: "Members", content: cardMembers },
+      { header: "Description", content: card.desc },
+      { header: "Checklists", content: checklistItems },
+      { header: "Comments", content: commentItems },
+    ];
 
     let cardContent: string = "";
-    cardContent += card.url ? `${card.url}\n\n---\n` : "";
-    cardContent += card.name ? `## ===TITLE===\n${card.name}\n\n---\n` : "";
-    cardContent += card.desc ? `## ===DESCRIPTION===\n${card.desc}\n\n---\n` : "";
-    cardContent += checklistItems ? `## ===CHECKLISTS===\n${checklistItems}\n\n---\n` : "";
-    cardContent += commentItems ? `## ===COMMENTS===\n${commentItems}\n\n---\n` : "";
+    cardContentAndHeaders.map(({header, content}) => {
+      cardContent += this.showMarkdownDecorated(header, content);
+    });
     cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />` : "";
 
     // Get location of user's vs code folder to save temp markdown file

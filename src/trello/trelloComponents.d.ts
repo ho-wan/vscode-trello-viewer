@@ -29,7 +29,13 @@ export interface TrelloCard {
   idChecklists: string[];
   trelloChecklists: TrelloChecklist[];
   actions: TrelloActionComment[];
+  members: TrelloMember[];
   [key: string]: any;
+}
+
+export interface TrelloMember {
+  id: string;
+  initials: string;
 }
 
 export interface TrelloActionComment {
