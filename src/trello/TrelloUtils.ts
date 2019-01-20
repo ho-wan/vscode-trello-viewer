@@ -28,10 +28,12 @@ export class TrelloUtils {
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
   private FAVORITE_LIST_ID: string | undefined;
+  private tempTrelloFile: string;
 
   constructor(context?: vscode.ExtensionContext) {
     this.globalState = context ? context.globalState : {};
     axios.defaults.baseURL = TRELLO_API_BASE_URL;
+    this.tempTrelloFile = new UserDataFolder().getPathCodeSettings() + TEMP_TRELLO_FILE_NAME || "";
 
     this.getCredentials();
     this.getFavoriteList();
@@ -341,13 +343,12 @@ export class TrelloUtils {
     });
     cardContent += cardCoverImageUrl ? `<img src="${cardCoverImageUrl}" alt="Image not found" />` : "";
 
-    // Get location of user's vs code folder to save temp markdown file
-    const tempTrelloFile = new UserDataFolder().getPathCodeSettings() + TEMP_TRELLO_FILE_NAME;
-    writeFile(tempTrelloFile, cardContent, err => {
+    // Write temp markdown file at user's vs code default settings directory
+    writeFile(this.tempTrelloFile, cardContent, err => {
       if (err) {
         vscode.window.showErrorMessage(`Error writing to temp file: ${err}`);
       }
-      console.info(`✍ Writing to file: ${tempTrelloFile}`);
+      console.info(`✍ Writing to file: ${this.tempTrelloFile}`);
     });
 
     // open markdown file and preview view
@@ -359,7 +360,7 @@ export class TrelloUtils {
       viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
     vscode.workspace
-      .openTextDocument(tempTrelloFile)
+      .openTextDocument(this.tempTrelloFile)
       .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
       .then(() => vscode.commands.executeCommand("markdown.showPreview"))
       .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
