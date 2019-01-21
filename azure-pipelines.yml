@@ -15,17 +15,19 @@ steps:
   inputs:
     versionSpec: 8.x
 
-- task: Npm@1
-  displayName: 'npm install'
+- script: |
+    npm install
+    npm install -g mocha-junit-reporter
+  displayName: 'install'
 
-- task: Npm@1
-  displayName: 'Compile'
-  inputs:
-    command: custom
-    customCommand: run compile
+- script: npm run compile
+  displayName: 'compile'
 
-- task: Npm@1
-  displayName: 'Test'
+- script: npm test --reporter mocha-junit-reporter
+  displayName: 'test'
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
   inputs:
-    command: custom
-    customCommand: test
+    testRunner: JUnit
+    testResultsFiles: '**/TEST-RESULTS.xml'
