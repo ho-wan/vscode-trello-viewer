@@ -1,5 +1,8 @@
 # Change Log
 
+## 0.2.1 (26 Jan 2019)
+- Minor update to checklist and comment formatting
+
 ## 0.2.0 (20 Jan 2019)
 - Prefix card number to card names.
 - Show comments on card.

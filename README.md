@@ -2,6 +2,7 @@
 <a href="https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer" style="text-decoration : none" title="Go to VS marketplace">
   <img src="https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg">
   <img src="https://vsmarketplacebadge.apphb.com/installs/ho-wan.vscode-trello-viewer.svg">
+  <img src="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_apis/build/status/Ho-Wan.vscode-trello-viewer?branchName=master">
 </a>
 
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
