@@ -2,6 +2,8 @@
 <a href="https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer" style="text-decoration : none" title="Go to VS marketplace">
   <img src="https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg">
   <img src="https://vsmarketplacebadge.apphb.com/installs/ho-wan.vscode-trello-viewer.svg">
+</a>
+<a href="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_build/latest?definitionId=3?branchName=master">
   <img src="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_apis/build/status/Ho-Wan.vscode-trello-viewer?branchName=master">
 </a>
 
@@ -37,7 +39,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 ## Trello Card Markdown Preview
 
-<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/screenshot1-markdown-preview.png" alt="Trello Viewer markdown preview">
+<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/screenshot1v2-markdown-preview.png" alt="Trello Viewer markdown preview">
 
 ## Useful Commands
 
