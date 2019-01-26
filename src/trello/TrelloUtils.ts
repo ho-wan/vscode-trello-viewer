@@ -287,12 +287,14 @@ export class TrelloUtils {
 
     let checklistMarkdown: string = "";
     checklists.map(checklist => {
-      checklistMarkdown += `\n> ${checklist.name}  \n`;
+      checklistMarkdown += `\n> ${checklist.name}\n\n`;
       checklist.checkItems
         .sort((checkItem1: CheckItem, checkItem2: CheckItem) => checkItem1.pos - checkItem2.pos)
         .map((checkItem: CheckItem) => {
           checklistMarkdown +=
-            checkItem.state === "complete" ? `✅ ~~${checkItem.name}~~  \n` : `🔳 ${checkItem.name}  \n`;
+            checkItem.state === "complete"
+              ? `✅ ~~${checkItem.name}~~  \n`
+              : `🔳 ${checkItem.name}  \n`;
         });
     });
     return checklistMarkdown;
@@ -315,7 +317,7 @@ export class TrelloUtils {
       commentsMarkdown += `\n> ${comment.memberCreator.fullName} - ${dateString} at ${timeString} ${
         comment.data.dateLastEdited ? "(edited)" : ""
       } \n`;
-      commentsMarkdown += `\n~~~ \n${comment.data.text} \n~~~ \n`;
+      commentsMarkdown += `\n\n${comment.data.text}\n\n`;
     });
     return commentsMarkdown;
   }
