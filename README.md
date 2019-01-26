@@ -39,7 +39,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 ## Trello Card Markdown Preview
 
-<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/screenshot2-markdown-preview.png" alt="Trello Viewer markdown preview">
+<img src="https://raw.githubusercontent.com/Ho-Wan/vscode-trello-viewer/master/images/readme/screenshot1v2-markdown-preview.png" alt="Trello Viewer markdown preview">
 
 ## Useful Commands
 
