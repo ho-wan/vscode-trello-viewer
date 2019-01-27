@@ -14,7 +14,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
 - Saves credentials to use between sessions.
-- Shows only starred boards as default.
+- Can filter to show only starred boards.
 
 ## Authenication
 
@@ -55,7 +55,7 @@ Command | Description
 
 Name of Setting | Default | Description
 --- | --- | ---
-```trelloViewer.starredBoardsOnly``` | ```true``` | Controls whether to display starred boards only or all boards.
+```trelloViewer.starredBoardsOnly``` | ```false``` | Controls whether to display starred boards only or all boards.
 ```trelloViewer.viewColumn``` | ```2``` | Specifies which editor column markdown previewer opens at.
 
 ## Advanced
@@ -70,4 +70,4 @@ Name of Setting | Default | Description
 
 - Adding or editing Trello items.
 
-If you wish to see additional functionality such as being able to create cards or add comments, leave a feature request in the repository!
+If you wish to see additional functionality such as being able to create cards or add comments, leave a feature request or comment in the repository!
