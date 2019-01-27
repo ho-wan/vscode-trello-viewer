@@ -2,7 +2,7 @@
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
   "description": "View Trello cards in VS Code, browse user's boards and lists.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "Ho-Wan",
   "author": {
     "name": "Ho-Wan To",
@@ -114,7 +114,7 @@
         },
         "trelloViewer.starredBoardsOnly": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Controls whether to display starred boards only or all boards.",
           "scope": "resource"
         }

@@ -1,7 +1,10 @@
 # Change Log
 
+## 0.2.3 (27 Jan 2019)
+- 'starredBoardsOnly' set to false by default.
+
 ## 0.2.1 (26 Jan 2019)
-- Minor update to checklist and comment formatting
+- Minor update to checklist and comment formatting.
 
 ## 0.2.0 (20 Jan 2019)
 - Prefix card number to card names.
