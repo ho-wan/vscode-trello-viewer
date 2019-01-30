@@ -2,7 +2,7 @@
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
   "description": "View Trello cards in VS Code, browse user's boards and lists.",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "publisher": "Ho-Wan",
   "author": {
     "name": "Ho-Wan To",
@@ -101,6 +101,14 @@
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
         }
+      },
+      {
+        "command": "trelloViewer.addCard",
+        "title": "Add Card",
+        "icon": {
+          "light": "images/light/plus.svg",
+          "dark": "images/dark/plus.svg"
+        }
       }
     ],
     "configuration": {
@@ -124,6 +132,10 @@
       "commandPalette": [
         {
           "command": "trelloViewer.setFavoriteListByClick",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addCard",
           "when": "false"
         }
       ],
@@ -164,6 +176,16 @@
           "command": "trelloViewer.setFavoriteListByClick",
           "when": "view == trelloTreeView && viewItem == list",
           "group": "inline@5"
+        },
+        {
+					"command": "trelloViewer.addCard",
+          "when": "view == trelloTreeView && viewItem == list",
+          "group": "inline@4"
+        },
+        {
+					"command": "trelloViewer.addCard",
+          "when": "view == trelloViewFavoriteList && viewItem == list",
+          "group": "inline@4"
         }
       ]
     },

@@ -6,8 +6,6 @@ import { TrelloViewFavoriteList } from "./trello/TrelloViewFavoriteList";
 import { TrelloCard } from "./trello/trelloComponents";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.info('⭐ The extension "Trello Viewer" is now active!');
-
   const trello = new TrelloUtils(context);
   const trelloTreeView = new TrelloTreeView(trello);
   const trelloViewFavoriteList = new TrelloViewFavoriteList(trello);
@@ -24,6 +22,9 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("trelloViewer.resetFavoriteList", () => trello.resetFavoriteList());
   vscode.commands.registerCommand("trelloViewer.setFavoriteListByClick", (trelloItem: TrelloItem) =>
     trello.setFavoriteListByClick(trelloItem)
+  );
+  vscode.commands.registerCommand("trelloViewer.addCard", (trelloItem: TrelloItem) =>
+    trello.addCardToList(trelloItem)
   );
   vscode.commands.registerCommand("trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card));
 }

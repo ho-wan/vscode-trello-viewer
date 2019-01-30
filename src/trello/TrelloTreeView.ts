@@ -24,7 +24,6 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
   }
 
   refresh(): void {
-    console.info("🕐 refreshing");
     if (!this.trello.isCredentialsProvided()) {
       vscode.window.showWarningMessage("Missing Credentials: please provide API key and token to use.");
       this.trelloObject = { trelloBoards: [] };
