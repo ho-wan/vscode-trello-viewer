@@ -101,6 +101,14 @@
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
         }
+      },
+      {
+        "command": "trelloViewer.addCard",
+        "title": "Add Card",
+        "icon": {
+          "light": "images/light/plus.svg",
+          "dark": "images/dark/plus.svg"
+        }
       }
     ],
     "configuration": {
@@ -164,6 +172,16 @@
           "command": "trelloViewer.setFavoriteListByClick",
           "when": "view == trelloTreeView && viewItem == list",
           "group": "inline@5"
+        },
+        {
+					"command": "trelloViewer.addCard",
+          "when": "view == trelloTreeView && viewItem == list",
+          "group": "inline@4"
+        },
+        {
+					"command": "trelloViewer.addCard",
+          "when": "view == trelloViewFavoriteList && viewItem == list",
+          "group": "inline@4"
         }
       ]
     },
