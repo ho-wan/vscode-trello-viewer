@@ -31,7 +31,7 @@ suite("TrelloUtils", () => {
   });
 
   suite("Trello API", () => {
-    const trelloApiRequestStub = sinon.stub(trello, "trelloApiRequest");
+    const trelloApiGetRequestStub = sinon.stub(trello, "trelloApiGetRequest");
 
     suite("Trello API", () => {
       const BOARD_ID = "123";
@@ -39,11 +39,11 @@ suite("TrelloUtils", () => {
       const CARD_ID = "789";
 
       setup(() => {
-        trelloApiRequestStub.reset();
+        trelloApiGetRequestStub.reset();
       });
 
       suiteTeardown(() => {
-        trelloApiRequestStub.restore();
+        trelloApiGetRequestStub.restore();
       });
 
       test("getBoardById returns mock board data", async () => {
@@ -53,7 +53,7 @@ suite("TrelloUtils", () => {
             name: "test_board",
           })
         );
-        trelloApiRequestStub.returns(data);
+        trelloApiGetRequestStub.returns(data);
         const trelloBoard: TrelloBoard = await trello.getBoardById(BOARD_ID, false);
 
         assert.equal(trelloBoard.id, BOARD_ID);
@@ -68,7 +68,7 @@ suite("TrelloUtils", () => {
             idBoard: BOARD_ID,
           })
         );
-        trelloApiRequestStub.returns(data);
+        trelloApiGetRequestStub.returns(data);
         const trelloList: TrelloList = await trello.getListById(LIST_ID, false);
 
         assert.equal(trelloList.id, LIST_ID);
@@ -92,7 +92,7 @@ suite("TrelloUtils", () => {
             idChecklists: ["checklist_id_1", "checklist_id_2"],
           })
         );
-        trelloApiRequestStub.returns(data);
+        trelloApiGetRequestStub.returns(data);
         const trelloCard: TrelloCard = await trello.getCardById(CARD_ID, false);
 
         assert.equal(trelloCard.id, CARD_ID);
@@ -120,7 +120,7 @@ suite("TrelloUtils", () => {
             },
           ])
         );
-        trelloApiRequestStub.returns(data);
+        trelloApiGetRequestStub.returns(data);
         const trelloLists: TrelloList[] = await trello.getListsFromBoard(BOARD_ID, false);
         assert.equal(trelloLists[0].id, "list_id_1");
         assert.equal(trelloLists[1].id, "list_id_2");
@@ -141,18 +141,18 @@ suite("TrelloUtils", () => {
             },
           ])
         );
-        trelloApiRequestStub.returns(data);
+        trelloApiGetRequestStub.returns(data);
         const trelloCards = await trello.getCardsFromList(LIST_ID, false);
         assert.equal(trelloCards[0].id, "card_id_1");
         assert.equal(trelloCards[1].id, "card_id_2");
       });
     });
 
-    suite("trelloApiRequest", () => {
+    suite("trelloApiGetRequest", () => {
       const credentialsStub = sinon.stub(trello, "isCredentialsProvided");
 
       suiteSetup(() => {
-        trelloApiRequestStub.restore();
+        trelloApiGetRequestStub.restore();
       });
 
       setup(() => {
@@ -163,13 +163,13 @@ suite("TrelloUtils", () => {
         credentialsStub.restore();
       });
 
-      test("trelloApiRequest returns null if no credentials", async () => {
+      test("trelloApiGetRequest returns null if no credentials", async () => {
         credentialsStub.returns(false);
-        const response = await trello.trelloApiRequest("test_id", {});
+        const response = await trello.trelloApiGetRequest("test_id", {});
         assert.equal(response, null);
       });
 
-      test("trelloApiRequest returns response with correct data", async () => {
+      test("trelloApiGetRequest returns response with correct data", async () => {
         credentialsStub.returns(true);
         const mockResponse: AxiosPromise = new Promise(r =>
           r({
@@ -184,7 +184,7 @@ suite("TrelloUtils", () => {
           })
         );
         sinon.stub(axios, "get").returns(mockResponse);
-        const response = await trello.trelloApiRequest("test_id", {});
+        const response = await trello.trelloApiGetRequest("test_id", {});
         assert.deepEqual(response, {
           id: "123",
           desc: "test_description",
