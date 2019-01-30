@@ -10,6 +10,7 @@
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
 - Browse Trello boards, lists and cards.
+- Add card to list and set the name of card.
 - View selected card using the markdown previewer and open to the side.
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
@@ -33,8 +34,9 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 - Trello boards, lists, and cards appears in left Side Bar.
 - Clicking a board or list expands or collapses object.
+- Click the 'plus' icon to add a card to the selected list.
 - Clicking a card opens the markdown file as well as the previewer, opening this to the right side (editor column 2 by default).
-- Clicking on the star to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
+- Clicking on the 'star' icon to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
 - Clicking on the icons in the side bar runs various commands, such as setting credentials, removing credentials, showing saved info, and refreshing views.
 
 ## Trello Card Markdown Preview
@@ -64,10 +66,4 @@ Name of Setting | Default | Description
 - The markdown file contains parsed content of the Trello card and can be saved locally.
 - Hover over any board, list or card to see the Trello ID.
 - The API token is stored using AES 256 encryption with IV.
-- The setting "markdown.preview.breaks" is automatically set to true in only to see new lines correctly formatted.
-
-## Unsupported Features
-
-- Adding or editing Trello items.
-
-If you wish to see additional functionality such as being able to create cards or add comments, leave a feature request or comment in the repository!
+- The setting "markdown.preview.breaks" is automatically set to true to see new lines correctly formatted.

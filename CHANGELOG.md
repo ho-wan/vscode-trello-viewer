@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.3.0 (30 Jan 2019)
+- Enable Add card functionality.
+- Existing users will need to register new API token with write access to Trello.
+
 ## 0.2.3 (27 Jan 2019)
 - 'starredBoardsOnly' set to false by default.
 
