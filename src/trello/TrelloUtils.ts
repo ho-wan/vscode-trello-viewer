@@ -42,8 +42,11 @@ export class TrelloUtils {
 
   setMarkdownPreviewBreaks(): void {
     try {
-      const config = vscode.workspace.getConfiguration();
-      config.update("markdown.preview.breaks", true, true);
+      const config = vscode.workspace.getConfiguration("markdown.preview", null);
+      const showPreviewBreaks = config.get<boolean>("breaks");
+      if (!showPreviewBreaks) {
+        config.update("breaks", true, true);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -53,7 +56,7 @@ export class TrelloUtils {
     return !!this.API_KEY && !!this.API_TOKEN;
   }
 
-  private getCredentials(): void {
+  getCredentials(): void {
     try {
       this.API_KEY = this.globalState.get(GLOBALSTATE_CONFIG.API_KEY);
       this.API_TOKEN = decrypt(this.globalState.get(GLOBALSTATE_CONFIG.API_TOKEN));
@@ -297,7 +300,10 @@ export class TrelloUtils {
     });
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+
+    if (listId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+    }
 
     const cardUrl = await vscode.window.showInformationMessage(
       `Created Card: ${addCardResponse.data.idShort}-${addCardResponse.data.name}`, addCardResponse.data.shortUrl);
@@ -411,11 +417,11 @@ export class TrelloUtils {
       vscode.window.showInformationMessage(`Invalid ${SETTING_PREFIX}.viewColumn ${viewColumn} specified`);
       viewColumn = SETTING_CONFIG.DEFAULT_VIEW_COLUMN;
     }
-    vscode.workspace
-      .openTextDocument(this.tempTrelloFile)
-      .then(doc => vscode.window.showTextDocument(doc, viewColumn, false))
-      .then(() => vscode.commands.executeCommand("markdown.showPreview"))
-      .then(() => vscode.commands.executeCommand("markdown.preview.toggleLock"));
+
+    const doc = await vscode.workspace.openTextDocument(this.tempTrelloFile)
+    await vscode.window.showTextDocument(doc, viewColumn, false);
+    await vscode.commands.executeCommand("markdown.showPreview");
+    vscode.commands.executeCommand("markdown.preview.toggleLock");
   }
 }
 
