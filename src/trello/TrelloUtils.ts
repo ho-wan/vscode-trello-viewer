@@ -216,17 +216,16 @@ export class TrelloUtils {
     return list;
   }
 
-  async getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
-    const boards = await this.trelloApiGetRequest("/1/members/me/boards", {
+  getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
+    return this.trelloApiGetRequest("/1/members/me/boards", {
       filter: starredBoards ? "starred" : "all",
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    return boards;
   }
 
-  async getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
-    const lists = await this.trelloApiGetRequest(
+  getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
+    return this.trelloApiGetRequest(
       `/1/boards/${boardId}/lists`,
       {
         key: this.API_KEY,
@@ -234,11 +233,10 @@ export class TrelloUtils {
       },
       credentialsRequired
     );
-    return lists;
   }
 
-  async getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
-    const cards = await this.trelloApiGetRequest(
+  getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
+    return this.trelloApiGetRequest(
       `/1/lists/${listId}/cards`,
       {
         key: this.API_KEY,
@@ -250,11 +248,10 @@ export class TrelloUtils {
       },
       credentialsRequired
     );
-    return cards;
   }
 
-  async getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
-    const card = await this.trelloApiGetRequest(
+  getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
+    return this.trelloApiGetRequest(
       `/1/cards/${cardId}`,
       {
         key: this.API_KEY,
@@ -262,15 +259,13 @@ export class TrelloUtils {
       },
       credentialsRequired
     );
-    return card;
   }
 
-  async getChecklistById(checklistId: string): Promise<TrelloChecklist> {
-    const checklist = await this.trelloApiGetRequest(`/1/checklists/${checklistId}`, {
+  getChecklistById(checklistId: string): Promise<TrelloChecklist> {
+    return this.trelloApiGetRequest(`/1/checklists/${checklistId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    return checklist;
   }
 
   getFavoriteList(): string | undefined {
@@ -296,7 +291,7 @@ export class TrelloUtils {
     this.setFavoriteList(trelloItem.id);
   }
 
-  private setFavoriteList(listId: string): void {
+  setFavoriteList(listId: string): void {
     if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
     this.getFavoriteList();
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
