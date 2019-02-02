@@ -113,6 +113,10 @@
       {
         "command": "trelloViewer.addUserToCard",
         "title": "Add user to card"
+      },
+      {
+        "command": "trelloViewer.editCardDescription",
+        "title": "Edit description of card"
       }
     ],
     "configuration": {
@@ -201,6 +205,14 @@
         },
         {
 					"command": "trelloViewer.addUserToCard",
+          "when": "view == trelloViewFavoriteList && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.editCardDescription",
+          "when": "view == trelloTreeView && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.editCardDescription",
           "when": "view == trelloViewFavoriteList && viewItem == card"
         }
       ]
