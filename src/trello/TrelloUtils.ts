@@ -4,7 +4,6 @@ import { writeFile, unlink } from "fs";
 
 import { UserDataFolder } from "../common/UserDataFolder";
 import { encrypt, decrypt } from "../common/encrypt";
-import { TrelloItem } from "./TrelloItem";
 import {
   TrelloBoard,
   TrelloList,
@@ -28,7 +27,6 @@ export class TrelloUtils {
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
   private FAVORITE_LIST_ID: string | undefined;
-  private MY_MEMBER_ID: string | undefined;
   private tempTrelloFile: string;
 
   constructor(context?: vscode.ExtensionContext) {
@@ -38,7 +36,6 @@ export class TrelloUtils {
 
     this.getCredentials();
     this.getFavoriteList();
-    this.getMemberId();
     this.setMarkdownPreviewBreaks();
   }
 
@@ -148,71 +145,59 @@ export class TrelloUtils {
     vscode.window.showInformationMessage(info);
   }
 
-  async trelloApiGetRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
-    if (credentialsRequired && !this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return null;
-    }
-
+  async trelloApiGetRequest(url: string, params: object): Promise<any> {
     try {
       const res = await axios.get(url, { params });
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response);
-        vscode.window.showErrorMessage(`${error.response.data}`);
+        console.error("GET error", error.response);
+        console.log(url);
+        vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
       }
     }
     return null;
   }
 
-  async trelloApiPostRequest(url: string, params: object, credentialsRequired: boolean = true): Promise<any> {
-    if (credentialsRequired && !this.isCredentialsProvided()) {
-      vscode.window.showWarningMessage("Credentials Missing: please provide API key and token to use.");
-      return null;
-    }
-
+  async trelloApiPostRequest(url: string, data: object): Promise<any> {
     try {
-      const res = await axios.post(url, params);
+      const res = await axios.post(url, data);
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response);
-        vscode.window.showErrorMessage(`${error.response.data}`);
+        console.error("POST error", error.response);
+        vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
       }
     }
     return null;
   }
 
-  async getMemberId(): Promise<void> {
-    const response = await this.trelloApiGetRequest(`/1/members/me`, {
+  async trelloApiPutRequest(url: string, data: object): Promise<any> {
+    try {
+      const res = await axios.put(url, data);
+      return res.data;
+    } catch (error) {
+      if (error.response) {
+        console.error("PUT error", error.response);
+        vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
+      }
+    }
+    return null;
+  }
+
+  async getBoardById(boardId: string): Promise<TrelloBoard> {
+    const board = await this.trelloApiGetRequest(`/1/boards/${boardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
-    this.MY_MEMBER_ID = response.id;
-  }
-
-  async getBoardById(boardId: string, credentialsRequired: boolean = true): Promise<TrelloBoard> {
-    const board = await this.trelloApiGetRequest(
-      `/1/boards/${boardId}`,
-      {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      },
-      credentialsRequired
-    );
     return board;
   }
 
-  async getListById(listId: string, credentialsRequired: boolean = true): Promise<TrelloList> {
-    const list = await this.trelloApiGetRequest(
-      `/1/lists/${listId}`,
-      {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      },
-      credentialsRequired
-    );
+  async getListById(listId: string): Promise<TrelloList> {
+    const list = await this.trelloApiGetRequest(`/1/lists/${listId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
     return list;
   }
 
@@ -224,41 +209,29 @@ export class TrelloUtils {
     });
   }
 
-  getListsFromBoard(boardId: string, credentialsRequired: boolean = true): Promise<TrelloList[]> {
-    return this.trelloApiGetRequest(
-      `/1/boards/${boardId}/lists`,
-      {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      },
-      credentialsRequired
-    );
+  getListsFromBoard(boardId: string): Promise<TrelloList[]> {
+    return this.trelloApiGetRequest(`/1/boards/${boardId}/lists`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
   }
 
-  getCardsFromList(listId: string, credentialsRequired: boolean = true): Promise<TrelloCard[]> {
-    return this.trelloApiGetRequest(
-      `/1/lists/${listId}/cards`,
-      {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-        attachments: "cover",
-        actions: "commentCard",
-        actions_limit: 20,
-        members: true,
-      },
-      credentialsRequired
-    );
+  getCardsFromList(listId: string): Promise<TrelloCard[]> {
+    return this.trelloApiGetRequest(`/1/lists/${listId}/cards`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      attachments: "cover",
+      actions: "commentCard",
+      actions_limit: 20,
+      members: true,
+    });
   }
 
-  getCardById(cardId: string, credentialsRequired: boolean = true): Promise<TrelloCard> {
-    return this.trelloApiGetRequest(
-      `/1/cards/${cardId}`,
-      {
-        key: this.API_KEY,
-        token: this.API_TOKEN,
-      },
-      credentialsRequired
-    );
+  getCardById(cardId: string): Promise<TrelloCard> {
+    return this.trelloApiGetRequest(`/1/cards/${cardId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
   }
 
   getChecklistById(checklistId: string): Promise<TrelloChecklist> {
@@ -283,29 +256,38 @@ export class TrelloUtils {
     return this.getListById(this.FAVORITE_LIST_ID);
   }
 
-  setFavoriteListByClick(trelloItem: TrelloItem): void {
-    if (!trelloItem.id) {
+  setFavoriteListByClick(trelloList: TrelloList): void {
+    if (!trelloList.id) {
       vscode.window.showErrorMessage("Could not get valid List ID");
       return;
     }
-    this.setFavoriteList(trelloItem.id);
-  }
-
-  setFavoriteList(listId: string): void {
-    if (listId !== undefined) this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
+    const listId = trelloList.id;
+    this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, listId);
     this.getFavoriteList();
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  async addCardToList(trelloItem: TrelloItem): Promise<void> {
-    if (!trelloItem.id) {
-      vscode.window.showErrorMessage("Could not get valid List ID");
-      return;
+  async showSuccessMessage(msg: string, url?: string) {
+    let cardUrl;
+    if (url) {
+      cardUrl = await vscode.window.showInformationMessage(msg, url);
+      if (cardUrl) {
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(cardUrl));
+      }
+    } else {
+      vscode.window.showInformationMessage(msg);
     }
-    const listId = trelloItem.id;
+  }
+
+  async addCardToList(trelloList: TrelloList): Promise<Number> {
+    if (!trelloList.id) {
+      vscode.window.showErrorMessage("Could not get valid List ID");
+      return 1;
+    }
+    const listId = trelloList.id;
 
     const cardName = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: "Enter name of card" });
-    if (cardName === undefined) return;
+    if (cardName === undefined) return 2;
 
     const resData = await this.trelloApiPostRequest("/1/cards", {
       key: this.API_KEY,
@@ -314,38 +296,69 @@ export class TrelloUtils {
       name: cardName,
     });
 
-    if (resData) {
-      vscode.commands.executeCommand("trelloViewer.refresh");
-      if (listId === this.FAVORITE_LIST_ID) {
-        vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
-      }
+    if (!resData) return 3;
 
-      const cardUrl = await vscode.window.showInformationMessage(
-        `Created Card: ${resData.idShort}-${resData.name}`,
-        resData.shortUrl
-      );
-      if (cardUrl) {
-        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(cardUrl));
-      }
+    vscode.commands.executeCommand("trelloViewer.refresh");
+    if (listId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
+
+    this.showSuccessMessage(`Created Card: ${resData.idShort}-${resData.name}`, resData.shortUrl);
+    return 0;
   }
 
-  async addUserToCard(trelloItem: TrelloItem): Promise<void> {
-    if (!trelloItem.id) {
+  async getMemberId(): Promise<string | undefined> {
+    const resData = await this.trelloApiGetRequest(`/1/members/me`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+
+    if (!resData) return undefined;
+
+    return resData.id;
+  }
+
+  async addUserToCard(trelloCard: TrelloCard): Promise<Number> {
+    if (!trelloCard.id) {
       vscode.window.showErrorMessage("Could not get valid Card ID");
-      return;
+      return 1;
     }
-    const cardId = trelloItem.id;
+    const cardId = trelloCard.id;
+
+    const userId = await this.getMemberId();
 
     const resData = await this.trelloApiPostRequest(`/1/cards/${cardId}/idMembers`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-      value: this.MY_MEMBER_ID,
+      value: userId,
     });
 
-    if (resData) {
-      vscode.window.showInformationMessage(`Added myself to Card!`);
+    if (!resData) return 3;
+
+    this.showSuccessMessage(`Added user ${resData[0].initials} to card`);
+    return 0;
+  }
+
+  async editDescription(trelloCard: TrelloCard): Promise<Number> {
+    if (!trelloCard.id) {
+      vscode.window.showErrorMessage("Could not get valid Card ID");
+      return 1;
     }
+    const cardId = trelloCard.id;
+
+    const desc = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: "Enter description for card" });
+    if (desc === undefined) return 2;
+
+    const resData = await this.trelloApiPutRequest(`/1/cards/${cardId}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      desc,
+    });
+
+    if (!resData) return 3;
+
+    this.showSuccessMessage(`Updated description for card: ${resData.name}`);
+    return 0;
   }
 
   resetFavoriteList(): void {
@@ -402,10 +415,7 @@ export class TrelloUtils {
   }
 
   showMarkdownDecorated(header: string, content: string | undefined): string {
-    if (!content) {
-      return "";
-    }
-    return `## **\`${header}\`** \n${content}\n\n--- \n`;
+    return content ? `## **\`${header}\`** \n${content}\n\n--- \n` : "";
   }
 
   async showCard(card: TrelloCard): Promise<void> {
