@@ -1,9 +1,8 @@
 import * as vscode from "vscode";
 import { TrelloUtils, removeTempTrelloFile } from "./trello/TrelloUtils";
-import { TrelloItem } from "./trello/TrelloItem";
 import { TrelloTreeView } from "./trello/TrelloTreeView";
 import { TrelloViewFavoriteList } from "./trello/TrelloViewFavoriteList";
-import { TrelloCard } from "./trello/trelloComponents";
+import { TrelloCard, TrelloList } from "./trello/trelloComponents";
 
 export function activate(context: vscode.ExtensionContext) {
   const trello = new TrelloUtils(context);
@@ -20,12 +19,17 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("trelloViewer.resetCredentials", () => trello.resetCredentials());
   vscode.commands.registerCommand("trelloViewer.showTrelloInfo", () => trello.showTrelloInfo());
   vscode.commands.registerCommand("trelloViewer.resetFavoriteList", () => trello.resetFavoriteList());
-  vscode.commands.registerCommand("trelloViewer.setFavoriteListByClick", (trelloItem: TrelloItem) =>
-    trello.setFavoriteListByClick(trelloItem)
+  vscode.commands.registerCommand("trelloViewer.setFavoriteListByClick", (list: TrelloList) =>
+    trello.setFavoriteListByClick(list)
   );
-  vscode.commands.registerCommand("trelloViewer.addCard", (trelloItem: TrelloItem) =>
-    trello.addCardToList(trelloItem)
+
+  vscode.commands.registerCommand("trelloViewer.addCard", (list: TrelloList) => trello.addCardToList(list));
+  vscode.commands.registerCommand("trelloViewer.addUserToCard", (card: TrelloCard) => trello.addUserToCard(card));
+
+  vscode.commands.registerCommand("trelloViewer.editCardDescription", (card: TrelloCard) =>
+    trello.editDescription(card)
   );
+
   vscode.commands.registerCommand("trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card));
 }
 

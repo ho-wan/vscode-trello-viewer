@@ -1,16 +1,18 @@
 # VS Code - Trello Viewer
-<a href="https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer" style="text-decoration : none" title="Go to VS marketplace">
+<a href="https://marketplace.visualstudio.com/items?itemName=Ho-Wan.vscode-trello-viewer" title="Go to VS marketplace">
   <img src="https://vsmarketplacebadge.apphb.com/version-short/ho-wan.vscode-trello-viewer.svg">
+</a>
+<a href="https://github.com/Ho-Wan/vscode-trello-viewer" title="Go to Github repo">
   <img src="https://vsmarketplacebadge.apphb.com/installs/ho-wan.vscode-trello-viewer.svg">
 </a>
-<a href="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_build/latest?definitionId=3?branchName=master">
+<a href="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_build/latest?definitionId=3?branchName=master" title="Go to Azure pipelines">
   <img src="https://dev.azure.com/hw-vscode/vscode-trello-viewer/_apis/build/status/Ho-Wan.vscode-trello-viewer?branchName=master">
 </a>
 
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
-- Browse Trello boards, lists and cards.
-- Add card to list and set the name of card.
+- Browse Trello boards, lists and cards in the side bar.
+- Add new cards, add user to card, add description to card.
 - View selected card using the markdown previewer and open to the side.
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
@@ -34,10 +36,11 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 
 - Trello boards, lists, and cards appears in left Side Bar.
 - Clicking a board or list expands or collapses object.
-- Click the 'plus' icon to add a card to the selected list.
 - Clicking a card opens the markdown file as well as the previewer, opening this to the right side (editor column 2 by default).
 - Clicking on the 'star' icon to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
 - Clicking on the icons in the side bar runs various commands, such as setting credentials, removing credentials, showing saved info, and refreshing views.
+- Click the 'plus' icon to add a card to the selected list.
+- Right click on a card to see options for card, such as assigning a user and editing the description.
 
 ## Trello Card Markdown Preview
 

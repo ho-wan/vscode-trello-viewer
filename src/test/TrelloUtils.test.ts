@@ -54,7 +54,7 @@ suite("TrelloUtils", () => {
           })
         );
         trelloApiGetRequestStub.returns(data);
-        const trelloBoard: TrelloBoard = await trello.getBoardById(BOARD_ID, false);
+        const trelloBoard: TrelloBoard = await trello.getBoardById(BOARD_ID);
 
         assert.equal(trelloBoard.id, BOARD_ID);
         assert.equal(trelloBoard.name, "test_board");
@@ -69,7 +69,7 @@ suite("TrelloUtils", () => {
           })
         );
         trelloApiGetRequestStub.returns(data);
-        const trelloList: TrelloList = await trello.getListById(LIST_ID, false);
+        const trelloList: TrelloList = await trello.getListById(LIST_ID);
 
         assert.equal(trelloList.id, LIST_ID);
         assert.equal(trelloList.name, "test_list");
@@ -93,7 +93,7 @@ suite("TrelloUtils", () => {
           })
         );
         trelloApiGetRequestStub.returns(data);
-        const trelloCard: TrelloCard = await trello.getCardById(CARD_ID, false);
+        const trelloCard: TrelloCard = await trello.getCardById(CARD_ID);
 
         assert.equal(trelloCard.id, CARD_ID);
         assert.equal(trelloCard.idShort, '1');
@@ -121,7 +121,7 @@ suite("TrelloUtils", () => {
           ])
         );
         trelloApiGetRequestStub.returns(data);
-        const trelloLists: TrelloList[] = await trello.getListsFromBoard(BOARD_ID, false);
+        const trelloLists: TrelloList[] = await trello.getListsFromBoard(BOARD_ID);
         assert.equal(trelloLists[0].id, "list_id_1");
         assert.equal(trelloLists[1].id, "list_id_2");
       });
@@ -142,35 +142,14 @@ suite("TrelloUtils", () => {
           ])
         );
         trelloApiGetRequestStub.returns(data);
-        const trelloCards = await trello.getCardsFromList(LIST_ID, false);
+        const trelloCards = await trello.getCardsFromList(LIST_ID);
         assert.equal(trelloCards[0].id, "card_id_1");
         assert.equal(trelloCards[1].id, "card_id_2");
       });
     });
 
     suite("trelloApiGetRequest", () => {
-      const credentialsStub = sinon.stub(trello, "isCredentialsProvided");
-
-      suiteSetup(() => {
-        trelloApiGetRequestStub.restore();
-      });
-
-      setup(() => {
-        credentialsStub.reset();
-      });
-
-      suiteTeardown(() => {
-        credentialsStub.restore();
-      });
-
-      test("trelloApiGetRequest returns null if no credentials", async () => {
-        credentialsStub.returns(false);
-        const response = await trello.trelloApiGetRequest("test_id", {});
-        assert.equal(response, null);
-      });
-
       test("trelloApiGetRequest returns response with correct data", async () => {
-        credentialsStub.returns(true);
         const mockResponse: AxiosPromise = new Promise(r =>
           r({
             data: {

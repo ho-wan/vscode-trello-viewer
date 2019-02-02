@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.4.0 (02 Feb 2019)
+- Add user to card, add description to card functionality
+- **WARNING** - Edit description will overwrite the existing description
+- Update how error messages are handled.
+
 ## 0.3.0 (30 Jan 2019)
 - Enable Add card functionality.
 - Existing users will need to register new API token with write access to Trello.

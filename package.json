@@ -2,7 +2,7 @@
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
   "description": "View Trello cards in VS Code, browse user's boards and lists.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "Ho-Wan",
   "author": {
     "name": "Ho-Wan To",
@@ -109,6 +109,14 @@
           "light": "images/light/plus.svg",
           "dark": "images/dark/plus.svg"
         }
+      },
+      {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card"
+      },
+      {
+        "command": "trelloViewer.editCardDescription",
+        "title": "Edit description of card"
       }
     ],
     "configuration": {
@@ -136,6 +144,14 @@
         },
         {
           "command": "trelloViewer.addCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addUserToCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.editCardDescription",
           "when": "false"
         }
       ],
@@ -186,6 +202,22 @@
 					"command": "trelloViewer.addCard",
           "when": "view == trelloViewFavoriteList && viewItem == list",
           "group": "inline@4"
+        },
+        {
+					"command": "trelloViewer.addUserToCard",
+          "when": "view == trelloTreeView && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.addUserToCard",
+          "when": "view == trelloViewFavoriteList && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.editCardDescription",
+          "when": "view == trelloTreeView && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.editCardDescription",
+          "when": "view == trelloViewFavoriteList && viewItem == card"
         }
       ]
     },
