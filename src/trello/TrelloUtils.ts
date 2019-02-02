@@ -27,7 +27,6 @@ export class TrelloUtils {
   private API_KEY: string | undefined;
   private API_TOKEN: string | undefined;
   private FAVORITE_LIST_ID: string | undefined;
-  private MY_MEMBER_ID: string | undefined;
   private tempTrelloFile: string;
 
   constructor(context?: vscode.ExtensionContext) {
@@ -37,7 +36,6 @@ export class TrelloUtils {
 
     this.getCredentials();
     this.getFavoriteList();
-    this.getMemberId();
     this.setMarkdownPreviewBreaks();
   }
 
@@ -153,7 +151,8 @@ export class TrelloUtils {
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response);
+        console.error("GET error", error.response);
+        console.log(url);
         vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
       }
     }
@@ -166,7 +165,7 @@ export class TrelloUtils {
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response);
+        console.error("POST error", error.response);
         vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
       }
     }
@@ -179,19 +178,11 @@ export class TrelloUtils {
       return res.data;
     } catch (error) {
       if (error.response) {
-        console.error(error.response);
+        console.error("PUT error", error.response);
         vscode.window.showErrorMessage(`HTTP error: ${error.response.status} - ${error.response.data}`);
       }
     }
     return null;
-  }
-
-  async getMemberId(): Promise<void> {
-    const response = await this.trelloApiGetRequest(`/1/members/me`, {
-      key: this.API_KEY,
-      token: this.API_TOKEN,
-    });
-    this.MY_MEMBER_ID = response.id;
   }
 
   async getBoardById(boardId: string): Promise<TrelloBoard> {
@@ -276,15 +267,27 @@ export class TrelloUtils {
     vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
   }
 
-  async addCardToList(trelloList: TrelloList): Promise<void> {
+  async showSuccessMessage(msg: string, url?: string) {
+    let cardUrl;
+    if (url) {
+      cardUrl = await vscode.window.showInformationMessage(msg, url);
+      if (cardUrl) {
+        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(cardUrl));
+      }
+    } else {
+      vscode.window.showInformationMessage(msg);
+    }
+  }
+
+  async addCardToList(trelloList: TrelloList): Promise<Number> {
     if (!trelloList.id) {
       vscode.window.showErrorMessage("Could not get valid List ID");
-      return;
+      return 1;
     }
     const listId = trelloList.id;
 
     const cardName = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: "Enter name of card" });
-    if (cardName === undefined) return;
+    if (cardName === undefined) return 2;
 
     const resData = await this.trelloApiPostRequest("/1/cards", {
       key: this.API_KEY,
@@ -293,49 +296,58 @@ export class TrelloUtils {
       name: cardName,
     });
 
-    if (resData) {
-      vscode.commands.executeCommand("trelloViewer.refresh");
-      if (listId === this.FAVORITE_LIST_ID) {
-        vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
-      }
+    if (!resData) return 3;
 
-      const cardUrl = await vscode.window.showInformationMessage(
-        `Created Card: ${resData.idShort}-${resData.name}`,
-        resData.shortUrl
-      );
-      if (cardUrl) {
-        vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(cardUrl));
-      }
+    vscode.commands.executeCommand("trelloViewer.refresh");
+    if (listId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
+
+    this.showSuccessMessage(`Created Card: ${resData.idShort}-${resData.name}`, resData.shortUrl);
+    return 0;
   }
 
-  async addUserToCard(trelloCard: TrelloCard): Promise<void> {
+  async getMemberId(): Promise<string | undefined> {
+    const resData = await this.trelloApiGetRequest(`/1/members/me`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+    });
+
+    if (!resData) return undefined;
+
+    return resData.id;
+  }
+
+  async addUserToCard(trelloCard: TrelloCard): Promise<Number> {
     if (!trelloCard.id) {
       vscode.window.showErrorMessage("Could not get valid Card ID");
-      return;
+      return 1;
     }
     const cardId = trelloCard.id;
+
+    const userId = await this.getMemberId();
 
     const resData = await this.trelloApiPostRequest(`/1/cards/${cardId}/idMembers`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
-      value: this.MY_MEMBER_ID,
+      value: userId,
     });
 
-    if (resData) {
-      vscode.window.showInformationMessage(`Added ${resData.initials} to card`);
-    }
+    if (!resData) return 3;
+
+    this.showSuccessMessage(`Added user ${resData[0].initials} to card`);
+    return 0;
   }
 
-  async editDescription(trelloCard: TrelloCard): Promise<void> {
+  async editDescription(trelloCard: TrelloCard): Promise<Number> {
     if (!trelloCard.id) {
       vscode.window.showErrorMessage("Could not get valid Card ID");
-      return;
+      return 1;
     }
     const cardId = trelloCard.id;
 
     const desc = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: "Enter description for card" });
-    if (desc === undefined) return;
+    if (desc === undefined) return 2;
 
     const resData = await this.trelloApiPutRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
@@ -343,9 +355,10 @@ export class TrelloUtils {
       desc,
     });
 
-    if (resData) {
-      vscode.window.showInformationMessage(`Updated description for card: ${resData.name}`);
-    }
+    if (!resData) return 3;
+
+    this.showSuccessMessage(`Updated description for card: ${resData.name}`);
+    return 0;
   }
 
   resetFavoriteList(): void {

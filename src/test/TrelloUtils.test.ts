@@ -149,28 +149,7 @@ suite("TrelloUtils", () => {
     });
 
     suite("trelloApiGetRequest", () => {
-      const credentialsStub = sinon.stub(trello, "isCredentialsProvided");
-
-      suiteSetup(() => {
-        trelloApiGetRequestStub.restore();
-      });
-
-      setup(() => {
-        credentialsStub.reset();
-      });
-
-      suiteTeardown(() => {
-        credentialsStub.restore();
-      });
-
-      test("trelloApiGetRequest returns null if no credentials", async () => {
-        credentialsStub.returns(false);
-        const response = await trello.trelloApiGetRequest("test_id", {});
-        assert.equal(response, null);
-      });
-
       test("trelloApiGetRequest returns response with correct data", async () => {
-        credentialsStub.returns(true);
         const mockResponse: AxiosPromise = new Promise(r =>
           r({
             data: {
