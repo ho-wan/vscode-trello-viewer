@@ -26,6 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("trelloViewer.addCard", (trelloItem: TrelloItem) =>
     trello.addCardToList(trelloItem)
   );
+  vscode.commands.registerCommand("trelloViewer.addUserToCard", (trelloItem: TrelloItem) =>
+    trello.addUserToCard(trelloItem)
+  );
   vscode.commands.registerCommand("trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card));
 }
 

@@ -109,6 +109,10 @@
           "light": "images/light/plus.svg",
           "dark": "images/dark/plus.svg"
         }
+      },
+      {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card"
       }
     ],
     "configuration": {
@@ -136,6 +140,10 @@
         },
         {
           "command": "trelloViewer.addCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addUserToCard",
           "when": "false"
         }
       ],
@@ -186,6 +194,14 @@
 					"command": "trelloViewer.addCard",
           "when": "view == trelloViewFavoriteList && viewItem == list",
           "group": "inline@4"
+        },
+        {
+					"command": "trelloViewer.addUserToCard",
+          "when": "view == trelloTreeView && viewItem == card"
+        },
+        {
+					"command": "trelloViewer.addUserToCard",
+          "when": "view == trelloViewFavoriteList && viewItem == card"
         }
       ]
     },
