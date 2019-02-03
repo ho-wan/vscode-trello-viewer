@@ -119,6 +119,10 @@
         "title": "Add user to card"
       },
       {
+        "command": "trelloViewer.removeUserFromCard",
+        "title": "Remove user from card"
+      },
+      {
         "command": "trelloViewer.editCardDescription",
         "title": "Edit description of card"
       }
@@ -152,6 +156,10 @@
         },
         {
           "command": "trelloViewer.addUserToCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.removeUserFromCard",
           "when": "false"
         },
         {
@@ -212,6 +220,10 @@
         },
         {
 					"command": "trelloViewer.addUserToCard",
+          "when": "viewItem == card"
+        },
+        {
+					"command": "trelloViewer.removeUserFromCard",
           "when": "viewItem == card"
         },
         {
