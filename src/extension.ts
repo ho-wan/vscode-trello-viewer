@@ -31,6 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
     trello.removeUserFromCard(card)
   );
 
+  vscode.commands.registerCommand("trelloViewer.editCardTitle", (card: TrelloItem) =>
+    trello.editTitle(card)
+  );
   vscode.commands.registerCommand("trelloViewer.editCardDescription", (card: TrelloItem) =>
     trello.editDescription(card)
   );

@@ -134,15 +134,14 @@ export class TrelloUtils {
     vscode.commands.executeCommand("trelloViewer.refresh");
   }
 
-  // shows saved user info in vscode info message, API token is hashed
   showTrelloInfo(): void {
     this.getCredentials();
     this.getFavoriteList();
-    let info: string = "";
-    Object.keys(GLOBALSTATE_CONFIG).forEach(key => {
-      const value: string = this.globalState.get(GLOBALSTATE_CONFIG[key]);
-      info += `${key}: ${value}, `;
-    });
+    const info = `
+      API_KEY = ${this.API_KEY},
+      API_TOKEN = ${this.API_TOKEN},
+      FAVORITE_LIST_ID = ${this.FAVORITE_LIST_ID},
+    `;
     vscode.window.showInformationMessage(info);
   }
 
@@ -370,7 +369,6 @@ export class TrelloUtils {
     return 0;
   }
 
-
   async removeUserFromCard(card: TrelloItem): Promise<Number> {
     if (!card) {
       vscode.window.showErrorMessage("Could not get valid Card");
@@ -394,13 +392,51 @@ export class TrelloUtils {
     return 0;
   }
 
+  async editTitle(card: TrelloItem): Promise<Number> {
+    if (!card) {
+      vscode.window.showErrorMessage("Could not get valid card");
+      return 1;
+    }
+    const trelloCard: TrelloCard = await this.getCardById(card.id);
+    const name = await vscode.window.showInputBox({ ignoreFocusOut: true, value: trelloCard.name });
+    if (name === undefined) return 2;
+
+    const resData = await this.trelloApiPutRequest(`/1/cards/${card.id}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      name,
+    });
+
+    if (!resData) return 3;
+
+    vscode.commands.executeCommand("trelloViewer.refresh");
+    if (card.parentId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+    }
+
+    this.showSuccessMessage(`Updated title for card: ${resData.name}`);
+    return 0;
+  }
+
   async editDescription(card: TrelloItem): Promise<Number> {
     if (!card) {
       vscode.window.showErrorMessage("Could not get valid card");
       return 1;
     }
-    const desc = await vscode.window.showInputBox({ ignoreFocusOut: true, placeHolder: "Enter description for card" });
-    if (desc === undefined) return 2;
+    const trelloCard: TrelloCard = await this.getCardById(card.id);
+    // parse new line chars and remove quotes from start and end
+    let descRaw = JSON.stringify(trelloCard.desc);
+    descRaw = descRaw.slice(1, descRaw.length - 1);
+
+    const descUpdated = await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      value: descRaw,
+      placeHolder: "Enter description for card",
+    });
+    if (descUpdated === undefined) return 2;
+
+    // replaces "\n" with javascript return character required for Trello api
+    const desc = descUpdated.replace(/\\n/g, '\x0A');
 
     const resData = await this.trelloApiPutRequest(`/1/cards/${card.id}`, {
       key: this.API_KEY,
