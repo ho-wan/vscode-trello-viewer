@@ -111,6 +111,10 @@
         }
       },
       {
+        "command": "trelloViewer.archiveCard",
+        "title": "Archive Card"
+      },
+      {
         "command": "trelloViewer.addUserToCard",
         "title": "Add user to card"
       },
@@ -152,6 +156,10 @@
         },
         {
           "command": "trelloViewer.editCardDescription",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.archiveCard",
           "when": "false"
         }
       ],
@@ -195,29 +203,20 @@
         },
         {
 					"command": "trelloViewer.addCard",
-          "when": "view == trelloTreeView && viewItem == list",
+          "when": "viewItem == list",
           "group": "inline@4"
         },
         {
-					"command": "trelloViewer.addCard",
-          "when": "view == trelloViewFavoriteList && viewItem == list",
-          "group": "inline@4"
+					"command": "trelloViewer.archiveCard",
+          "when": "viewItem == card"
         },
         {
 					"command": "trelloViewer.addUserToCard",
-          "when": "view == trelloTreeView && viewItem == card"
-        },
-        {
-					"command": "trelloViewer.addUserToCard",
-          "when": "view == trelloViewFavoriteList && viewItem == card"
+          "when": "viewItem == card"
         },
         {
 					"command": "trelloViewer.editCardDescription",
-          "when": "view == trelloTreeView && viewItem == card"
-        },
-        {
-					"command": "trelloViewer.editCardDescription",
-          "when": "view == trelloViewFavoriteList && viewItem == card"
+          "when": "viewItem == card"
         }
       ]
     },
