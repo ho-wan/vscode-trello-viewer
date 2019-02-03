@@ -39,12 +39,9 @@
   "contributes": {
     "commands": [
       {
-        "command": "trelloViewer.test",
-        "title": "Trello Viewer: Check Key and Token"
-      },
-      {
         "command": "trelloViewer.authenticate",
-        "title": "Trello Viewer: Authenticate",
+        "title": "Authenticate",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/key.svg",
           "dark": "images/dark/key.svg"
@@ -52,11 +49,13 @@
       },
       {
         "command": "trelloViewer.setCredentials",
-        "title": "Trello Viewer: Set Credentials"
+        "title": "Trello Viewer: Set Credentials",
+        "category": "Trello Viewer"
       },
       {
         "command": "trelloViewer.resetCredentials",
         "title": "Trello Viewer: Reset Credentials",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/x.svg",
           "dark": "images/dark/x.svg"
@@ -65,6 +64,7 @@
       {
         "command": "trelloViewer.showTrelloInfo",
         "title": "Trello Viewer: Show Saved Credentials",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/eye.svg",
           "dark": "images/dark/eye.svg"
@@ -73,6 +73,7 @@
       {
         "command": "trelloViewer.refresh",
         "title": "Trello Viewer: Refresh",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
@@ -81,6 +82,7 @@
       {
         "command": "trelloViewer.refreshFavoriteList",
         "title": "Trello Viewer: Refresh Favorite List",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/refresh.svg",
           "dark": "images/dark/refresh.svg"
@@ -97,6 +99,7 @@
       {
         "command": "trelloViewer.setFavoriteListByClick",
         "title": "Trello Viewer: Set as favorite list",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
@@ -105,26 +108,36 @@
       {
         "command": "trelloViewer.addCard",
         "title": "Add Card",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/plus.svg",
           "dark": "images/dark/plus.svg"
         }
       },
       {
-        "command": "trelloViewer.archiveCard",
-        "title": "Archive Card"
-      },
-      {
-        "command": "trelloViewer.addUserToCard",
-        "title": "Add user to card"
-      },
-      {
-        "command": "trelloViewer.removeUserFromCard",
-        "title": "Remove user from card"
+        "command": "trelloViewer.editCardTitle",
+        "title": "Edit title of card",
+        "category": "Trello Viewer"
       },
       {
         "command": "trelloViewer.editCardDescription",
-        "title": "Edit description of card"
+        "title": "Edit description of card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.removeUserFromCard",
+        "title": "Remove user from card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.archiveCard",
+        "title": "Archive Card",
+        "category": "Trello Viewer"
       }
     ],
     "configuration": {
@@ -160,6 +173,10 @@
         },
         {
           "command": "trelloViewer.removeUserFromCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.editCardTitle",
           "when": "false"
         },
         {
@@ -224,6 +241,10 @@
         },
         {
 					"command": "trelloViewer.removeUserFromCard",
+          "when": "viewItem == card"
+        },
+        {
+					"command": "trelloViewer.editCardTitle",
           "when": "viewItem == card"
         },
         {
