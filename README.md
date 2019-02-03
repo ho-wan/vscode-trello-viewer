@@ -12,7 +12,9 @@
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
 - Browse Trello boards, lists and cards in the side bar.
-- Add new cards, add user to card, add description to card.
+- Add cards or archive existing card
+- Add and remove user to card.
+- Edit title and description of card.
 - View selected card using the markdown previewer and open to the side.
 - See formatted checklists and cover image for the card.
 - Assign a favourite list to easily access cards.
@@ -25,7 +27,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - Login to trello at https://trello.com/login
 - Get API key at https://trello.com/app-key
 - Set credentials by clicking the key icon in the left Side Bar or running command "Trello Viewer: Authenticate".
-- After entering API key, a new page should open in browser to get a readonly API token.
+- After entering API key, a new page should open in browser to get an API token.
 - Alternatively, use the command "Trello Viewer: Set Credentials" and follow instructions from Trello to manually generate a token.
 
 ## Tree View
@@ -40,7 +42,7 @@ Welcome to Trello Viewer for VS Code! This extension provides the following feat
 - Clicking on the 'star' icon to the right of a list assigns this as your "favourite list", shown in the lower part of the side bar.
 - Clicking on the icons in the side bar runs various commands, such as setting credentials, removing credentials, showing saved info, and refreshing views.
 - Click the 'plus' icon to add a card to the selected list.
-- Right click on a card to see options for card, such as assigning a user and editing the description.
+- Right click on a card to see options for card, such as assigning a user, editing the title or description, and archive card.
 
 ## Trello Card Markdown Preview
 
@@ -52,9 +54,9 @@ Main functionality is provided using the VS code interface in the left Side Bar.
 
 Command | Description
 --- | ---
-```Trello Viewer: Authenticate``` | Set user Trello API key and token.
+```Trello Viewer: Set Credentials``` | Set user Trello API key and token manually.
 ```Trello Viewer: Refresh``` | Refresh the main Trello tree view.
-```Trello Viewer: Reset Credentials``` | Removes saved credentials.
+```Trello Viewer: Reset Credentials``` | Resets saved credentials.
 
 ## Extension Settings
 

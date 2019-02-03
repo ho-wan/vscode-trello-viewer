@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.5.0 (03 Feb 2019)
+- Enable Archive card functionality.
+- Allow user to remove themself from card.
+- Can update title and description of card (edit from current value).
+
 ## 0.4.0 (02 Feb 2019)
 - Add user to card, add description to card functionality
 - **WARNING** - Edit description will overwrite the existing description
