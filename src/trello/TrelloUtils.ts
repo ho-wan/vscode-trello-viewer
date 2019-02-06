@@ -455,6 +455,36 @@ export class TrelloUtils {
     return 0;
   }
 
+
+  async addComment(card: TrelloItem): Promise<Number> {
+    if (!card) {
+      vscode.window.showErrorMessage("Could not get valid card");
+      return 1;
+    }
+
+    const comment = await vscode.window.showInputBox({
+      ignoreFocusOut: true,
+      placeHolder: "Add comment",
+    });
+    if (comment === undefined) return 2;
+
+    const resData = await this.trelloApiPostRequest(`/1/cards/${card.id}/actions/comments`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      text: comment,
+    });
+
+    if (!resData) return 3;
+
+    vscode.commands.executeCommand("trelloViewer.refresh");
+    if (card.parentId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+    }
+
+    this.showSuccessMessage(`Added comment to card: ${resData.data.card.name}`);
+    return 0;
+  }
+
   resetFavoriteList(): void {
     this.globalState.update(GLOBALSTATE_CONFIG.FAVORITE_LIST_ID, null);
     this.getFavoriteList();
