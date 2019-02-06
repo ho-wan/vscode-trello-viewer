@@ -2,7 +2,7 @@
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
   "description": "View Trello cards in VS Code, browse user's boards and lists.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "Ho-Wan",
   "author": {
     "name": "Ho-Wan To",
@@ -75,8 +75,8 @@
         "title": "Trello Viewer: Refresh",
         "category": "Trello Viewer",
         "icon": {
-          "light": "images/light/refresh.svg",
-          "dark": "images/dark/refresh.svg"
+          "light": "images/light/sync.svg",
+          "dark": "images/dark/sync.svg"
         }
       },
       {
@@ -84,8 +84,8 @@
         "title": "Trello Viewer: Refresh Favorite List",
         "category": "Trello Viewer",
         "icon": {
-          "light": "images/light/refresh.svg",
-          "dark": "images/dark/refresh.svg"
+          "light": "images/light/sync.svg",
+          "dark": "images/dark/sync.svg"
         }
       },
       {
