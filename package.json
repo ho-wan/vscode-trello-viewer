@@ -115,6 +115,21 @@
         }
       },
       {
+        "command": "trelloViewer.addComment",
+        "title": "Add comment to card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.archiveCard",
+        "title": "Archive Card",
+        "category": "Trello Viewer"
+      },
+      {
         "command": "trelloViewer.editCardTitle",
         "title": "Edit title of card",
         "category": "Trello Viewer"
@@ -125,18 +140,8 @@
         "category": "Trello Viewer"
       },
       {
-        "command": "trelloViewer.addUserToCard",
-        "title": "Add user to card",
-        "category": "Trello Viewer"
-      },
-      {
         "command": "trelloViewer.removeUserFromCard",
         "title": "Remove user from card",
-        "category": "Trello Viewer"
-      },
-      {
-        "command": "trelloViewer.archiveCard",
-        "title": "Archive Card",
         "category": "Trello Viewer"
       }
     ],
@@ -165,6 +170,10 @@
         },
         {
           "command": "trelloViewer.addCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addComment",
           "when": "false"
         },
         {
@@ -233,6 +242,10 @@
         },
         {
 					"command": "trelloViewer.archiveCard",
+          "when": "viewItem == card"
+        },
+        {
+					"command": "trelloViewer.addComment",
           "when": "viewItem == card"
         },
         {
