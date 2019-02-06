@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.5.1 (06 Feb 2019)
+- Enable Add comment to card functionality.
+- Update icons to use Octicons.
+
 ## 0.5.0 (03 Feb 2019)
 - Enable Archive card functionality.
 - Allow user to remove themself from card.

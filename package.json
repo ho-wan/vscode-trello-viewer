@@ -1,8 +1,8 @@
 {
   "name": "vscode-trello-viewer",
   "displayName": "Trello Viewer",
-  "description": "View Trello cards in VS Code, browse user's boards and lists.",
-  "version": "0.5.0",
+  "description": "View, add, edit Trello cards in VS Code.",
+  "version": "0.5.1",
   "publisher": "Ho-Wan",
   "author": {
     "name": "Ho-Wan To",
@@ -75,8 +75,8 @@
         "title": "Trello Viewer: Refresh",
         "category": "Trello Viewer",
         "icon": {
-          "light": "images/light/refresh.svg",
-          "dark": "images/dark/refresh.svg"
+          "light": "images/light/sync.svg",
+          "dark": "images/dark/sync.svg"
         }
       },
       {
@@ -84,8 +84,8 @@
         "title": "Trello Viewer: Refresh Favorite List",
         "category": "Trello Viewer",
         "icon": {
-          "light": "images/light/refresh.svg",
-          "dark": "images/dark/refresh.svg"
+          "light": "images/light/sync.svg",
+          "dark": "images/dark/sync.svg"
         }
       },
       {
@@ -115,6 +115,21 @@
         }
       },
       {
+        "command": "trelloViewer.addComment",
+        "title": "Add comment to card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card",
+        "category": "Trello Viewer"
+      },
+      {
+        "command": "trelloViewer.archiveCard",
+        "title": "Archive Card",
+        "category": "Trello Viewer"
+      },
+      {
         "command": "trelloViewer.editCardTitle",
         "title": "Edit title of card",
         "category": "Trello Viewer"
@@ -125,18 +140,8 @@
         "category": "Trello Viewer"
       },
       {
-        "command": "trelloViewer.addUserToCard",
-        "title": "Add user to card",
-        "category": "Trello Viewer"
-      },
-      {
         "command": "trelloViewer.removeUserFromCard",
         "title": "Remove user from card",
-        "category": "Trello Viewer"
-      },
-      {
-        "command": "trelloViewer.archiveCard",
-        "title": "Archive Card",
         "category": "Trello Viewer"
       }
     ],
@@ -165,6 +170,10 @@
         },
         {
           "command": "trelloViewer.addCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addComment",
           "when": "false"
         },
         {
@@ -233,6 +242,10 @@
         },
         {
 					"command": "trelloViewer.archiveCard",
+          "when": "viewItem == card"
+        },
+        {
+					"command": "trelloViewer.addComment",
           "when": "viewItem == card"
         },
         {
