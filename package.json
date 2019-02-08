@@ -236,32 +236,32 @@
           "group": "inline@5"
         },
         {
-					"command": "trelloViewer.addCard",
+          "command": "trelloViewer.addCard",
           "when": "viewItem == list",
           "group": "inline@4"
         },
         {
-					"command": "trelloViewer.archiveCard",
+          "command": "trelloViewer.archiveCard",
           "when": "viewItem == card"
         },
         {
-					"command": "trelloViewer.addComment",
+          "command": "trelloViewer.addComment",
           "when": "viewItem == card"
         },
         {
-					"command": "trelloViewer.addUserToCard",
+          "command": "trelloViewer.addUserToCard",
           "when": "viewItem == card"
         },
         {
-					"command": "trelloViewer.removeUserFromCard",
+          "command": "trelloViewer.removeUserFromCard",
           "when": "viewItem == card"
         },
         {
-					"command": "trelloViewer.editCardTitle",
+          "command": "trelloViewer.editCardTitle",
           "when": "viewItem == card"
         },
         {
-					"command": "trelloViewer.editCardDescription",
+          "command": "trelloViewer.editCardDescription",
           "when": "viewItem == card"
         }
       ]
