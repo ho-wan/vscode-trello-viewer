@@ -214,22 +214,24 @@ export class TrelloUtils {
   }
 
   getBoards(starredBoards?: boolean): Promise<TrelloBoard[]> {
-    return this.trelloApiGetRequest("/1/members/me/boards", {
+    const res = this.trelloApiGetRequest("/1/members/me/boards", {
       filter: starredBoards ? "starred" : "all",
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
+    return res;
   }
 
   getListsFromBoard(boardId: string): Promise<TrelloList[]> {
-    return this.trelloApiGetRequest(`/1/boards/${boardId}/lists`, {
+    const res = this.trelloApiGetRequest(`/1/boards/${boardId}/lists`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
+    return res;
   }
 
   getCardsFromList(listId: string): Promise<TrelloCard[]> {
-    return this.trelloApiGetRequest(`/1/lists/${listId}/cards`, {
+    const res = this.trelloApiGetRequest(`/1/lists/${listId}/cards`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
       attachments: "cover",
@@ -237,20 +239,23 @@ export class TrelloUtils {
       actions_limit: 20,
       members: true,
     });
+    return res;
   }
 
   getCardById(cardId: string): Promise<TrelloCard> {
-    return this.trelloApiGetRequest(`/1/cards/${cardId}`, {
+    const res = this.trelloApiGetRequest(`/1/cards/${cardId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
+    return res;
   }
 
   getChecklistById(checklistId: string): Promise<TrelloChecklist> {
-    return this.trelloApiGetRequest(`/1/checklists/${checklistId}`, {
+    const res = this.trelloApiGetRequest(`/1/checklists/${checklistId}`, {
       key: this.API_KEY,
       token: this.API_TOKEN,
     });
+    return res;
   }
 
   getFavoriteList(): string | undefined {
@@ -330,7 +335,7 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
@@ -361,7 +366,7 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
@@ -384,7 +389,7 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
@@ -410,7 +415,7 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
@@ -436,7 +441,7 @@ export class TrelloUtils {
     if (descUpdated === undefined) return 2;
 
     // replaces "\n" with javascript return character required for Trello api
-    const desc = descUpdated.replace(/\\n/g, '\x0A');
+    const desc = descUpdated.replace(/\\n/g, "\x0A");
 
     const resData = await this.trelloApiPutRequest(`/1/cards/${card.id}`, {
       key: this.API_KEY,
@@ -447,14 +452,13 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
     this.showSuccessMessage(`Updated description for card: ${resData.name}`);
     return 0;
   }
-
 
   async addComment(card: TrelloItem): Promise<Number> {
     if (!card) {
@@ -477,11 +481,46 @@ export class TrelloUtils {
     if (!resData) return 3;
 
     vscode.commands.executeCommand("trelloViewer.refresh");
-    if (card.parentId === this.FAVORITE_LIST_ID) {
+    if (card.listId === this.FAVORITE_LIST_ID) {
       vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
     }
 
     this.showSuccessMessage(`Added comment to card: ${resData.data.card.name}`);
+    return 0;
+  }
+
+  async moveCardToList(card: TrelloItem): Promise<Number> {
+    if (!card) {
+      vscode.window.showErrorMessage("Could not get valid card");
+      return 1;
+    }
+
+    const listsForBoard = await this.getListsFromBoard(card.boardId || "-1");
+    if (!listsForBoard) return 3;
+
+    const quickPickLists = listsForBoard.map(list => {
+      return {
+        label: list.name,
+        listId: list.id,
+      };
+    });
+
+    const toList = await vscode.window.showQuickPick(quickPickLists, { placeHolder: "Move card to list:" });
+    if (toList === undefined) return 2;
+
+    const resData = await this.trelloApiPutRequest(`/1/cards/${card.id}`, {
+      key: this.API_KEY,
+      token: this.API_TOKEN,
+      idList: toList.listId,
+    });
+    if (!resData) return 3;
+
+    vscode.commands.executeCommand("trelloViewer.refresh");
+    if (card.listId === this.FAVORITE_LIST_ID || toList.listId === this.FAVORITE_LIST_ID) {
+      vscode.commands.executeCommand("trelloViewer.refreshFavoriteList");
+    }
+
+    this.showSuccessMessage(`Moved card to list: ${toList.label}`);
     return 0;
   }
 

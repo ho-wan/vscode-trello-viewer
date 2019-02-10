@@ -78,8 +78,8 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         );
       }
     } else if (element.type === TRELLO_ITEM_TYPE.LIST) {
-      const boardId: string = element.parentId || "-1";
-      const listId: string = element.id;
+      const boardId: string = element.boardId || "-1";
+      const listId: string = element.id || "-1";
       const trelloBoard = this.trelloObject.trelloBoards.find((item: TrelloBoard) => item.id === boardId);
       if (!trelloBoard) {
         console.error(`Error: trelloBoard id ${boardId} not found`);
@@ -99,6 +99,7 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
             TRELLO_ITEM_TYPE.CARD,
             trelloList.trelloCards,
             vscode.TreeItemCollapsibleState.None,
+            boardId,
             listId,
             true
           )
@@ -134,7 +135,8 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
     trelloItemType: string,
     trelloObjects: Array<TrelloBoard | TrelloList | TrelloCard>,
     collapsed: vscode.TreeItemCollapsibleState = 1,
-    parentId?: string,
+    boardId?: string,
+    listId?: string,
     showCard?: boolean
   ): TrelloItem[] {
     return trelloObjects.map(obj => {
@@ -144,7 +146,8 @@ export class TrelloTreeView implements vscode.TreeDataProvider<TrelloItem> {
         obj.id,
         trelloItemType,
         `id: ${obj.id}`,
-        parentId,
+        boardId,
+        listId,
         showCard
           ? {
               command: "trelloViewer.showCard",
