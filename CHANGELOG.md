@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.6.0 (10 Feb 2019)
+- Enable Move card functionality.
+- Asssign or remove any user to card.
+
 ## 0.5.1 (06 Feb 2019)
 - Enable Add comment to card functionality.
 - Update icons to use Octicons.
