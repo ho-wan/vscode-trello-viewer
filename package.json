@@ -140,6 +140,11 @@
         "category": "Trello Viewer"
       },
       {
+        "command": "trelloViewer.moveCardToList",
+        "title": "Move card to another list",
+        "category": "Trello Viewer"
+      },
+      {
         "command": "trelloViewer.removeUserFromCard",
         "title": "Remove user from card",
         "category": "Trello Viewer"
@@ -190,6 +195,10 @@
         },
         {
           "command": "trelloViewer.editCardDescription",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.moveCardToList",
           "when": "false"
         },
         {
@@ -253,15 +262,19 @@
           "when": "viewItem == card"
         },
         {
-          "command": "trelloViewer.removeUserFromCard",
-          "when": "viewItem == card"
-        },
-        {
           "command": "trelloViewer.editCardTitle",
           "when": "viewItem == card"
         },
         {
           "command": "trelloViewer.editCardDescription",
+          "when": "viewItem == card"
+        },
+        {
+          "command": "trelloViewer.moveCardToList",
+          "when": "viewItem == card"
+        },
+        {
+          "command": "trelloViewer.removeUserFromCard",
           "when": "viewItem == card"
         }
       ]

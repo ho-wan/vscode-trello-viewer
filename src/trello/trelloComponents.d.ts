@@ -20,6 +20,8 @@ export interface TrelloList {
 export interface TrelloCard {
   id: string;
   idShort: string;
+  idBoard: string;
+  idList: string;
   name: string;
   attachments: Array<{
     url: string;
