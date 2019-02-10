@@ -146,6 +146,11 @@
         "category": "Trello Viewer Card Action"
       },
       {
+        "command": "trelloViewer.addUserToCard",
+        "title": "Add user to card",
+        "category": "Trello Viewer Card Action"
+      },
+      {
         "command": "trelloViewer.archiveCard",
         "title": "Archive Card",
         "category": "Trello Viewer Card Action"
@@ -188,6 +193,10 @@
         },
         {
           "command": "trelloViewer.removeSelfFromCard",
+          "when": "false"
+        },
+        {
+          "command": "trelloViewer.addUserToCard",
           "when": "false"
         },
         {
@@ -274,6 +283,11 @@
           "command": "trelloViewer.removeSelfFromCard",
           "when": "viewItem == card",
           "group": "2user@2"
+        },
+        {
+          "command": "trelloViewer.addUserToCard",
+          "when": "viewItem == card",
+          "group": "2user@3"
         },
         {
           "command": "trelloViewer.moveCardToList",
