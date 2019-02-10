@@ -38,6 +38,7 @@ export interface TrelloCard {
 export interface TrelloMember {
   id: string;
   initials: string;
+  fullName: string;
 }
 
 export interface TrelloActionComment {

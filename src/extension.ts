@@ -38,6 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("trelloViewer.removeSelfFromCard", (card: TrelloItem) =>
     trello.removeSelfFromCard(card)
   );
+  vscode.commands.registerCommand("trelloViewer.addUserToCard", (card: TrelloItem) => trello.addUserToCard(card));
+  vscode.commands.registerCommand("trelloViewer.removeUserFromCard", (card: TrelloItem) =>
+    trello.removeUserFromCard(card)
+  );
   // Card Actions - card
   vscode.commands.registerCommand("trelloViewer.moveCardToList", (card: TrelloItem) => trello.moveCardToList(card));
   vscode.commands.registerCommand("trelloViewer.archiveCard", (card: TrelloItem) => trello.archiveCard(card));
