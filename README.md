@@ -12,7 +12,7 @@
 Welcome to Trello Viewer for VS Code! This extension provides the following features:
 
 - Browse Trello boards, lists and cards in the side bar.
-- Add cards or archive existing card.
+- Add, move, or archive card.
 - Add and remove user to card.
 - Edit title and description of card and add comments.
 - View selected card using the markdown previewer and open to the side.

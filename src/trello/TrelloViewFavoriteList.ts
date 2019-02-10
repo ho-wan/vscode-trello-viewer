@@ -80,6 +80,7 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
             TRELLO_ITEM_TYPE.CARD,
             trelloList.trelloCards,
             vscode.TreeItemCollapsibleState.None,
+            trelloList.idBoard,
             trelloList.id,
             true
           )
@@ -110,7 +111,8 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
     trelloItemType: string,
     trelloObjects: Array<TrelloBoard | TrelloList | TrelloCard>,
     collapsed: vscode.TreeItemCollapsibleState = 1,
-    parentId?: string,
+    boardId?: string,
+    listId?: string,
     showCard?: boolean
   ): TrelloItem[] {
     return trelloObjects.map(obj => {
@@ -120,7 +122,8 @@ export class TrelloViewFavoriteList implements vscode.TreeDataProvider<TrelloIte
         obj.id,
         trelloItemType,
         `id: ${obj.id}`,
-        parentId,
+        boardId,
+        listId,
         showCard
           ? {
               command: "trelloViewer.showCard",

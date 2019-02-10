@@ -7,7 +7,8 @@ export class TrelloItem extends vscode.TreeItem {
     public readonly id: string,
     public readonly type: string,
     public readonly tooltip?: string,
-    public readonly parentId?: string,
+    public readonly boardId?: string,
+    public readonly listId?: string,
     public readonly command?: vscode.Command
   ) {
     super(label, collapsibleState);
