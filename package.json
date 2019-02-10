@@ -49,12 +49,12 @@
       },
       {
         "command": "trelloViewer.setCredentials",
-        "title": "Trello Viewer: Set Credentials",
+        "title": "Set Credentials",
         "category": "Trello Viewer"
       },
       {
         "command": "trelloViewer.resetCredentials",
-        "title": "Trello Viewer: Reset Credentials",
+        "title": "Reset Credentials",
         "category": "Trello Viewer",
         "icon": {
           "light": "images/light/x.svg",
@@ -63,7 +63,7 @@
       },
       {
         "command": "trelloViewer.showTrelloInfo",
-        "title": "Trello Viewer: Show Saved Credentials",
+        "title": "Show Saved Credentials",
         "category": "Trello Viewer",
         "icon": {
           "light": "images/light/eye.svg",
@@ -72,7 +72,7 @@
       },
       {
         "command": "trelloViewer.refresh",
-        "title": "Trello Viewer: Refresh",
+        "title": "Refresh",
         "category": "Trello Viewer",
         "icon": {
           "light": "images/light/sync.svg",
@@ -81,7 +81,7 @@
       },
       {
         "command": "trelloViewer.refreshFavoriteList",
-        "title": "Trello Viewer: Refresh Favorite List",
+        "title": "Refresh Favorite List",
         "category": "Trello Viewer",
         "icon": {
           "light": "images/light/sync.svg",
@@ -90,7 +90,8 @@
       },
       {
         "command": "trelloViewer.resetFavoriteList",
-        "title": "Trello Viewer: Reset Favorite List",
+        "title": "Reset Favorite List",
+        "category": "Trello Viewer",
         "icon": {
           "light": "images/light/x.svg",
           "dark": "images/dark/x.svg"
@@ -98,8 +99,8 @@
       },
       {
         "command": "trelloViewer.setFavoriteListByClick",
-        "title": "Trello Viewer: Set as favorite list",
-        "category": "Trello Viewer",
+        "title": "Set as favorite list",
+        "category": "Trello Viewer List Action",
         "icon": {
           "light": "images/light/star.svg",
           "dark": "images/dark/star.svg"
@@ -108,7 +109,7 @@
       {
         "command": "trelloViewer.addCard",
         "title": "Add Card",
-        "category": "Trello Viewer",
+        "category": "Trello Viewer List Action",
         "icon": {
           "light": "images/light/plus.svg",
           "dark": "images/dark/plus.svg"
@@ -117,37 +118,37 @@
       {
         "command": "trelloViewer.addComment",
         "title": "Add comment to card",
-        "category": "Trello Viewer"
-      },
-      {
-        "command": "trelloViewer.addUserToCard",
-        "title": "Add user to card",
-        "category": "Trello Viewer"
-      },
-      {
-        "command": "trelloViewer.archiveCard",
-        "title": "Archive Card",
-        "category": "Trello Viewer"
+        "category": "Trello Viewer Card Action"
       },
       {
         "command": "trelloViewer.editCardTitle",
         "title": "Edit title of card",
-        "category": "Trello Viewer"
+        "category": "Trello Viewer Card Action"
       },
       {
         "command": "trelloViewer.editCardDescription",
         "title": "Edit description of card",
-        "category": "Trello Viewer"
+        "category": "Trello Viewer Card Action"
       },
       {
         "command": "trelloViewer.moveCardToList",
-        "title": "Move card to another list",
-        "category": "Trello Viewer"
+        "title": "Move card to list",
+        "category": "Trello Viewer Card Action"
       },
       {
-        "command": "trelloViewer.removeUserFromCard",
-        "title": "Remove user from card",
-        "category": "Trello Viewer"
+        "command": "trelloViewer.addSelfToCard",
+        "title": "Add self to card",
+        "category": "Trello Viewer Card Action"
+      },
+      {
+        "command": "trelloViewer.removeSelfFromCard",
+        "title": "Remove self from card",
+        "category": "Trello Viewer Card Action"
+      },
+      {
+        "command": "trelloViewer.archiveCard",
+        "title": "Archive Card",
+        "category": "Trello Viewer Card Action"
       }
     ],
     "configuration": {
@@ -182,11 +183,11 @@
           "when": "false"
         },
         {
-          "command": "trelloViewer.addUserToCard",
+          "command": "trelloViewer.addSelfToCard",
           "when": "false"
         },
         {
-          "command": "trelloViewer.removeUserFromCard",
+          "command": "trelloViewer.removeSelfFromCard",
           "when": "false"
         },
         {
@@ -242,40 +243,47 @@
         {
           "command": "trelloViewer.setFavoriteListByClick",
           "when": "view == trelloTreeView && viewItem == list",
-          "group": "inline@5"
+          "group": "inline@2"
         },
         {
           "command": "trelloViewer.addCard",
           "when": "viewItem == list",
-          "group": "inline@4"
-        },
-        {
-          "command": "trelloViewer.archiveCard",
-          "when": "viewItem == card"
-        },
-        {
-          "command": "trelloViewer.addComment",
-          "when": "viewItem == card"
-        },
-        {
-          "command": "trelloViewer.addUserToCard",
-          "when": "viewItem == card"
+          "group": "inline@1"
         },
         {
           "command": "trelloViewer.editCardTitle",
-          "when": "viewItem == card"
+          "when": "viewItem == card",
+          "group": "1edit@1"
         },
         {
           "command": "trelloViewer.editCardDescription",
-          "when": "viewItem == card"
+          "when": "viewItem == card",
+          "group": "1edit@2"
+        },
+        {
+          "command": "trelloViewer.addComment",
+          "when": "viewItem == card",
+          "group": "1edit@3"
+        },
+        {
+          "command": "trelloViewer.addSelfToCard",
+          "when": "viewItem == card",
+          "group": "2user@1"
+        },
+        {
+          "command": "trelloViewer.removeSelfFromCard",
+          "when": "viewItem == card",
+          "group": "2user@2"
         },
         {
           "command": "trelloViewer.moveCardToList",
-          "when": "viewItem == card"
+          "when": "viewItem == card",
+          "group": "3card@1"
         },
         {
-          "command": "trelloViewer.removeUserFromCard",
-          "when": "viewItem == card"
+          "command": "trelloViewer.archiveCard",
+          "when": "viewItem == card",
+          "group": "3card@2"
         }
       ]
     },
