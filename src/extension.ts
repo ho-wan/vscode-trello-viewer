@@ -47,6 +47,20 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.commands.registerCommand("trelloViewer.archiveCard", (card: TrelloItem) => trello.archiveCard(card));
   // Card - Show using markdown preview
   vscode.commands.registerCommand("trelloViewer.showCard", (card: TrelloCard) => trello.showCard(card));
+
+  // 'export' public api-surface
+  let api = {
+    boards() {
+      return trello.getBoards();
+    },
+    lists(boardId: string) {
+      return trello.getListsFromBoard(boardId);
+    },
+    cards(listId: string) {
+      return trello.getCardsFromList(listId);
+    }
+  };
+  return api;
 }
 
 export function deactivate() {
